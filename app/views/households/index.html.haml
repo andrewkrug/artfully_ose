@@ -1,0 +1,13 @@
+- in_section :households
+- content_for :title do
+  Households
+- content_for :header do
+  %h1 Households
+
+.row
+  .span8.super-search-results
+    - if @households.empty?
+      &nbsp;
+    -else
+      = render :partial => 'list', :locals => { :households => @households } unless @households.empty?
+      = will_paginate @households, :inner_window => 2, :outer_window => 0

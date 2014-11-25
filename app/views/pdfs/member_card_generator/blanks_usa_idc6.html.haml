@@ -1,0 +1,109 @@
+:plain
+  <style type="text/css">
+  @import '//artfully-pdf-css.s3.amazonaws.com/helvetica.css';
+
+  body {
+    margin: 0;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 13px;
+    line-height: 18px;
+    color: #000;
+  }
+
+  .page {
+    padding-top: 0.4375in;
+    padding-left: 0in;
+    margin: 0;
+    page-break-inside: avoid;
+    page-break-after: always;
+    overflow: hidden;
+  }
+
+  .card {
+    width: 3.125in;
+    height: 1.625in;
+    padding: 0.25in 0.125in;
+    border: 1px dotted #fff;
+    display: block;
+    float: left;
+    margin-left: 0;
+    margin-bottom: 1.125in;
+    -moz-border-radius: 12px;
+    -webkit-border-radius: 12px;
+    border-radius: 12px;
+    box-sizing:border-box;
+    -moz-box-sizing:border-box;
+  }
+
+  .odd {
+    margin-left: 0.5in;
+  }
+
+  .top {
+    margin-bottom: 1.25in;
+  }
+
+  .bottom {
+    margin-bottom: 0;
+  }
+
+  .qr-code img {
+    margin: 0 2px 5px 0;
+    width: 120px;
+    height: 120px
+  }
+
+  .left-side {
+    float: left
+  }
+
+  .right-side {
+  }
+
+  .organization-name {
+    font-weight: bold;
+  }
+
+  .membership {
+    margin-bottom: 10px;
+  }
+
+  .person-name {
+    font-weight: bold;
+  }
+
+  .membership-number {
+    margin-bottom: 10px;
+  }
+
+  .expiration {
+    font-size: 11px;
+    clear: both;
+  }
+  </style>
+
+:ruby
+  generator = pdfable
+
+- generator.members.each_slice(6) do |page|
+  .page
+    - page.each_with_index do |member,index|
+      - membership = member.memberships.current.first
+      - person     = member.person
+      - classes = ['card']
+      - classes << 'odd'    if index.odd?
+      - classes << 'top'    if [0, 1].include?(index)
+      - classes << 'bottom' if [4,5].include?(index)
+      %div{:class => classes.join(' ')}
+        .left-side
+          .qr-code
+            %img{:src => (member.download_link_for(:qr_code) rescue 'http://placehold.it/120/ffffff.png&text=No+QR+Code')}
+
+        .right-side
+          .organization-name #{member.organization.name}
+          .membership #{membership.membership_type.name}
+
+          .person-name #{person.first_name} #{person.last_name}
+          .membership-number ##{member.member_number}
+
+          .expiration Expires #{membership.ends_at.strftime('%b %d, %Y')}

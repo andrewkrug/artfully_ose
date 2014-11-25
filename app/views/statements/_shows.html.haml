@@ -1,0 +1,7 @@
+- if shows.empty?
+  %p There are no shows for this event.
+- else
+  %ul.nav.nav-pills.nav-stacked#of_shows
+    - shows.each do |show|
+      %li{:class => get_selected_class(@show, show) }
+        = link_to (l show.datetime_local_to_event, :format => :short), statement_path(show), :title => 'show-datetime'

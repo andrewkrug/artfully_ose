@@ -1,0 +1,27 @@
+#items
+  %table.zebra.table
+    %thead
+      %tr
+        %th.grouped-checkbox= check_box_tag :all, nil, false, :class => :checkall
+        %th Item
+        %th Price Paid
+        %th Discount
+        %th
+    %tbody
+      - order.tickets.each do |item|
+        %tr{:id => "row_item_#{item.id}", :class => item.state}
+          %td.grouped-checkbox= check_box_tag "item_#{item.id}", item.id, false, :disabled => true
+          %td.item-description
+            - if item.product_type.eql?("Ticket")
+              %span=(item.state.eql?("refund") ? "Refund for" : "Ticket to")
+              %span
+                #{link_to "#{item.product.event.name}", event_path(item.product.event)},
+                #{link_to "#{l item.product.datetime}", event_show_path(item.product.show.event, item.product.show)}
+            - if item.product_type.eql?("Donation")
+              %span Donation
+          %td.price= amount_and_nongift item
+          %td
+            =item.discount.try(:code)
+          %td.state
+            -if (item.product_type.eql?('Ticket') && !item.purchased?)
+              = item.state.capitalize

@@ -1,0 +1,11 @@
+#returns.grouped-form
+  %h3 Returns
+  = form_for :return, :url => '/returns' do |form|
+    = hidden_field_tag :order_id, order.id
+    %ul
+      - order.returnable_items.each do |item|
+        %li
+          .label-and-element
+            = check_box_tag "items[]", item.id, false, :id => "return_item_#{item.id}", :class => "item_#{item.id}"
+            = label_tag "item_#{item.id}", item.id
+    = submit_tag "Return", :class => "btn"

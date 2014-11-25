@@ -1,0 +1,72 @@
+- content_for :custom_js do
+  = javascript_include_tag "relationships"
+- in_section :households
+- content_for :title do
+  #{@household.name}
+
+= render "header"
+
+.row
+  .span4
+    %p
+      = link_to "Edit Household", '#edit-household', 'data-toggle' => 'modal'
+
+    = render(@household.address) if @household.address
+
+    %ul
+      - @household.individuals.each do |individual|
+        %li{:style => "padding-top: 0.5em;"}
+          = link_to(individual, polymorphic_url(individual))
+        - individual.phones.each do |phone|
+          %li
+            %span.muted= phone.kind
+            = phone.number
+
+  .span8
+    #notes
+    .row-fluid
+      .span3
+        %h3 Notes
+    %table.table-condensed.table#notes-list
+      %tbody
+        - notes = @household.notes.includes(:person)
+        - if notes.empty?
+          %tr
+            %td
+              No notes for individuals in this household
+        - else
+          = render :partial => 'households/note', :collection =>  notes[0..2]
+        - if notes[3]
+          %tr#more-notes-link
+            %td.triangle &#9656;
+            %td= link_to pluralize(notes.length-3, 'more note'), "#"
+          %tbody#more-notes{:style => 'display:none'}
+            = render :partial => 'households/note', :collection =>  notes[3..-1]
+
+    #actions
+      .row-fluid
+        .span3
+          %h3 Action Feed
+      %table.table-condensed.sortedstar.table#action-list
+        %thead
+          %tr
+            %th
+            %th{:style => 'width:60px;'} Date
+            %th{:style => 'width:25px'}
+            %th #{@household.name} individuals...
+        %tbody
+          - if @actions.empty?
+            %tr
+              %td
+              %td
+              %td
+              %td
+                No actions for individuals in this household
+          - else
+            = render :partial => 'households/action', :collection => @actions
+
+      = will_paginate @actions, :id => 'endless-scroll-pagination'
+
+%div{"ng-controller" => "EditHouseholdCtrl"}
+  = render 'edit_modal'
+  #edit-order-popup.modal

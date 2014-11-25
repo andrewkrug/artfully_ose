@@ -1,0 +1,108 @@
+- in_section :events
+- content_for :header do
+  =render :partial=>'events/header'
+
+.row
+  .span3
+    - in_sub_section :shows
+    =render :partial=>'events/menu'
+  .span9
+    = render "shared/error_messages", :target => @event
+    .row-fluid
+      .span12
+        .something
+          .btn-group.pull-right
+            =link_to "Upcoming", event_shows_path(@event), :class => "btn #{"active" if @upcoming}"
+            =link_to "All", event_shows_path(@event, :range => :all), :class => "btn #{"active" if @all}"
+            %a.btn.dropdown-toggle#month-button{"data-toggle"=>"dropdown", :href=>"#", :class => "#{"active" if @monthly}"}
+              =@monthly ? "#{params[:month]} #{params[:year]}" : "Month"
+              %span.caret
+            %ul.dropdown-menu#month-select
+              - @month_years.each do |month_year|
+                %li=link_to month_year, monthly_event_shows_path(@event, month_year.split[1], month_year.split[0])
+
+    %table.table.table-hover
+      %thead
+        %th{:colspan => 2} Date/Time
+        %th
+        %th.right Capacity
+        %th.right Open
+        %th.right On Sale
+        %th.right Off Sale
+        %th.right Sold
+        %th.right Comped
+      %tbody
+        -if @shows.empty?
+          %tr
+            %td{:colspan => 9}
+              .no-image.full
+                #text
+                  =link_to 'You have no upcoming shows scheduled.', new_event_show_path(@event, @show)
+        -@shows.each do |show|
+          %tr.sprited-container.valign{:id => "show_row_#{show.id}", :class => "#{'unpublished' if show.unpublished?}"}
+            %td
+              =link_to l(show.parsed_local_datetime, :format => :abbreviated_day), event_show_path(@event, show), :title => 'show-datetime'
+            %td
+              =link_to l(show.parsed_local_datetime, :format => :short), event_show_path(@event, show), :title => 'show-datetime'
+            %td
+              -unless show.played?
+                %ul.in-table
+                  %li.dropdown{:id => "bulkactions#{show.id}"}
+                    =icon_link_to('', "#menu#bulkactions#{show.id}", 'fa-asterisk', 'dropdown-toggle dropdown btn btn-mini', '')
+                    %ul.sprited-element.dropdown-menu{ :class => [show.state] }
+                      %li
+                        =link_to "Door List", new_event_show_sales_path(@event, show, :render => 'doorlist')
+                      %li{:class => "sprited built published"}
+                        =link_to("Unpublish", unpublished_event_show_path(@event, show), {:remote => true, 'data-type' => :json, :method => :post})
+                      %li{:class => "sprited built unpublished"}
+                        =link_to("Publish", published_event_show_path(@event, show), {:remote => true, 'data-type' => :json, :method => :post})
+                      %li
+                        =link_to "Put on sale", "#putOnSale#{show.id}", 'data-toggle' => 'modal'
+                      %li
+                        =link_to "Take off sale", "#takeOffSale#{show.id}", 'data-toggle' => 'modal'
+
+              .modal{:id => "takeOffSale#{show.id}"}
+                .modal-header
+                  .close{'data-dismiss'=>'modal'} x
+                  .row-fluid
+                    .span10
+                      %h3 Take Tickets Off Sale
+                .modal-body
+                  =form_tag off_sale_event_show_path(@event, show), :method => :post, :class=>'form-inline' do
+                    Quantity:
+                    =text_field_tag :quantity, "0", :class => 'span1'
+                    %button.btn{:type=>'submit'}
+                      Take off sale
+
+
+              .modal{:id => "putOnSale#{show.id}"}
+                .modal-header
+                  .close{'data-dismiss'=>'modal'} x
+                  .row-fluid
+                    .span10
+                      %h3 Put Tickets On Sale
+                .modal-body
+                  =form_tag on_sale_event_show_path(@event, show), :method => :post, :class=>'form-inline' do
+                    Quantity:
+                    =text_field_tag :quantity, "0", :class => 'span1'
+                    %button.btn{:type=>'submit'}
+                      Put on sale
+
+
+            %td.right.available_value{:id => "capacity#{show.id}"}= show.capacity
+            %td.right.available_value{:id => "open#{show.id}"}= show.open
+            %td.right.available_value{:id => "on_sale#{show.id}"}= show.on_sale
+            %td.right.available_value{:id => "off_sale#{show.id}"}= show.off_sale
+            %td.right.gross_value{:id => "sold#{show.id}"}= show.sold
+            %td.right.comped_value{:id => "comped#{show.id}"}= show.comped
+
+    .row-fluid
+      .span12
+        #calendar-help
+          .pull-right
+            %span{:style => 'background-color: #ADADAD'} &nbsp&nbsp&nbsp&nbsp
+            Unpublished shows
+            %span{:style => 'background-color: #FFFFFF; border:1px solid #bbb;'} &nbsp&nbsp&nbsp&nbsp
+            Published shows
+
+    =will_paginate @shows

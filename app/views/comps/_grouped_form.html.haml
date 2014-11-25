@@ -1,0 +1,11 @@
+#comps.grouped-form
+  %h3 Comps
+  = form_tag new_comp_path, :method => :get do
+    = hidden_field_tag :show_id, show.id
+    %ul
+      - show.compable_tickets.each do |ticket|
+        %li
+          .label-and-element
+            = check_box_tag "selected_tickets[]", ticket.id, false, :id => "comp_ticket_#{ticket.id}", :class => "item_#{ticket.id}"
+            = label_tag "item_#{ticket.id}", ticket.id
+    = submit_tag "Comp", :class => "btn"

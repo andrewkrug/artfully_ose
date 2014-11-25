@@ -1,0 +1,50 @@
+#items
+  = form_tag do
+    -unless is_child
+      .row-fluid
+        .span4.grouped-form-target{:style => 'width:210px'}
+        .span8{:style => 'margin-top:5px'}
+          %span.help.tight{'data-placement' => 'bottom', 'data-title' => 'Refund/Exchange/Return', 'data-content' => "<p><b>Refund</b> Refunds full price of the ticket to the patron.</p><br/><p><b>Exchange</b> Swaps this ticket for another ticket, no money is charged or refunded.</p><br/><p><b>Return</b> Returns a ticket to inventory.  Use this to return comp'd tickets.".html_safe} ?
+    %table.zebra.table#item-table
+      %thead
+        %tr
+          %th.grouped-checkbox= check_box_tag :all, nil, false, :class => :checkall
+          %th Item
+          %th Type
+          %th Event
+          %th Show Date
+          %th Price Paid
+          %th Discount/Pass
+          %th Status
+      %tbody
+        - order.all_items.each do |item|
+          %tr{:id => "row_item_#{item.id}", :class => item.state}
+            %td.grouped-checkbox= check_box_tag "item_#{item.id}", item.id, false, :disabled => true
+            %td
+              - if order.class == MembershipChange::Order
+                %span Membership Change
+              -elsif order.class == RefundOrder
+                %span Ticket Refund
+              -elsif order.class == ExchangeOrder
+                %span Ticket Exchange
+              -else
+                = item.product_type
+            %td.item-description
+              - if item.product_type.eql?("Ticket")
+                - unless item.product.ticket_type == nil
+                  %span=item.product.ticket_type.name
+              - if item.product_type.eql?("Donation")
+                %span Donation
+              - if item.product_type.eql?("Membership")
+                %span=item.product.membership_type.name
+              - if item.product_type.eql?("Pass")
+                %span=item.product.pass_type.passerize
+            %td= link_to item.product.event.name, event_path(item.product.event) if item.product_type.eql?("Ticket")
+            %td= link_to item.product.show.parsed_local_datetime.strftime("%m/%d/%Y"), event_show_path(item.product.event, item.product.show) if item.product_type.eql?("Ticket")
+            %td.price= amount_and_nongift item
+            %td
+              =item.discount.try(:code) || item.pass.try(:pass_type).try(:name)
+            %td.state
+              -if (item.product_type.eql?('Ticket') && !item.purchased?)
+                = item.state.capitalize
+                          

@@ -1,0 +1,18 @@
+-# This partial is shared by invitations_controller as well as MembershipCompsController (for generating previews). Changes made here must also be handled in MembershipCompsController
+
+="Hello #{person.first_name},"
+
+-unless welcome_message.nil?
+  %p
+    =welcome_message
+
+-membership_types.each do |membership_type|
+  %p
+    =membership_type.invitation_email_text_copy
+
+= link_to 'To access membership benefits, please set up your member account password now.', accept_invitation_url(resource, :invitation_token => invitation_token)
+
+%p
+="Thanks you,"
+%br
+=organization.name

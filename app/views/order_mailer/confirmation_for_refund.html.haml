@@ -1,0 +1,40 @@
+%h1 Refund Confirmation
+
+%p
+  Order Number: #{@order.id}
+  %br
+  Refund Date: #{l(@order.created_at_local_to_organization)}
+  %br
+  Item Total:  -$#{format("%.2f", (@order.total.abs/100.0))}
+  %br
+  Service Fees:  -$#{format("%.2f", (@order.service_fee.abs.to_i/100.0))}
+  %br
+  Refund Total:  -$#{format("%.2f", (@order.total_with_service_fee.abs/100.0))}
+  %br
+  %br
+  -if @order.original_order.credit?
+    This refund was credited to the credit card you used as payment for this order.
+  -if @order.original_order.cash?
+    This refund was processed via cash or check. Please contact us with questions at #{@order.organization.email}.
+
+- unless @order.items.empty?
+  - unless @order.tickets.empty?
+    These tickets were refunded:
+    %ul.ticket-list
+      - @order.tickets.each do |item|
+        %li
+          ="#{item.product.show.event}, #{l item.product.show.datetime_local_to_event, :format => :long_with_day}, -$#{format("%.2f", (item.price.abs/100.0))} "
+
+  - unless @order.donations.empty?
+    These donations were refunded:
+    %ul.donation-list
+      - @order.donations.each do |item|
+        %li
+          = "Donation to #{@order.organization.name_for_donations}, -$#{format("%.2f", (item.price.abs/100.00))}"
+
+  - unless @order.passes.empty?
+    These passes were refunded:
+    %ul.donation-list
+      - @order.passes.each do |item|
+        %li
+          = "#{item.product.pass_type.name}, -$#{format("%.2f", (item.price.abs/100.00))}"

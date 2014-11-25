@@ -1,0 +1,22 @@
+%table.standalone.table
+  %thead
+    %tr
+      %th Pass Type
+      %th.right{:style=>'width:100px'} 
+      %th.right{:style=>'width:100px'} Tickets
+      %th.right{:style=>'width:100px'} 
+      %th.right{:style=>'width:100px'} 
+      %th.right{:style=>'width:100px'} 
+  %tbody
+    - if statement.pass_rows.empty?
+      %tr
+        %td{:colspan => 6} No passes used for this show
+
+    - statement.pass_rows.each do |pass_code, row|
+      %tr
+        %td=pass_code
+        %td.right
+        %td.right=row.tickets
+        %td.right
+        %td.right
+        %td.right

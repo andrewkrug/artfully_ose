@@ -1,0 +1,24 @@
+%table.table.available-ticket-type-table
+  - @ticket_types.each do |ticket_type|
+    %tr{:id => "ticket_type_#{ticket_type.id}"}
+      %td.ticket-type-name
+        = ticket_type.name
+      %td.right.span2.ticket-type-price
+        %span{:class => 'price'}= number_as_cents(ticket_type.price)
+      %td.right.span4.controls
+        = form_tag console_sale_path(current_cart, :person_id => @person.try(:id)), :method => :put, :class => 'form-horizontal', :id => "add-tickets-to-cart-#{ticket_type.id}" do
+          = hidden_field_tag :ticket_type_id, ticket_type.id
+
+          - available = ticket_type.available("storefront", @person.try(:member))
+          -if ticket_type.member_ticket? && @person.try(:member).nil?
+            #member-message
+              .center
+                ="To sell member tickets, #{link_to "search for a member", people_path}, then pick \"Work With...\" then \"Sell To.\"".html_safe
+          -else
+            - if available == 0
+              %select{:style => "width:140px", :class => 'ticket-type-quantity', :id => 'quantity', :name => 'quantity'}
+                %option SOLD OUT
+            - else
+              = select_tag :quantity, options_for_select((1..[10, available].min).to_a.map {|i| [pluralize(i, 'Ticket'), i]}), :style => "width:140px", :class => 'ticket-type-quantity'
+
+            = submit_tag 'Add to cart', :class => 'add-to-cart btn btn-primary'

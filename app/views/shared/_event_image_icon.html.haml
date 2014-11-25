@@ -1,0 +1,4 @@
+-if event.image?
+  %img{:src => event.image.url(:thumb), :width => 75, :height => 75}
+-else
+  .no-image{:style => "background-image: url('/assets/theater.png'); background-color: rgba(0, 0, 0, 0.1);background-size:60px 60px; background-repeat:no-repeat;opacity:.4"}

@@ -1,0 +1,14 @@
+.fields.relationship-fields
+  .control-group
+    = label_tag nil, @person, :class => 'control-label', :style => 'width: 120px;'
+    .controls
+      = f.select :relation_id, options_from_collection_for_select(Relation.for_type(@person.type).order(:description).uniq(:description), :id, :description, f.object.relation_id), {}, {:class => 'input-medium',:readonly => (!f.object.nil? && f.object.persisted?)}
+      - if !f.object.nil? && f.object.persisted?
+        = text_field_tag :other, f.object.other, :class => 'input-medium other-input', :readonly => true
+      - else
+        = text_field_tag "", "", :placeholder => "Individual or Company", :class => 'input-medium other-input'
+      = f.hidden_field(:other_id, :class => 'other-id')
+      %span.remove-fields-link
+        = f.hidden_field :_destroy
+        %i.fa.fa-minus-circle.icon-gray
+        = link_to_remove_fields "remove", f

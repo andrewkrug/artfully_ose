@@ -1,0 +1,26 @@
+.nav.accordion#event-accordion
+  .accordion-group
+    .accordion-heading
+      = link_to 'Event Overview', event_path(@event), :class => 'accordion-toggle'
+  .accordion-group
+    .accordion-heading
+      = link_to "Event Details", '#collapseEventDetails', :class => 'accordion-toggle', 'data-toggle' => 'collapse', 'data-parent'=>'#event-accordion'
+    #collapseEventDetails.accordion-body.collapse{:class => in_section?(:details)}
+      .accordion-inner
+        %ul.accordion-menu
+          = active_link_to 'About', edit_event_path(@event)
+          = active_link_to 'Venue', edit_event_venue_path(@event)
+          = active_link_to 'Prices', prices_event_path(@event)
+          = active_link_to 'Image', image_event_path(@event)
+          = active_link_to 'Messages', messages_event_path(@event)
+  .accordion-group
+    .accordion-heading
+      = link_to 'Shows', "#collapseShowList", :class => 'accordion-toggle', 'data-toggle' => 'collapse', 'data-parent'=>'#event-accordion'
+    #collapseShowList.accordion-body.collapse{:class => in_section?(:shows)}
+      .accordion-inner
+        %ul.accordion-menu
+          = calendar_active_link_to "Add shows", new_event_show_path(@event), nil, "fa-plus-circle"
+          = calendar_active_link_to "Calendar", calendar_event_shows_path(@event), nil, "fa-calendar"
+          = calendar_active_link_to "List", event_shows_path(@event), nil, "fa-list"
+
+  = render :partial => 'events/share_and_sell', :locals => { :event => @event }

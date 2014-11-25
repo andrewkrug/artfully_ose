@@ -1,0 +1,5 @@
+== Dummy
+
+This is a dummy rails application. It does nothing; it
+just has to exist so we can test engine functionality.
+

@@ -1,0 +1,7 @@
+%h2 The ticket reseller #{@reseller.name} has accepted the following offer.
+
+%ul
+  %li Event:   #{@event.name}
+  %li Show:    #{@show.show_time}
+  %li Ticket Type: #{@ticket_type.name}
+  %li Tickets: #{pluralize @ticket_offer.count, "ticket"}

@@ -1,0 +1,23 @@
+%ul.in-table.sprited-container
+  %li.dropdown{:id => "#menu#bulkactions"}
+    =icon_link_to('Work with...', "#menu#bulkactions", 'fa-asterisk', 'dropdown-toggle dropdown btn', '')
+    %ul.sprited-element.dropdown-menu{ :class => [show.state, show.destroyable? ? "destroyable" : "" ] }
+      %li
+        =link_to "Door List", new_event_show_sales_path(@event, @show, :render => 'doorlist')
+      %li{:class => "sprited built published"}
+        =link_to("Unpublish", unpublished_event_show_path(@event, @show), {:remote => true, 'data-type' => :json, :method => :post})
+      %li{:class => "sprited built unpublished"}
+        =link_to("Publish", published_event_show_path(@event, @show), {:remote => true, 'data-type' => :json, :method => :post})
+      - unless show.played?
+        %li{:class => "sprited built destroyable"}
+          =link_to "Delete", "#delete-confirm", {'data-toggle' => 'modal'}
+
+#delete-confirm.modal
+  .modal-header
+    .close{'data-dismiss'=>'modal'} x
+    %h3 Delete Show
+  .modal-body
+    Are you sure you want to delete this show?
+  .modal-footer
+    = link_to "Delete", event_show_path(@event, @show), :class => 'btn btn-danger', :method => :delete
+    = link_to "Cancel", "#", :class => 'btn', 'data-dismiss'=>'modal'

@@ -1,0 +1,7 @@
+%tr
+  %td.name
+    = link_to "<i class='fa fa-home'></i> ".html_safe + household.name, household
+    %br
+    = household.individuals.map { |i| link_to(i, polymorphic_url(i)) }.join(', ').html_safe
+  %td.tags
+    &nbsp;

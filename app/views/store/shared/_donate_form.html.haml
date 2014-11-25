@@ -1,0 +1,31 @@
+- donation_kit = @donation_kit || @store_organization.kit(:regular_donation)
+= form_tag store_order_path(@store_organization.cached_slug), :method => :post, :class => 'add-donation-to-cart form-inline' do
+  = hidden_field_tag :_source, 'storefront'
+
+  - if donation_kit.suggested_gifts.present? && donation_kit.suggested_gifts.any?
+    - donation_kit.suggested_gifts.each_with_index do |suggested_gift, index|
+      .preset-amount
+        %label{:for => "suggested_gift_#{index}", :class => 'control-label inline radio'}
+          - label_text = suggested_gift['level_name'].present? ? "#{suggested_gift['level_name']} ($#{format('%.2f', suggested_gift['amount'])})" : "$#{format('%.2f', suggested_gift['amount'])}"
+          = radio_button_tag :suggested_gift, suggested_gift['amount'], false, :id => "suggested_gift_#{index}", :class => 'preset_radio'
+          = label_text
+
+    - if donation_kit.open_gift_field == '1'
+      .preset-amount
+        %label{:for => :suggested_gift_42, :class => 'control-label inline radio'}
+          = radio_button_tag :suggested_gift, 0, false, :id => 'suggested_gift_42', :class => 'preset_radio'
+          Other
+
+        .input-prepend
+          %span.add-on $
+          = text_field_tag :donation_amount, '', :class => 'span1'
+    = hidden_field_tag :donation_amount_fixed, ''
+
+    %br{:style => 'clear: both;'}
+    = submit_tag 'Add Donation', :class => 'btn btn-primary', :id => 'add-donation'
+
+  - else
+    .input-prepend
+      %span.add-on $
+      = text_field_tag :donation_amount, '', :class => 'span1'
+    = submit_tag 'Add Donation', :class => 'btn btn-primary', :id => 'add-donation'

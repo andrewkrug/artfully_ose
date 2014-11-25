@@ -1,0 +1,39 @@
+- in_section :people
+- content_for :header do
+  %h1 Merge #{@loser}
+
+.row
+  .span4
+    = form_tag new_merge_path, {:method => :get, :class => 'form-search'} do
+      = hidden_field_tag :commit, "Search"
+      = hidden_field_tag :loser, @loser.id
+      %ul
+        %li
+          = text_field_tag :search, "", :placeholder => "Email address or name", :class => "input-medium search-query"
+          = submit_tag "Search", :class => 'btn'
+    %p
+      All notes, actions, phone numbers, and tags from 
+      %strong= @loser
+      will be merged into the #{@loser.type.downcase} record you select on this screen.
+    %p
+      Mailing address, email, company name, and website for
+      %strong= @loser
+      will be discarded.
+    %p
+      You'll have a chance to confirm all of this before we perform the merge.
+  .span8.super-search-results
+    - if @people.empty?
+      &nbsp;
+    -else
+      %table.table.people-list
+        - @people.each do |person|
+          %tr
+            %td=link_to "Select", new_merge_path(:loser => @loser, :winner => person.id), :class=>'btn btn-small'
+            %td.name
+              = link_to "#{person}", person_url(person)
+              %br
+              = person.email
+            %td.tags
+              = render :partial => 'shared/tags_uneditable', :locals => { :tag_list => person.tag_list }
+
+      = will_paginate @people, :inner_window => 2, :outer_window => 0

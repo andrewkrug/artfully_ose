@@ -1,0 +1,5 @@
+- [:notice, :success, :error, :alert, :info].each do |type|
+  - if flash[type].present?
+    .flash{ "data-alert" => "alert", :class => [bootstrapped_type(type), type, 'alert'] }
+      .close{ "data-dismiss" => "alert"} &times;
+      = [flash[type]].flatten.join('<br/>').html_safe

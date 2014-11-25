@@ -1,0 +1,44 @@
+- in_section :transactions
+- content_for :header do
+  %h1 Record Contribution
+
+.row
+  .span4
+    %h3 New Donor
+    = form_for Person.new, :url => people_path, :remote => true, :html => { "data-type" => :json } do |form|
+      %ul
+        %li
+          .label= form.label :first_name, "First Name"
+          .element= form.text_field :first_name
+        %li
+          .label= form.label :last_name, "Last Name"
+          .element= form.text_field :last_name
+        %li
+          .label= form.label :email, "Email"
+          .element= form.text_field :email
+      = form.submit "Save", :class => "btn btn-primary"
+    .hidden-target
+      %span.name
+      = form_for(@contribution, :url => new_contribution_path, :html => {:method => :get}) do |form|
+        = form.hidden_field :person_id, :id => "person_id"
+        = form.submit "Select", :class => "mini btn"
+  .span8
+    %h3 Find Donor
+    %ul.wizard-list
+      - @contributors.each do |contributor|
+        %li
+          %span.name 
+            ="#{contributor.first_name} #{contributor.last_name}"
+            -unless contributor.email.nil?
+              ="(#{contributor.email})"
+          = form_for(@contribution, :url => new_contribution_path, :html => {:method => :get}) do |form|
+            = form.hidden_field :person_id, :value => contributor.id
+            = form.submit "Select", :class => "mini btn"
+
+    = form_tag new_contribution_path, :method => :get do
+      %ul
+        %li
+          .label= label_tag :terms, "Search"
+          .paired.element
+            = text_field_tag :terms
+            = submit_tag "Search", :class => "btn"

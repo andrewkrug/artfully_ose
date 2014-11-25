@@ -1,0 +1,76 @@
+-content_for :header do
+  %h1 Discounts
+
+= form_tag discounts_reports_path, :method => :get, :class => 'well form-inline' do
+  = label_tag :code, "Code", :class => "control-label"
+  = select_tag :code, options_for_select(@codes << Discount::ALL_DISCOUNTS_STRING, @report.try(:discount_code))
+
+  = label_tag :start_date, "From", :class => "control-label"
+  = text_field_tag :start_date, @start_date, :readonly => true, :class => 'datepicker input-small'
+
+  = label_tag :end_date, "To", :class => "control-label"
+  = text_field_tag :end_date, @end_date, :readonly => true, :class => 'datepicker input-small'
+      
+  .pull-right
+    = submit_tag "Search", :class => "btn"
+
+- unless @report.nil?
+
+  .row-fluid.botton-room
+    .span9
+      %h3=@report.header
+    .span3
+      .pull-right
+        =link_to "Download CSV", discounts_reports_path(code: @report.discount_code, start_date: @report.start_date, end_date: @report.end_date, format: "csv"), :class => "btn"
+
+  #statement-summary.bottom-room.well
+    .row-fluid
+      .span3
+        .center.headline-stat
+          =@report.tickets_sold
+        .center.headline-caption
+          %h6 TICKETS SOLD
+      .span3
+        .center.headline-stat
+          =number_as_cents @report.original_price
+        .center.headline-caption
+          %h6 ORIGINAL PRICE
+      .span3
+        .center.headline-stat
+          =number_as_cents @report.discounted
+        .center.headline-caption
+          %h6 DISCOUNTED
+      .span3
+        .center.headline-stat
+          =number_as_cents @report.gross
+        .center.headline-caption
+          %h6 GROSS
+
+  .row
+    .span12
+      %table.table.zebra#order-table
+        %thead
+          %tr
+            %th{:style=>'width:40px'} Code
+            %th{:style=>'width:40px'} Order
+            %th Date
+            %th Person
+            %th Event
+            %th Tickets
+            %th.right Orig. Price
+            %th.right Discounted
+            %th.right Gross
+        %tbody
+          -@rows.each do |row|
+            %tr
+              %td=row.discount_code
+              %td=link_to row.order.id, order_path(row.order)
+              %td=l row.order.created_at, :format => :slashed_date
+              %td=link_to row.order.person, person_path(row.order.person)
+              %td=link_to row.show.event.name, event_path(row.show.event)
+              %td=row.ticket_count
+              %td.right=number_as_cents row.original_price
+              %td.right=number_as_cents row.discounted
+              %td.right=number_as_cents row.gross
+
+    = will_paginate(@rows)

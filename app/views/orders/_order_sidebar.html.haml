@@ -1,0 +1,106 @@
+-work_with = true if work_with.nil?
+-if work_with
+  %ul
+    %li.dropdown{:id => "#menu#bulkactions"}
+      =icon_link_to('Work with...', "#menu#bulkactions", 'fa-asterisk', 'dropdown-toggle dropdown btn', '')
+      %ul.dropdown-menu
+        %li
+          =link_to "Send Receipt", "#receipt", 'data-toggle' => 'modal'
+        - if order.assignable?
+          %li
+            = link_to "Assign Person", new_order_assignment_path(order)
+        %li
+          -if order.editable?
+            =link_to "Edit Donation", edit_contribution_path(order, :format => :html), :id => 'edit-order-link', "data-remote" => "true"
+        %li
+          =link_to "Edit Order Notes", "#notes", 'data-toggle' => 'modal'
+        %li
+          -if order.destroyable?
+            =link_to "Delete", "#confirm-delete", 'data-toggle' => 'modal'
+
+%ul.kv
+  %li
+    %h6.key Order Number
+    .value=order.id
+  - unless order.parent.nil?
+    %li
+      %h6.key Parent order
+      .value=link_to order.parent.id, order_path(order.parent)
+  %li
+    %h6.key Ordered by
+    .value=link_to_person person
+  %li
+    %h6.key Date
+    .value #{(l order.created_at_local_to_organization) unless order.created_at.nil?}
+  %li
+    %h6.key Amount
+    .value #{number_as_cents(total)}
+  - if order.nongift_amount > 0
+    %li
+      %h6.key Non-deductible
+      .value #{number_as_cents(order.nongift_amount)}
+  %li
+    %h6.key Payment method
+    .value=(order.payment_method || "")
+  %li
+    %h6.key Order location
+    .value=build_order_location(order)
+  - if !order.fa_id.nil?
+    %li
+      %h6.key FA ID
+      .value=order.fa_id
+  %li
+    %h6.key Details
+    .value= order.details
+  %li
+    %h6.key-full Special Instructions
+    .value= order.special_instructions
+  %li#notes-display
+    %h6.key-full Order Notes
+    .value= order.notes
+    
+#edit-order-popup.modal
+  
+-if order.destroyable?  
+  #confirm-delete.modal
+    .modal-body
+      Are you sure you want to delete this order?  The order and associated actions will be deleted.  This cannot be undone.  The #{@person.type.downcase} record will not be deleted.
+    .modal-footer
+      =link_to "Delete", contribution_path(order), :class => 'btn btn-danger', :id => 'destroy-order-link', 'data-method' => :delete
+      =link_to "Cancel", "#", :class => "btn", 'data-dismiss'=>'modal'  
+
+#receipt.modal
+  -if order.is_fafs?
+    .modal-body
+      %p Artful.ly cannot resend a receipt because this donation was made through Fractured Atlas.  We'll have this feature in place soon!  
+    .modal-footer
+      =link_to "OK", "#", :class => "btn", 'data-dismiss'=>'modal'
+       
+  -elsif person.email.blank?
+    .modal-body
+      %p Artful.ly cannot email a receipt because we do not have an email address on file for this #{@person.type.downcase}.
+      %p
+        =link_to "Update the #{@person.type.downcase} record", person_path(@person)
+        to add an email, then try again.
+    .modal-footer
+      =link_to "OK", "#", :class => "btn", 'data-dismiss'=>'modal' 
+      
+  -else
+    .modal-body
+      Click "Resend Receipt" to email a duplicate receipt to  
+      %strong="#{person.email}"
+    .modal-footer
+      =link_to "Resend Receipt", resend_order_path(order), :class => "btn btn-success"
+      =link_to "Cancel", "#", :class => "btn btn-danger", 'data-dismiss'=>'modal'
+
+
+#notes.modal
+  .modal-header
+    .close{'data-dismiss'=>'modal'} x
+    %h3 Edit Order Notes
+  = form_tag order_url(order), :method => :put do
+    .modal-body
+      = text_area_tag "order[notes]", order.notes, :rows => "5", :class => "block"
+    .modal-footer
+      = submit_tag "Save", :class => "btn btn-success"
+      = link_to "Cancel", "#", :class => "btn", 'data-dismiss'=>'modal'

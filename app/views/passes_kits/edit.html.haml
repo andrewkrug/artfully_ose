@@ -1,0 +1,30 @@
+- content_for :header do
+  %h1 Configure Passes Kit
+
+#edit-passes-kit
+  =form_for @kit do |f|
+    .row-fluid.bottom-room
+      .span3
+        %strong= f.label :marketing_copy_heading, "Marketing Copy Top", :class => 'control-label'
+        .guide
+          %p
+            This text will appear at the top of your 
+            =link_to "Passes Storefront", store_passes_path(current_user.current_organization.cached_slug)
+      .span9
+        = f.text_area :marketing_copy_heading, :class => "input-xxlarge wysihtml5", :rows => "8"
+
+    .row-fluid.bottom-room
+      .span3
+        %strong= f.label :marketing_copy_sidebar, "Marketing Copy Sidebar", :class => 'control-label'
+        .guide
+          %p
+            This text will appear on the right sidebar of your 
+            =link_to "Passes Storefront", store_passes_path(current_user.current_organization.cached_slug)
+      .span9
+        = f.text_area :marketing_copy_sidebar, :class => "input-xxlarge wysihtml5", :rows => "8"
+
+    .row-fluid.bottom-room
+      .span3
+        &nbsp
+      .span9
+        =f.submit "Save", :class => "btn btn-primary"

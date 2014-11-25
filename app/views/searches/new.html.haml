@@ -1,0 +1,10 @@
+- content_for :header do
+  %h1 Search
+- content_for :title do
+  Search
+
+.row
+  .span4
+    = render :partial => "form", :locals => {:search => @search}
+  .span8.super-search-results
+    -# Nothing to show here, move along.

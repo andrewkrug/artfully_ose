@@ -1,0 +1,14 @@
+= form_for [@event, show] do |form|
+  %h3= @event.name
+  %ul
+    %li
+      .label= form.label :datetime, "Show date/time"
+      .element
+        = form.text_field :datetime, :value => l(show.datetime_local_to_event, :format => :datetime_for_input), :readonly => true, :class => :datetimepicker
+        = form.hidden_field :time_zone, { :value => show.event.time_zone }
+    %li
+      .label= form.label :chart_id, "Seating chart"
+      .element= form.select :chart_id, options_from_collection_for_select(show.event.charts, "id", "name", show.chart_id.to_s )
+  .cancel-submit
+    = link_to "Cancel", event_path(@event)
+    = form.submit

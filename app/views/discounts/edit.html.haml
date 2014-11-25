@@ -1,0 +1,16 @@
+- in_section :events
+- content_for :header do
+  = render :partial => 'events/header'
+
+.row
+  .span3
+    - in_sub_section :share
+    = render :partial => 'events/menu'
+  .span9
+    = render "shared/error_messages", :target => @discount
+
+    = form_for( [@event, @discount], :html => { :class => 'form-horizontal' }) do |f|
+      = render :partial => "form", :locals => {:f => f, :discount => @discount}
+          
+      .form-actions
+        = f.submit "Save".html_safe, :class => 'btn btn-primary'

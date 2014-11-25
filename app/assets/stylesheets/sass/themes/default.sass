@@ -1,0 +1,63 @@
+@import "../_colors"
+@import "../_mixins"
+@import "../_flash"
+
+#artfully-alert
+  display: none
+
+.performance
+  padding: .5em .25em
+  margin: .5em 0
+  color: #666
+  border-bottom: 1px solid #ccc
+  position: relative
+  .ticket-search
+    position: absolute
+    right: .25em
+
+.sections
+  li
+    padding: 1em
+  .section-name
+    font-size: 1.25em
+    line-height: 1.5em
+  .section-price
+    @include rounded-corners(4px, 4px, 4px, 4px)
+    font-weight: bold
+    background: #eee
+    padding: .5em
+    margin-right: 1em
+    float: left
+    font-size: .8em
+  form
+    margin: 1em 0
+
+#shopping-cart
+  position: fixed
+  bottom: 0
+  left: 0
+  right: 0
+  border-top: 1px solid #aaa
+  background-color: rgba(255,255,255,0.9)
+
+#shopping-cart-controls
+  color: white
+  padding: 10px 5px 10px 27px
+  cursor: pointer
+  font-size: .9em
+  font-family: Arial
+  
+#shopping-cart
+  &.shown #shopping-cart-controls
+    background: #333333 url('/assets/icons/down_arrow.png') no-repeat 10px center
+  &.hidden #shopping-cart-controls
+    background: #333333 url('/assets/icons/up_arrow.png') no-repeat 10px center
+
+#shopping-cart-controls .timer
+  float: right
+
+iframe
+  width: 100%
+  
+.ticket_count
+  margin-right: 5px

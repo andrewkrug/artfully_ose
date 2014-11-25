@@ -1,0 +1,50 @@
+- content_for :title do
+  Buy tickets to #{@event.name}
+.container#multi-show-container
+  #event-header
+    %h1#logo= @event.name
+    %h4= @event.subtitle
+    %h4= @event.producer
+
+  .row
+    .span8  
+      #loading-container
+        #loading
+          Hang tight! We're searching for your tickets.
+          =image_tag "loading.gif"
+        #error
+          We had a problem finding tickets. Please try again.
+      %ul#shows.unstyled
+        - @shows.each do |show|
+          %li{:id => "show_#{show.id}", 'data-show-uuid' => show.uuid, 'data-date' => "#{show.datetime_local_to_event.strftime('%D')}"}
+            =render :partial => 'store/shows/show', :locals => {:show => show, :collapsed => true}
+
+    .span4
+      #description.side-section
+        %h6 About
+        - if @event.image?
+          = image_tag @event.image.url(:thumb), :width => 140, :height => 140, "data-toggle" => "modal", "data-target" => "#poster-modal"
+          
+        - unless @event.description.blank?
+          -if @event.description.length > 300
+            .toggle-truncated
+              .truncated
+                = simple_format "#{truncate(@event.description, :length => 300)} (#{link_to 'more','#', :class => 'toggle'})"
+              .not-truncated{:style => 'display:none;'}
+                =simple_format "#{@event.description} (#{link_to 'less','#', :class => 'toggle'})"
+          - else
+            =simple_format @event.description
+      .side-section
+        =render :partial => "venue", :locals => { :event => @event }
+      - unless @event.contact_email.blank? && @event.contact_phone.blank?
+        #contact.side-section
+          %h6 Contact
+          - unless @event.contact_email.blank?
+            = mail_to @event.contact_email
+            <br />
+          - unless @event.contact_phone.blank?
+            = @event.contact_phone
+
+#poster-modal.modal.hide.fade
+  .modal-body
+    = image_tag @event.image.url

@@ -1,0 +1,8 @@
+- in_section :dashboard
+- content_for :header do
+  %h1 Edit Organization
+
+= render "shared/error_messages", :target => @organization
+= form_for @organization, :html => {"ng-controller" => "EditOrganizationCtrl"} do |form|
+  = render :partial => 'organizations/form', :locals => { :form => form }
+  = form.submit "Save", :class => 'btn btn-primary disablable'

@@ -1,0 +1,14 @@
+- in_section :households
+- content_for :title do
+  New Household
+- content_for :header do
+  %h1 Create a New Household
+
+- content_for :custom_js do
+  = javascript_include_tag "households"
+
+.row{"ng-controller" => "NewHouseholdCtrl"}
+  .span6.offset3
+    = render :partial => "shared/error_messages", :locals => { :target => @household }
+    = render :partial => 'form', :locals => { :household => @household }
+

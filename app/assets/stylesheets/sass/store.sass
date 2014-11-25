@@ -1,0 +1,530 @@
+@import "colors"
+@import "mixins"
+@import url(http://fonts.googleapis.com/css?family=Roboto:400,100,300)
+
+body
+  padding-top: 10px
+
+a
+  color: $compliment
+  text-decoration: none
+
+h6
+  font-size: 18px
+  line-height: 27px
+  
+h3
+  font-size: 1em
+  color: #666
+  margin-bottom: .5em
+
+h4
+  color: #666
+  font-size: 1.25em
+  margin-bottom: .5em
+
+#membership-storefront
+  h3
+    font-size: 1.3em
+    color: #666
+    margin-bottom: .5em
+  h4
+    color: #666
+    font-size: 1.25em
+    margin-bottom: .5em
+  h5
+    color: #666
+    font-size: 1.25em
+    margin-bottom: .5em
+    color: #99BABB
+  h6
+    color: #666
+    font-size: 1.25em
+    margin-bottom: .5em
+    color: #9d2235
+
+
+#venue
+  line-height: 1.4em
+  font-size: 1em
+  strong
+    font-weight: bold
+  a
+    display: block
+    background: #f3f3f3
+    width: 140px
+    height: 140px
+    float: left
+    margin: 0 10px 10px 0
+    @include rounded-corners(4px,4px,4px,4px)
+    img
+      @include rounded-corners(4px,4px,4px,4px)
+
+.side-section
+  margin-bottom: 20px
+  clear: both
+  overflow: hidden
+
+#sidebar
+  margin-top: 54px
+  h2
+    color: #BFBFBF
+    text-transform: uppercase
+    font-size: 16px
+    font-weight: bold
+    margin-bottom: 12px
+    // line-height: 36px
+
+#store
+
+.sections .section-name
+  color: $compliment
+
+.kv
+  li
+
+  .key, .value
+    display: inline-block
+  .key
+    font-weight: bold
+    width: 30%
+
+#donation
+  h2
+    margin-bottom: 12px
+  p
+    line-height: 1.4em
+    margin-bottom: 5px
+
+#discount-display
+  color: green
+
+#discount-error
+  color: red
+
+#shopping-cart #cart table tr#discount-display
+  h5
+    color: green
+  h5:before
+    content: "-"
+
+#description
+  img
+    float: left
+    margin: 0 10px 10px 0
+    @include rounded-corners(4px,4px,4px,4px)
+  p
+    line-height: 1.4em
+    margin-bottom: 10px
+
+#contact
+  line-height: 1.4em
+
+img#logo
+  float: left
+  margin-right: 10px
+  
+ul#shows, ul#memberships
+  clear: both
+  li
+    margin-bottom: 10px
+    clear: both
+    .title
+      border: 1px solid #b3b3b3
+      padding: 10px
+      overflow: hidden
+      color: #4c4c4c
+      .date, .month, .day, .time, h4.day_and_month
+        color: #4c4c4c !important
+      &:hover
+        background: #f2f2f2
+        cursor: pointer
+      &.active, &.active:hover
+        @include gradient(#fff, #e6e6e6)
+        .date, .month, .day, .time, h4.day_and_month
+          color: #191919 !important
+      .date
+        width: 50px
+        float: left
+        margin-right: 10px
+        text-align: center
+        .month
+          text-transform: uppercase
+          font-size: 10px
+        .day
+          font-size: 30px
+      .time
+        float: left
+        h4.day_and_month
+          font-weight: bold
+          margin-bottom: 5px
+    
+    .sections
+      margin-bottom: 20px
+      .section
+        margin-bottom: 20px
+        h4
+          font-weight: bold
+          margin-bottom: 5px
+          color: #404040
+          span.price
+            font-weight: normal
+        p
+          margin-bottom: 10px
+          line-height: 1.4em
+        select
+          width: 100px
+        input[type="submit"]
+          margin-top: -8px
+
+ul#memberships
+  li
+    .title
+      padding: 20px
+      .price
+        width: 100px
+        float: right
+        margin-right: 10px
+        text-align: center
+        font-size: 30px
+        text-align: right
+      .membership_type_name
+        float: left
+        font-size: 25px
+        font-weight: bold
+
+
+.calendar-month
+  margin-bottom: 50px
+  float: left
+  margin-right: 30px
+  min-height: 250px
+  h3
+    font-weight: bold
+
+table.calendar
+  width: 175px
+  td
+    border: 1px solid #f3f3f3
+    color: #999
+    letter-spacing: 0
+    word-spacing: 0
+    width: 25px
+    height: 25px
+    text-align: center
+    font-size: 10px
+    font-family: Verdana, sans-serif
+    vertical-align: middle
+    line-height: 25px
+    &.filler
+      border: none
+    &.has_show
+      background: #2086a6
+      color: #fff
+      &:hover
+        background: #175c71
+        cursor: pointer
+
+#shopping-cart
+  width: auto
+  background-color: #e6e6e6 !important
+
+  #cart
+    width: 100%
+    table
+      margin-bottom: 30px
+      width: 100%
+      font-size: 13px
+      color: #666
+      tbody
+        width: 100%
+      tr
+        width: 100%
+        h5
+          color: #222
+          font-weight: bold
+          font-size: 15px
+          line-height: 18px
+        td
+          padding: 10px
+          &.quantity input
+            width: 90px
+        td.remove a
+          background: #eee
+          padding: 5px 10px
+          color: #fff
+          @include rounded-corners(15px, 15px, 15px, 15px)
+          font-size: 12px
+          &:hover
+            background: darken(#eee, 20%)
+            color: #fff
+            text-decoration: none
+        td.edit-item
+        td.price, td.amount
+          text-align: right
+        .over-limit
+          color: red
+  .form-actions
+    padding-left: 10px
+    h4
+      font-weight: bold
+      color: #333
+      margin-top: 10px
+      float: right
+      margin-right: 20px
+
+  #user_agreement
+    height: 100px
+    border: 1px solid #ccc
+    padding: 10px
+    overflow-y: scroll
+    font-size: 13px
+    margin-bottom: 20px
+    p
+      margin-bottom: 13px
+  #thanks
+    p
+      margin-bottom: 10px
+      line-height: 1.4em
+
+.form-actions
+  padding-left: 10px !important
+  .cart-error-message
+    font-weight: bold
+    color: red
+    margin-top: 10px
+    margin-right: 20px
+    display: none
+
+.hidden
+  display: none !important
+  
+#payment-details-message
+  height: 200px
+  text-align: center
+  
+#special-instructions
+  #container
+    height: 200px
+
+#loading-container
+  visibility: hidden
+  #loading
+    margin-left: auto
+    margin-right: auto
+    display: block
+    width: 400px
+    text-transform: uppercase
+    font-weight: bold
+    font-size: 14px
+    color: #222
+    opacity: .7
+  #error
+    display: none
+    margin-left: auto
+    margin-right: auto
+    display: block
+    width: 450px
+    text-transform: uppercase
+    font-weight: bold
+    font-size: 14px
+    color: white
+    background-color: red
+    text-align: center
+
+.content
+  margin-top: 45px
+
+.right
+  text-align: right !important
+
+.clean
+  .navbar-inner
+    background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#ffffff), to(#f2f2f2))
+    background-image: -webkit-linear-gradient(top, #ffffff, #f2f2f2)
+    background-image: -o-linear-gradient(top, #ffffff, #f2f2f2)
+    background-image: linear-gradient(to bottom, #ffffff, #f2f2f2)
+    background-repeat: repeat-x
+    border: 1px solid #d4d4d4
+    -webkit-border-radius: 4px
+    -moz-border-radius: 4px
+    border-radius: 4px
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffffff', endColorstr='#fff2f2f2', GradientType=0)
+    -webkit-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.065)
+    -moz-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.065)
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.065)
+  .brand-lite
+    color: #331
+
+.navbar .btn.primary, .btn.btn-orange 
+  text-shadow: none
+  color: #fff
+  background-color: #a85300
+  background-image: none
+
+.navbar .btn.primary 
+  margin-top: 3px
+  padding-top: 5px
+  padding-bottom: 5px
+
+.store-event-display
+  margin-bottom: 20px
+  h1 
+    margin-top: 0px
+
+#shopping-cart-display
+  table
+    tr
+      td
+        padding-left: 0px
+        padding-right: 0px
+
+tr.no-border
+  td
+    border-top: 0px
+
+#shopping-cart-display.affix
+  width: 360px
+
+.thanks-message
+  font-size: 38pt
+  text-align: center
+  width: 100%
+  padding: 10px 0px 10px 0px
+  margin: 10px 0px 10px 0px
+  line-height: 60pt
+  font-weight: bold
+
+.headline-caption
+  font-size: 12px
+  color: #999
+  text-transform: uppercase
+
+.headline-stat
+  font-size: 2em
+  font-weight: bold
+
+.store-event-display
+  .map-mini-thanks
+    position: relative
+  .address-background
+    position: absolute
+    background-color: #ffffff
+    height: 40px
+    width: 92%
+    opacity: .7
+    top: 110px
+    -webkit-box-shadow: 2px 0px 3px rgba(0,0,0,0.2)
+    box-shadow: 2px 0px 3px rgba(0,0,0,0.2)
+  .address-block
+    position: absolute
+    top: 94px
+    font-size: 1.2em
+
+.cart-actions
+  #cart-total
+    margin-top: 3px
+    padding-right: 4px
+
+#edit-person
+  width: 740px
+  .controls
+    margin-left: 0px
+    .control-label
+      padding-right: 18px
+
+#single-show-container
+  .title
+    display: none
+
+
+  .event-poster
+    padding: 3px
+    border: 1px solid #eee
+
+#event-header, #donate-now-header
+  h1
+    font-family: 'Roboto', sans-serif
+    font-weight: 300
+  h4
+    font-family: 'Roboto', sans-serif
+    font-weight: 100
+    margin: 0px 0px 2px 0px
+
+#donate-now-header
+  text-align: center
+  margin-bottom: 30px
+
+#donate-now-container
+  margin-top: -30px
+  padding: 50px 20px 60px 20px
+  box-shadow: 6px 5px 5px -5px #999, -6px 5px 5px -5px #999
+
+#donate-now
+  text-align: center
+  margin-top: 20px
+
+.available-ticket-type-table
+  form
+    margin: 0px
+  .ticket-type-description
+    padding: 0px 6px
+  .ticket-type-quantity
+    font-family: 'Roboto', sans-serif
+    font-weight: 100
+    margin-bottom: 0px
+  .ticket-type-name
+    font-family: 'Roboto', sans-serif
+    font-weight: 100
+    font-size: 12pt
+    padding-top: 13px
+  .ticket-type-price
+    font-family: 'Roboto', sans-serif
+    font-weight: 100
+    font-size: 12pt
+    padding-top: 13px
+
+.event-image
+  img
+    max-width: 290px
+
+#poster-modal
+  .modal-body
+    text-align: center
+
+.add-donation-to-cart
+  .preset-amount
+    float: left
+    width: 227px
+    // height: 28px
+    margin-bottom: 10px
+    text-align: left
+
+.add-donation-to-cart
+  .preset-amount.last
+    width: 455px
+
+.add-donation-to-cart
+  .preset-amount
+    label
+      margin: 0
+      padding: 0
+      // height: 28px
+      line-height: 28px
+
+.add-donation-to-cart
+  .preset-amount
+    label
+      input[type='radio']
+        float: none
+        vertical-align: baseline
+        margin-top: 0
+
+#event-header.side-section
+  h4
+    padding-bottom: 8px
+  #subtitle
+    padding-bottom: 8px
+    font-weight: bold
+    line-height: 1.4em
+    font-size: 1em

@@ -1,0 +1,38 @@
+- in_section :events
+- content_for :header do
+  =render :partial=>'events/header'
+
+.row
+  .span3
+    - in_sub_section :details
+    =render :partial=>'menu'
+  .span9
+    = render "shared/error_messages", :target => @event
+    .row-fluid
+      .span2
+        %h3 Discounts
+      .span10
+        =icon_link_to("Add", temp_discount_path(@event), 'fa-plus-circle', 'btn', '')
+    %table.table
+      %thead
+        %th Code
+        %th Status
+        %th Discount (average)
+        %th Redeemed
+      %tbody
+        %tr
+          %td= link_to 'COWBELL', temp_discount_path(@event)
+          %td active
+          %td 50%
+          %td= rand(10)
+        %tr
+          %td= link_to 'GETRDONE', temp_discount_path(@event)
+          %td active
+          %td 25%
+          %td= rand(10)
+        %tr
+          %td= link_to 'STUDENTS', temp_discount_path(@event)
+          %td active
+          %td 75%
+          %td= rand(10)
+                  

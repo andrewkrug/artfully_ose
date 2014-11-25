@@ -1,0 +1,7 @@
+%li.row-fluid
+  .span1
+    = image_tag "actions/#{action.action_type.downcase}.png"
+  .span11.recent-activity-text
+    =link_to_person (action.person)
+    =action.sentence
+    .recent-action-time.muted="#{time_ago_sentence(action.occurred_at)}"

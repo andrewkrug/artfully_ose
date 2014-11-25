@@ -1,0 +1,33 @@
+%tr
+  %td.starred.starable{"data-person-id" => note.person.id, "data-type" => 'note', "data-action-id" => note.id, :class => (note.starred? ? "active" : "not-active") }
+    &#10029;
+  %td.toggle-truncated
+    .view
+      %span
+        = link_to note.person, note.person
+        &#8212;
+      %span.truncated
+        = truncate(note.text, :length => 100, :separator => ' ', :omission => '...')
+      %span.not-truncated{:style => 'display: none;'}
+        = simple_format(note.text)
+        %p.muted
+          = l note.created_at, :format => :short unless note.created_at.nil?
+        %p
+          = link_to("Edit", edit_person_note_path(note.person, note, :format => :html), :class => "btn btn-mini edit-note-link")
+
+  %td.person-inline-form.edit-note-form{:style => 'display:none;', :colspan => 2}
+    %h4 Edit Note
+    = form_for [note.person, note] do |form|
+      = form.text_area :text, :size => "125x5", :class => 'input-xxlarge'
+      = link_to "delete", "#delete-confirm-note-#{note.id}", :class => "delete-confirm-link delete-with-trash", "data-toggle" => "modal"
+      = form.submit "Save", :class => "btn btn-primary"
+      = link_to 'Cancel', '#', :onclick => "$(this).parents('tr').find('td').show(); $(this).parents('tr').find('.edit-note-form').hide()", :class => 'btn'
+
+  .modal{:id => "delete-confirm-note-#{note.id}"}
+    .modal-header
+      = link_to '&times;'.html_safe, '#', :class => 'close', 'data-dismiss' => 'modal'
+      %h3 Delete note
+    .modal-body
+      = simple_format "Are you sure you want to delete this note?  This cannot be undone."
+    .modal-footer
+      = link_to "Delete this note", person_note_path(note.person, note), :method => :delete, :class => "delete-confirm-link btn btn-danger"

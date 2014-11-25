@@ -1,0 +1,68 @@
+%h2 Order confirmation
+
+%p="Thank you for your order, #{@person}!"
+
+- unless @order.tickets.empty?
+  %p="This is not a ticket. Please use your order number to check in at the event."
+
+%p
+  = "Order number: #{@order.id}"
+  %br
+  = "Purchase Date: #{l(@order.created_at_local_to_organization)}"
+  %br
+  = "Order total: $#{format("%.2f", (@order.total/100.0))}"
+  %br
+  = "Payment method: #{@order.payment_method}"
+  %br
+
+- unless @order.tickets.empty?
+  - @order.ticket_summary.rows.each do |row|
+    %p
+      %h4=row.show.event.name
+      =l row.show.datetime_local_to_event, :format => :long_with_day
+      %br
+      -unless row.show.event.contact_email.blank?
+        ="Event contact email: #{row.show.event.contact_email}"
+        %br
+      -unless row.show.event.contact_phone.blank?
+        ="Event contact phone: #{row.show.event.contact_phone}"
+        %br
+    -row.ticket_type_hash.each do |ticket_type, tickets|
+      %ul.ticket-list
+        -tickets.each do |ticket|
+          %li
+            %span.price= "#{ticket.ticket_type.name}: $#{format("%.2f", (ticket.sold_price/100.0))}"
+        %li{:style => 'list-style-type:none'}=ticket_type.description
+
+    =link_to image_tag("https://maps.google.com/maps/api/staticmap?size=240x140&maptype=roadmap&markers=color:red|#{row.show.event.venue.address_as_url_query}&sensor=false&zoom=15"), "https://maps.google.com/maps?q=#{row.show.event.venue.address_as_url_query.html_safe}&z=15"
+    %div
+      %strong=row.show.event.venue.name
+    %div=row.show.event.venue.address1
+    -unless row.show.event.venue.address2.blank?
+      %div=row.show.event.venue.address2
+    %div=row.show.event.venue.city_state_zip_as_string
+
+- unless @order.donations.empty?
+  %h4 Donations
+  %ul.donation-list
+    - @order.donations.each do |item|
+      %li
+        %span.price= "$#{format("%.2f", (item.price/100.00))}:"
+        %span.name= "Donation to #{@order.organization.name_for_donations}"
+
+- unless @order.passes.empty?
+  %h4 Passes
+  %ul.pass-list
+    - @order.passes.each do |item|
+      %li
+        %span.price= "$#{format("%.2f", (item.price/100.00))}:"
+        %span.name= "#{item.product.pass_type.passerize}: #{item.product.pass_code}"
+
+- unless @order.memberships.empty?
+  %h4 Memberships
+  %ul.membership-list
+    - @order.memberships.each do |item|
+      %li
+        %span.price= "$#{format("%.2f", (item.price/100.00))}:"
+        %span.name= "#{item.product.membership_type.membershipize}"
+

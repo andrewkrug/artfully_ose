@@ -1,0 +1,146 @@
+@import "colors"
+@import "mixins"
+
+#shopping-cart
+  position: fixed
+  bottom: 0
+  left: 0
+  right: 0
+  border-top: 1px solid #aaa
+  background-color: rgba(255,255,255,0.9)
+  &.shown #shopping-cart-controls
+    background: #333333 url('/assets/icons/down_arrow.png') no-repeat 10px center
+  &.hidden #shopping-cart-controls
+    background: #333333 url('/assets/icons/up_arrow.png') no-repeat 10px center
+  form
+    margin-bottom: 0
+
+#shopping-cart-controls
+  color: #fff
+  padding: 10px 5px 10px 27px
+  cursor: pointer
+  font-size: .9em
+  font-family: Arial
+
+#shopping-cart-controls .timer
+  float: right
+
+a
+  color: $compliment
+  text-decoration: none
+
+#cart, #controls
+  > *
+    margin-top: 0
+    margin-bottom: 0
+
+#total
+  text-align: center
+  font-weight: bold
+  padding-bottom: 20px
+  margin-bottom: 20px
+  border-bottom: 1px solid #ddd
+  span
+    text-transform: uppercase
+    font-size: .8em
+    color: #ccc
+  .price
+    color: #999
+    font-size: 2.5em
+
+#checkout-now
+  padding-bottom: 20px
+  margin-bottom: 20px
+  border-bottom: 1px solid #ddd
+  a
+    display: block
+    @include rounded-corners(2px, 2px, 2px, 2px)
+    @include inset-text
+    @include gradient($compliment_highlight, $compliment, 14%, 100%)
+    border: 1px solid $compliment_shadow
+    font-size: 1em
+    text-align: center
+    font-weight: bold
+    line-height: 40px
+  input
+    display: block
+    @include rounded-corners(2px, 2px, 2px, 2px)
+    @include inset-text
+    @include gradient($compliment_highlight, $compliment, 14%, 100%)
+    border: 1px solid $compliment_shadow
+    font-size: 1em
+    text-align: center
+    font-weight: bold
+    line-height: 40px
+
+#checkout-now.disabled a
+  @include gradient(#ddd, #ccc, 14%, 100%)
+  border: 1px solid #ccc
+  cursor: default
+
+#clear-cart
+  text-align: right
+  font-size: .8em
+  a
+    color: #999
+
+.upsell
+  padding: 10px 0 0
+
+.item-list
+  li
+    border-bottom: 1px solid #ddd
+    line-height: 2em
+    .fee
+      color: #667 !important
+      font-style: italic
+    .item
+      color: #333
+    .price
+      color: #666
+      float: right
+
+
+.sliding-wizard
+  overflow: hidden
+  padding: 10px 0 0
+  .next
+    float: right
+
+#confirmation p
+  text-transform: capitalize
+
+#customer-confirmation, #credit_card-confirmation, #billing_address-confirmation
+  > *
+    margin: 0
+
+#purchase
+  .controls
+    margin: 0
+    label.error
+      color: #b94a48
+
+#special-instructions
+  .control-group
+    .control-label
+      width: auto
+      float: none
+      text-align: left
+    .controls
+      margin: 0
+      textarea
+        width: 95%
+        height: 100px
+
+#steps
+  padding-bottom: 20px
+  margin-bottom: 20px
+  border-bottom: 1px solid #ddd
+  li
+    list-style-type: decimal
+    margin-left: 1em
+    font-size: .8em
+    padding: .25em 0
+    color: #666
+    &.active
+      font-weight: bold

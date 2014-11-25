@@ -1,0 +1,108 @@
+- in_section :people
+- content_for :title do
+  #{@person}
+
+=render "people/header"
+
+.row
+  .span12
+    .row-fluid
+      .span6
+        %ul.in-table
+          %li.dropdown{:id => "#menu#bulkactions"}
+            =icon_link_to('Work with...', "#menu#bulkactions", 'fa-asterisk', 'dropdown-toggle dropdown btn', '')
+            %ul.dropdown-menu
+              %li
+                = link_to "Change Expiration", "#extend", 'data-toggle' => 'modal'
+                = link_to "Send Reminder", "#pass-reminder-modal", 'data-toggle' => 'modal'
+      .span6.right
+        = icon_link_to("View Record", person_path(@person), 'fa-share-alt', 'btn', '')
+        = link_to "View Pass Codes", "#", :class => "btn", :id => "view-pass-codes"
+    
+    =form_tag bulk_update_person_passes_path(@person), :id => 'bulk-update-form', :method => :post do
+      %table.table#passes-table{'ng-init' => "scope = { showExpired: false, expiredStyle: {textDecoration: 'line-through'} }"}
+        %thead
+          %tr
+            %th.grouped-checkbox= check_box_tag :all, nil, false, :class => :checkall
+            %th Pass Type
+            %th.right Purchase Date
+            %th.right Starts
+            %th.right Expires
+            %th.right Tickets Allowed
+            %th.right Tickets Purchased
+        - @passes.each do |pass|
+          %tr
+            %td.grouped-checkbox= check_box_tag "pass_ids[]", pass.id, false, :id => "pass_id_#{pass.id}", :class => "pass-id-checkbox"
+            %td
+              %span.pass-name=pass.pass_type.name
+              %span.pass-code-display.invisible
+                %strong=pass.pass_code
+            %td.right=l pass.created_at, :format => :slashed_date
+            %td.right=l pass.starts_at, :format => :slashed_date
+            %td.right=l pass.ends_at, :format => :slashed_date
+            %td.right=pass.tickets_allowed
+            %td.right=pass.tickets_purchased
+
+        - if @expired_passes.length > 0
+          %tr
+            %td{:colspan => 7}
+              = link_to "See #{@expired_count} lapsed & expired passes", '#', 'ng-show' => '!scope.showExpired', 'ng-click' => 'scope.showExpired = true'
+              = link_to "Hide #{@expired_count} lapsed & expired passes", '#', 'ng-show' => 'scope.showExpired', 'ng-click' => 'scope.showExpired = false'
+
+        - @expired_passes.each do |pass|
+          %tr{'ng-show' => 'scope.showExpired', 'ng-style' => 'scope.expiredStyle'}
+            %td.grouped-checkbox
+            %td
+              %span.pass-name=pass.pass_type.name
+              %span.pass-code-display.invisible
+                %strong=pass.pass_code
+            %td.right=l pass.created_at, :format => :slashed_date
+            %td.right=l pass.starts_at, :format => :slashed_date
+            %td.right=l pass.ends_at, :format => :slashed_date
+            %td.right=pass.tickets_allowed
+            %td.right=pass.tickets.length
+
+      #extend.modal
+        .modal-header
+          .close{'data-dismiss'=>'modal'} x
+          %h3 Change Expiration
+        .modal-body
+          .control-group
+            %label Change the expiration of these passes to:
+            .controls
+              .datepicker-alt-field
+              =hidden_field_tag "ends_at", ""
+        .modal-footer
+          =submit_tag "Change Expiration", :class => "btn btn-success"
+          =link_to "Cancel", "#", :class => "btn", 'data-dismiss'=>'modal' 
+
+    #pass-reminder-modal.modal
+      =form_tag reminder_person_passes_path(@person), :class => "form-horizontal", :id => "pass-reminder-form", :method => :post do
+        .modal-header
+          .close{'data-dismiss'=>'modal'} x
+          %h3 Send Pass Reminder
+        .modal-body
+          %p="This passholder will receive an email with details on the selected passes."  
+        .modal-footer
+          =submit_tag "Resend Passes", :class => "btn btn-primary"
+          =link_to "Cancel", "#", :class => "btn", 'data-dismiss'=>'modal'
+
+- content_for :custom_js do
+  :javascript
+    $(document).ready(function() { 
+      $('#view-pass-codes').click(function (){ 
+        toggleVisibility($('.pass-code-display'))
+      }) 
+
+      $('#pass-reminder-form').submit(function() {
+        ids = new Array()
+
+        //for each checked checkbox, add a hidden field to the pass reminder form
+        $(".pass-id-checkbox:checked").each(function() { 
+          $('<input>').attr('type','hidden')
+                      .attr('name','pass_ids[]')
+                      .val($(this).val())
+                      .appendTo($('#pass-reminder-form'));
+        })
+      })
+    })

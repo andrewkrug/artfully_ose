@@ -1,0 +1,34 @@
+- in_section :reports
+- content_for :header do
+  %h1= t(".heading", :default => "Statements")
+
+.row
+  .span3
+    %h3 Shows
+    = render :partial => "shows", :locals => { :event => @event, :shows => @shows }
+  .span9
+  
+    .bottom-room
+
+      -if @statement.nil?
+        %p
+          Please select a show
+      -else
+        .row-fluid
+          .span9
+            %h3="#{@event.name} #{l @statement.datetime, :format => :short}" 
+          .span3
+            .pull-right
+              =icon_link_to("View show", event_show_path(@show.event, @show), 'fa-share', 'btn', '')
+        = render :partial => 'top_stats', :locals => { :statement => @statement }
+        #statement_table
+          = render :partial => 'payment_method_table', :locals => { :statement => @statement }
+        #statement_table
+          = render :partial => 'ticket_type_table', :locals => { :statement => @statement }
+        #order_location
+          = render :partial => 'order_location_table', :locals => { :statement => @statement }
+        #discounts_table
+          = render :partial => 'discounts_table', :locals => { :statement => @statement }
+        -with_kit(:passes) do
+          #passes_table
+            = render :partial => 'passes_table', :locals => { :statement => @statement }

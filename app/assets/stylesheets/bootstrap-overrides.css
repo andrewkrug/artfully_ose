@@ -1,0 +1,381 @@
+
+/*
+ * Wonk for asset pipeline
+ */
+
+.navbar-inner, .navbar .fill {
+  background-color: #175c71;
+  background-repeat: repeat-x;
+  background-image: -khtml-gradient(linear, left top, left bottom, from(#2086a6), to(#175c71));
+  background-image: -moz-linear-gradient(top, #2086a6, #175c71);
+  background-image: -ms-linear-gradient(top, #2086a6, #175c71);
+  background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #2086a6), color-stop(100%, #175c71));
+  background-image: -webkit-linear-gradient(top, #2086a6, #175c71);
+  background-image: -o-linear-gradient(top, #2086a6, #175c71);
+  background-image: linear-gradient(top, #2086a6, #175c71);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#2086a6', endColorstr='#175c71', GradientType=0);
+}
+
+.navbar-inner-admin {
+  background-color: #a85300;
+  background-image: -khtml-gradient(linear, left top, left bottom, from(#f8930a), to(#a85300));
+  background-image: -moz-linear-gradient(top, #f8930a, #a85300);
+  background-image: -ms-linear-gradient(top, #f8930a, #a85300);
+  background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #f8930a), color-stop(100%, #a85300));
+  background-image: -webkit-linear-gradient(top, #f8930a, #a85300);
+  background-image: -o-linear-gradient(top, #f8930a, #a85300);
+  background-image: linear-gradient(top, #f8930a, #a85300);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#2086a6', endColorstr='#175c71', GradientType=0);
+}
+
+.navbar .nav > li > a {
+  color: #DFDFDF;
+}
+
+.navbar-inner-admin .nav > li > a {
+  color: #FFFFFF;
+}
+
+.navbar a.artfully-brand {
+  background-image: url('/assets/pages/logo-white-topbar.png');
+  background-repeat: no-repeat;
+  background-position: 18px 7px;
+  text-indent: 5000px;
+  display: block;
+  width: 85px;
+}
+
+.navbar .brand {
+  color: #fff;
+  text-shadow: none;
+}
+
+.navbar .divider-vertical {
+  background-color: #175c71;
+  border-color: #2086a6;
+}
+
+.feedback-footer .navbar-inner {
+  background-color: #ccc;
+  background-image: none;
+  font-weight: normal;
+}
+
+.feedback-footer .navbar-inner .container, .navbar.marketing .navbar-inner .container {
+  background-image: url('/assets/falogo_footer.png');
+  background-repeat: no-repeat;
+  background-position: 0px center;
+  padding-top: 9px;
+  padding-bottom: 11px;
+  padding-left: 95px;
+}
+
+.feedback-footer .navbar-inner a {
+  font-weight: normal;
+  color: #2086a6;
+}
+
+#feedback-modal, #feedback-modal .modal-footer {
+  text-align:center;
+}
+
+.modal .modal-body textarea.block {
+  width: 520px;
+  display: block;
+}
+
+.modal > form {
+  margin-bottom: 0;
+}
+
+.modal-footer div {
+  display: inline;
+}
+
+body {
+  padding-top: 60px;
+}
+
+section {
+  margin-bottom: 30px;
+}
+
+#heading {
+  margin-bottom: 30px;
+}
+
+
+.navbar .dropdown-menu:before {
+  display: none;
+}
+.navbar .dropdown-menu:after {
+  display: none;
+}
+.dropdown-menu li > a:hover,
+.dropdown-menu .active > a,
+.dropdown-menu .active > a:hover {
+  background-color: #2086a6;
+}
+
+.navbar .nav .active > a,
+.navbar .nav .active > a:hover {
+  background-color: transparent;
+}
+
+.footer {
+  margin-top: 45px;
+  padding: 35px 0 36px;
+  border-top: 1px solid #E5E5E5;
+}
+
+.footer .powered-by {
+  float: right;
+}
+
+.footer ul li {
+  float: left;
+  margin-right: 10px;
+}
+.footer a {
+  color: #999;
+}
+
+/* Accordian Menu used on events#edit */
+
+.nav-accordion{
+  *zoom: 1;
+}
+.nav-accordion:before,
+.nav-accordion:after {
+  display: table;
+  content: "";
+}
+.nav-accordion:after {
+  clear: both;
+}
+.nav-accordion {
+  border-bottom: 0;
+  background: #F7F7F9;
+}
+.nav-accordion > li{
+  margin-bottom: -1px;
+}
+.nav-accordion > .active > a,
+.nav-accordion > .active > a:hover {
+  color: #555555;
+  background-color: #ffffff;
+  border: 1px solid #ddd;
+  cursor: default;
+}
+.nav-accordion > li > a:hover {
+  border-color: #ddd;
+  z-index: 2;
+}
+.nav-accordion > li > a  {
+  color: #175d73;
+  margin-right: 0;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-right: 12px;
+  padding-left: 12px;
+  line-height: 18px;
+  border: 1px solid #ddd;
+  -webkit-border-radius: 0;
+  -moz-border-radius: 0;
+  border-radius: 0;
+  position: relative;
+}
+.nav-accordion > li:first-child > a {
+  -webkit-border-radius: 4px 4px 0 0;
+  -moz-border-radius: 4px 4px 0 0;
+  border-radius: 4px 4px 0 0;
+}
+.nav-accordion > li:last-child > a {
+  -webkit-border-radius: 0 0 4px 4px;
+  -moz-border-radius: 0 0 4px 4px;
+  border-radius: 0 0 4px 4px;
+}
+
+
+.nav-accordion > li.accordion { 
+}
+.nav-accordion > li.accordion > .accordion-menu {
+  margin-bottom: 0;
+  background: #fff;
+  display: none;
+}
+.nav-accordion > li.accordion.active > .accordion-menu {
+  display: block;
+}
+
+#event-accordion .accordion-inner {
+  padding: 0px;
+}
+.accordion-menu > li  {
+  
+}
+.accordion-menu > li > a  {
+  font-weight: normal;
+  display: block;
+  position: relative;
+  color: #175d73;
+  margin-right: 0;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-right: 12px;
+  padding-left: 24px;
+  line-height: 18px;
+  -webkit-border-radius: 0;
+  -moz-border-radius: 0;
+  border-radius: 0;
+}
+.accordion-menu > li > a:hover {
+  background: #F5F5F5;
+  text-decoration: none;
+  z-index: 2;
+}
+.accordion-menu > li > a.add  {
+  background: none;
+}
+.accordion-menu > li > a.add:hover {
+  background: #F5F5F5;
+  text-decoration: none;
+  z-index: 2;
+}
+.accordion-menu > .active > a,
+.accordion-menu > .active > a:hover {
+  color: #fff;
+  background-color: #175d73;
+  border: 1px solid #175d73;
+  border-bottom-color: transparent;
+  cursor: default;
+}
+.nav-accordion > li:last-child > .accordion-menu > li:last-child > a {
+  border-bottom: 1px solid #ddd;
+  -webkit-border-radius: 0 0 4px 4px;
+  -moz-border-radius: 0 0 4px 4px;
+  border-radius: 0 0 4px 4px;
+}
+.icon-gray {
+  color: gray;
+}
+
+.btn-primary {
+  background-color: #175c71;
+  background-repeat: repeat-x;
+  background-image: -khtml-gradient(linear, left top, left bottom, from(#2086a6), to(#175c71));
+  background-image: -moz-linear-gradient(top, #2086a6, #175c71);
+  background-image: -ms-linear-gradient(top, #2086a6, #175c71);
+  background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #2086a6), color-stop(100%, #175c71));
+  background-image: -webkit-linear-gradient(top, #2086a6, #175c71);
+  background-image: -o-linear-gradient(top, #2086a6, #175c71);
+  background-image: linear-gradient(top, #2086a6, #175c71);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#2086a6', endColorstr='#175c71', GradientType=0);
+}
+
+.btn-primary:hover,
+.btn-primary:active,
+.btn-primary.active,
+.btn-primary.disabled,
+.btn-primary[disabled] {
+  background-color: #175c71;
+}
+.btn-primary:active,
+.btn-primary.active {
+  background-color: #004099 \9;
+}
+
+.btn-signup {
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-size: 16px;
+  font-weight: 300;
+  line-height: 2.5em;
+}
+
+.btn-signup.btn-notprimary{
+  font-weight: 400;
+}
+
+.form-vertical .input-append,
+.form-vertical .input-prepend,
+.form-vertical .input-prepend input {
+  display: inline-block;
+  margin-bottom: 0;
+}
+
+.control {
+  margin-bottom: 5px;
+}
+
+.input-prepend .add-on,
+.input-append .add-on,
+.input-prepend .btn,
+.input-append .btn {
+  margin-left: -1px;
+}
+
+.input-prepend .add-on,
+.input-prepend .btn {
+  margin-right: -5px;
+}
+
+.btn-block {
+  display: block;
+  width: 100%;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.btn-block + .btn-block {
+  margin-top: 5px;
+}
+
+input[type="submit"].btn-block,
+input[type="reset"].btn-block,
+input[type="button"].btn-block {
+  width: 100%;
+}
+
+.btn-group {
+  margin-bottom: 9px;
+}
+
+.dropdown .dropdown-menu .disabled,
+.dropdown .dropdown-menu .disabled:visited ,
+.dropdown .dropdown-menu .disabled:active,
+.dropdown .dropdown-menu .disabled:hover {
+    background-color: #efefef !important;
+    color: #7B7B7B !important;
+    cursor: default;
+}
+
+h6 {
+  font-size: 11px;
+  color: #999999;
+  text-transform: uppercase;
+  margin: 0;
+}
+
+/*
+ * Changing baseFontSize 13px left the radio buttons and checkboxes a bit out of wack
+ */
+input[type="radio"], input[type="checkbox"] {
+  margin: 1px 0 0;
+  line-height: normal;
+}
+
+.navbar .nav>li>a {
+  text-shadow: 0 -1px 0 rgba(0,0,0,0.25);
+}
+
+.navbar .nav>li>a:hover {
+  color: white;
+}
+
+#day-date .navbar-inner {
+  min-height: 0px;
+}
+
+[class^="icon-"],[class*=" icon-"] {
+  background-image:url("/assets/glyphicons-halflings.png") !important
+}

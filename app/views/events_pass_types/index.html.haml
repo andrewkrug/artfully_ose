@@ -1,0 +1,47 @@
+- in_section :events
+- content_for :header do
+  =render :partial=>'events/header'
+
+.row
+  .span3
+    - in_sub_section :share
+    =render :partial=>'events/menu'
+  .span9
+    .row-fluid
+      .span3
+        %h3 Passes
+      .span9
+        =icon_link_to("Add", new_event_events_pass_type_path(@event), 'fa fa-plus-sign', 'btn', '') unless @no_pass_types
+    -if @no_pass_types
+      .no-image#add-a-pass-type
+        #text
+          =icon_tag '282-cards'
+          %br
+          =link_to "You haven't set up any passes yet. Click here to get started.", new_pass_type_path
+    -else
+      %table.table
+        %thead
+          %tr
+            %th Pass
+            %th Ticket Types
+            %th.right Excluded Shows
+            %th.right Limit per Pass
+            %th.right Active
+        -@events_pass_types.each do |ept|
+          %tr
+            %td
+              =link_to ept.pass_type.name,  edit_event_events_pass_type_path(@event, ept)
+            %td
+              -if ept.ticket_types.empty?
+                %strong
+                  No Ticket Types
+              -else
+                - ept.ticket_types.each do |ticket_type|
+                  =ticket_type
+                  %br
+            %td.right
+              =ept.excluded_shows.count
+            %td.right
+              =ept.limit_per_pass
+            %td.right
+              =check_mark if ept.active?

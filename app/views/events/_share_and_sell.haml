@@ -1,0 +1,9 @@
+.accordion-group
+  .accordion-heading
+    = link_to 'Share & Sell', "#collapseShareSell", :class => 'accordion-toggle', 'data-toggle' => 'collapse', 'data-parent'=>'#event-accordion'
+  #collapseShareSell.accordion-body.collapse{:class => in_section?(:share)}
+    .accordion-inner
+      %ul.accordion-menu
+        = active_link_to 'Storefront', storefront_link_event_path(event)
+        = active_link_to 'Discounts', event_discounts_path(@event)
+        = active_link_to 'Passes', event_events_pass_types_path(@event)

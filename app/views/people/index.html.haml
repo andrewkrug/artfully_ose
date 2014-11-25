@@ -1,0 +1,36 @@
+- in_section :people
+- content_for :title do
+  People
+- content_for :header do
+  %h1 People
+
+.row
+  .span4
+    = form_tag people_path, {:method => :get, :class => 'super-search form-search'} do
+      = hidden_field_tag :commit, "Search"
+      %ul
+        %li
+          = text_field_tag :search, params[:search], :placeholder => "Email, name, or tag...", :class => "input-medium search-query"
+      .control
+        = submit_tag "Search", :class => 'btn'
+        = link_to "Advanced Search", new_search_path
+  .span8.super-search-results
+
+    - if @people.empty?
+      &nbsp;
+    -else    
+      - if @show_advanced_search_message 
+        .well
+          .row-fluid
+            .span2
+              .center
+                =icon_tag '06-magnify@2x'
+            .span10
+              %strong
+                Looks like you've got a lot of results here so we only returned the top 40. 
+                %br
+                Try 
+                =link_to "Advanced Search", new_search_path 
+                for more refined searching and results.
+      = render :partial => 'list', :locals => { :people => @people } unless @people.empty?
+      = will_paginate @people, :inner_window => 2, :outer_window => 0

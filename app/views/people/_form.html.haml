@@ -1,0 +1,41 @@
+= form_for (person) do |form|
+  %ul
+    %li
+      = form.hidden_field :type, value: "{{data.type}}"
+      .btn-group
+        %button{:type => "button", :class => "btn btn-large", "ng-class" => "{active: data.type == 'Individual'}", "ng-click" => "data.type = 'Individual'"} Person
+        %button{:type => "button", :class => "btn btn-large", "ng-class" => "{active: data.type == 'Company'}", "ng-click" => "data.type = 'Company'"} Company
+    %li{"ng-show" => "data.type == 'Company'", :class => "ng-cloak"}
+      = form.hidden_field :subtype, value: "{{final_subtype()}}"
+      %label Company Type
+      .btn-group
+        %button{:type => "button", :class => "btn", "ng-class" => "{active: data.subtype == 'Business'}", "ng-click" => "data.subtype = 'Business'"} Business
+        %button{:type => "button", :class => "btn", "ng-class" => "{active: data.subtype == 'Foundation'}", "ng-click" => "data.subtype = 'Foundation'"} Foundation
+        %button{:type => "button", :class => "btn", "ng-class" => "{active: data.subtype == 'Government'}", "ng-click" => "data.subtype = 'Government'"} Government
+        %button{:type => "button", :class => "btn", "ng-class" => "{active: data.subtype == 'Nonprofit'}", "ng-click" => "data.subtype = 'Nonprofit'"} Nonprofit
+        %button{:type => "button", :class => "btn", "ng-class" => "{active: data.subtype == 'Other'}", "ng-click" => "data.subtype = 'Other'"} Other
+    %li{"ng-show" => "data.type == 'Company'", :class => "ng-cloak"}
+      = form.label :company_name, "Company Name"
+      = form.text_field :company_name
+    %li{"ng-show" => "data.type == 'Individual'"}
+      = form.label :first_name, "First Name"
+      = form.text_field :first_name
+    %li{"ng-show" => "data.type == 'Individual'"}
+      = form.label :last_name, "Last Name"
+      = form.text_field :last_name
+    %li
+      = form.label :email, "Contact Email", "ng-show" => "data.type == 'Company'"
+      = form.label :email, "Email", "ng-show" => "data.type == 'Individual'"
+      = form.email_field :email
+    - unless person.new_record?
+      %li
+        = form.label :title, "Title"
+        = form.text_field :title
+      %li
+        = form.label :company_name, "Company"
+        = form.text_field :company_name
+      %li
+        = form.label :website, "Website"
+        = form.text_field :website
+  .form-actions
+    = render :partial => 'shared/submit_cancel', :locals => { :form => form, :cancel_path => people_path }

@@ -1,0 +1,39 @@
+=form_tag person_membership_cancellations_path, :class => 'form-horizontal', 'novalidate' => true, :method => :post, :remote => true do
+  .modal-header
+    .close{'data-dismiss'=>'modal'} x
+    %h3 Cancel Membership
+
+  .modal-body
+    .control-group
+      %label.control-label
+        Cancel #{pluralize_word(@cancellation.memberships.count, 'this', 'these')}
+
+      .controls
+        %ol
+          - @cancellation.memberships.each do |membership|
+            %li
+              =hidden_field_tag('membership_ids[]', membership.id)
+              %span{:class => (membership.refundable? ? 'text-info' : '')}
+                #{membership.membership_type.name} - #{number_as_cents membership.price}
+
+    .control-group
+      %label.control-label
+        Refund amount
+
+      .controls
+        - if @cancellation.refund_available?
+          =text_field_tag('refund_amount', number_as_cents(@cancellation.refund_amount), :class => 'span1', :disabled => 'disabled')
+          - if @cancellation.memberships.count > 1
+            %p
+              %em
+                %small
+                  Note: Amount ONLY includes
+                  %span{:class => 'text-info'}refundable
+                  memberships.
+        - else
+          %h4 Sorry
+          %p A refund is not possible for the selected #{pluralize_word(@cancellation.memberships.count, 'membership')}.
+  .modal-footer
+
+    =submit_tag('Cancel Memberships', :class => 'btn btn-warning')
+    =link_to 'Nevermind', '#', :class => 'btn', 'data-dismiss' => 'modal'

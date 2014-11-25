@@ -1,0 +1,20 @@
+- in_section :dashboard
+- content_for :header do
+  %h1 Organizations
+  %ul.from-here
+    %li= link_to "New Organization", new_organization_path if !current_user.is_in_organization?
+
+.row
+  .span8.offset4
+    %h3 My Organization
+    #organizations
+      %table.standalone
+        %thead
+          %tr
+            %th Name
+            %th Created Date
+        %tbody
+          - @organizations.each do |organization|
+            %tr
+              %td= link_to organization.name, organization
+              %td= l organization.created_at, :format => :short

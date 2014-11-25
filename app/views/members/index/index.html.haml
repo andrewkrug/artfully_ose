@@ -1,0 +1,41 @@
+- @person = current_member.person
+.row  
+  .span6.offset3
+    #member-details.side-section
+      %h6=member_welcome
+      %table.table.table-condensed
+        %tr
+          %td Member Number
+          %td=current_member.member_number
+        %tr
+          %td Member Through
+          %td=l current_member.member_through, :format => :date unless current_member.memberships.current.empty?
+        %tr
+          %td Membership
+          %td=current_member.memberships.current.first.membership_type.name unless current_member.memberships.current.empty?
+        %tr
+          %td Memberships
+          %td=current_member.memberships.current.count unless current_member.memberships.current.empty?
+        %tr
+          %td Membership Card
+          %td=link_to "download", current_member.download_link_for(:pdf)
+    .side-section
+      %h6 Member Information
+      =current_member.person
+      %br
+      =current_member.email
+      %br
+      %br
+      #member-address
+        =render :partial => 'addresses/address', :locals => { :address => current_member.person.address }
+        .controls
+          =link_to "Update", "#edit-address-modal", :class => "btn", 'data-toggle' => 'modal'
+
+    .side-section
+      %h6 Contact Us
+      =current_member.organization.email
+      %br
+      -# =current_member.organization.phone
+
+#edit-address-modal.modal.hide
+  =render :partial => 'people/edit_modal', :locals => { :url => members_person_path(current_member.person), :header => "Edit Your Information", :except => [:convert, :relationships, :households, :social, :merge, :delete], :return_to => members_root_path } 

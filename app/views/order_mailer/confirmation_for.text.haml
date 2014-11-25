@@ -1,0 +1,43 @@
+Order confirmation
+
+="Thank you for your order, #{@person}!"
+
+- unless @order.tickets.empty?
+  ="This is not a ticket. Please use your order number to check in at the event"
+
+= "Order number: #{@order.id}"
+= "Purchase Date: #{l(@order.created_at_local_to_organization)}"
+= "Order total: $#{format("%.2f", (@order.total/100.0))}"
+= "Payment method: #{@order.payment_method}"
+= "Service fee: $#{format("%.2f", (@order.service_fee.to_i/100.0))}"
+
+="==================="
+
+- unless @order.tickets.empty?
+  Tickets
+  - @order.ticket_summary.rows.each do |row|
+    ="#{row.show.event.name}"
+    =l row.show.datetime_local_to_event
+    -unless row.show.event.contact_email.blank?
+      ="Event contact email: #{row.show.event.contact_email}"
+    -unless row.show.event.contact_phone.blank?
+      ="Event contact phone: #{row.show.event.contact_phone}"
+
+    ="#{row.show.event.venue.name}"
+    -unless row.show.event.venue.street_as_string.blank?
+      ="#{row.show.event.venue.street_as_string}" 
+    -unless row.show.event.venue.city_state_zip_as_string.blank?  
+      ="#{row.show.event.venue.city_state_zip_as_string}"    
+
+    -row.ticket_type_hash.keys.each do |ticket_type|
+      -ticket_type.tickets.each do |ticket|
+        = "#{ticket.ticket_type.name}: $#{format("%.2f", (ticket.sold_price/100.0))}"
+      =ticket_type.description
+
+
+
+- unless @order.donations.empty?
+  Donations
+  - @order.donations.each do |item|
+    = "$#{format("%.2f", (item.price/100.00))}:"
+    = "Donation to #{@order.organization.name_for_donations}"

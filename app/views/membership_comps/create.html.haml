@@ -1,0 +1,20 @@
+.row
+  .span8.offset2
+    .row-fluid
+      .span8.offset2
+        %h1.center="All Done!"
+
+        %p
+          We're creating new #{@membership_comp.membership_type.membershipize + "s"} and minting your new members. We'll be done in just a few minutes.
+
+        %p &nbsp
+        %p &nbsp
+
+        .center
+          .bottom-room
+            %h3 Where to?
+          -if @membership_comp.people.length == 1
+            .bottom-room=link_to "View This Patron", person_path(@membership_comp.people.first), :class => "btn btn-large", :style => "Width: 200px"
+          .bottom-room=link_to "Home Dashboard", root_path, :class => "btn btn-large", :style => "Width: 200px"
+          .bottom-room=link_to "People Search", people_path, :class => "btn btn-large", :style => "Width: 200px"
+          .bottom-room=link_to "Advanced Search", new_search_path, :class => "btn btn-large", :style => "Width: 200px"

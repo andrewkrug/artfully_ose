@@ -1,0 +1,143 @@
+= stylesheet_link_tag 'boxoffice'
+
+:css
+  .footer {
+    display:none;
+  }
+
+.row
+  %h2 Sales Console
+
+.row
+  .span7
+    #builder
+      =render :partial => "aloha"
+
+    #payment{:style => "display:none"}
+      =render :partial => "payment"
+
+  .span5
+    =render :partial => "cart"
+
+.modal#tickets-modal
+  .modal-header
+    %h3 Add Tickets
+  .modal-body
+    #event-select-container{:style => "margin-bottom: 18px"} 
+      .row-fluid
+        .span4
+          .pull-right{:style => "padding-top: 5px; padding-right: 10px"}
+            Event
+        .span8
+          = select_tag "event_selector", options_for_select(@events.collect{ |e| [e.name, e.id] }, ""), :include_blank => true, :class => "visit-on-select", :style =>"width: 300px", "data-person-id" => @person.try(:id)
+    #show-select-container{:style => "display: none;margin-bottom: 18px"}
+      .row-fluid#show-select-controls
+        .span4
+          .pull-right{:style => "padding-top: 5px; padding-right: 10px"} 
+            Show
+        .span8
+          = select_tag "show_selector", [], "data-person-id" => @person.try(:id)
+
+    #ticket-list
+
+  .modal-footer
+    %button.btn{'data-dismiss'=>'modal'} Cancel
+
+.modal#discount-modal
+  = form_tag console_sale_path(current_sales_console_cart, :person_id => @person.try(:id)), :method => :put, :class => 'form-horizontal' do
+    .modal-header
+      %h3 Apply Code
+    .modal-body
+      .control-group
+        %label.control-label Code
+        .controls
+          = text_field_tag :discount_or_pass_code, '', {:style => "width: 100px", :required => true}
+
+    .modal-footer
+      =submit_tag "Add", :class => "btn btn-primary"
+      %button.btn{'data-dismiss'=>'modal'} Cancel
+
+.modal#donation-modal
+  = form_tag console_sale_path(current_sales_console_cart, :person_id => @person.try(:id)), :method => :put, :class => 'form-horizontal' do
+    .modal-header
+      %h3 Add Donation
+    .modal-body
+      .control-group
+        %label.control-label Donation Amount
+        .controls
+          .input-prepend
+            %span.add-on $
+            = text_field_tag :donation_amount, '', {:style => "width: 100px", :required => true}
+
+    .modal-footer
+      =submit_tag "Add", :class => "btn btn-primary"
+      %button.btn{'data-dismiss'=>'modal'} Cancel
+
+.modal#memberships-modal
+  = form_tag console_sale_path(current_sales_console_cart, :person_id => @person.try(:id)), :method => :put, :class => 'form-horizontal' do
+    .modal-header
+      %h3 Add Memberships
+    .modal-body
+      .control-group
+        %label.control-label Membership
+        .controls
+          = select_tag "membership_type[id]", content_tag(:option,'',:value=>"")+options_from_collection_for_select(@membership_types, 'id', 'name', nil), {:required => true}
+      .control-group#membership_quantity_control_group{:style => "visibility: hidden"}
+        %label.control-label Quantity
+        .controls
+          = select_tag :quantity, options_for_select((1..10)), :class => "span1"
+
+    .modal-footer
+      =submit_tag "Add", :class => "btn btn-primary"
+      %button.btn{'data-dismiss'=>'modal'} Cancel
+
+.modal#passes-modal
+  = form_tag console_sale_path(current_sales_console_cart, :person_id => @person.try(:id)), :method => :put, :class => 'form-horizontal' do
+    .modal-header
+      %h3 Add Passes
+    .modal-body
+      .control-group
+        %label.control-label Pass
+        .controls
+          = select_tag "pass_type[id]", content_tag(:option,'',:value=>"")+options_from_collection_for_select(@pass_types, 'id', 'name', nil), {:required => true}
+      .control-group
+        %label.control-label Quantity
+        .controls
+          = select_tag :quantity, options_for_select((1..10)), :class => "span1"
+
+    .modal-footer
+      =submit_tag "Add", :class => "btn btn-primary"
+      %button.btn{'data-dismiss'=>'modal'} Cancel
+
+- content_for :custom_js do
+  = javascript_include_tag 'sales-console'
+  :javascript
+
+    var membership_type_hash = #{@membership_types_hash.to_json}
+    $('#membership_type_id').change(function () {
+      mt = membership_type_hash[$('#membership_type_id').val()]
+
+      if (mt == undefined || mt == "") {
+        $('#membership_quantity_control_group').css("visibility", "hidden")
+        return;
+      }
+
+      allow_multiple_memberships = mt['allow_multiple_memberships']
+      if (allow_multiple_memberships == true) {
+        $('#membership_quantity_control_group').css("visibility", "visible")
+      } else {
+        $('#membership_quantity_control_group').css("visibility", "hidden")
+      }
+    })
+
+    $(document).ready(function() {
+      $('#console-checkout-now-button').click(function() {
+        $('#builder').hide()
+        $('#payment').show()
+      })
+
+      $('#console-build-order').click(function() {
+        $('#builder').show()
+        $('#payment').hide()
+      })
+    })

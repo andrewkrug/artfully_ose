@@ -1,0 +1,186 @@
+-# This modal is used in both person editing and member editing
+
+- except    ||= {}
+- return_to ||= nil
+- url       ||= person_path(@person)
+#edit-person.modal
+  .modal-header
+    = link_to '&times;'.html_safe, '#', :class => 'close', 'data-dismiss' => 'modal'
+    %h3=header
+  = form_for(@person, :url => url, :html => {:class => 'form-horizontal'}) do |form|
+    =hidden_field_tag :return_to, return_to unless return_to.blank?
+    .modal-body
+      .row
+        .span2
+          %ul.nav.nav-accordion
+            %li.active.tab= link_to 'Basics', '#basics', 'data-toggle' => 'tab' unless except.include? :basics
+            %li.tab= link_to 'Address', '#address', 'data-toggle' => 'tab' unless except.include? :address
+            %li.tab= link_to 'Phone', '#phone', 'data-toggle' => 'tab' unless except.include? :phone
+            %li.tab= link_to 'Social Media', '#social-media', 'data-toggle' => 'tab' unless except.include? :social
+            -with_kit(:relationships) do
+              %li.tab-relationships= link_to 'Relationships', '#relationships' unless except.include? :relationships
+            -with_kit(:relationships) do
+              - if @person.individual?
+                %li.tab-households= link_to 'Households', '#households' unless except.include? :households
+        .span7
+          .tab-content
+            - unless except.include? :basics
+              #basics.tab-pane.active
+                - if @person.company?
+                  .controls
+                    = form.hidden_field :subtype, value: "{{data.subtype}}", "ng-init" => "data.subtype = '#{@person.subtype}'"
+                    .control.btn-group
+                      %button{:type => "button", :class => "btn", "ng-class" => "{active: data.subtype == 'Business'}", "ng-click" => "data.subtype = 'Business'"} Business
+                      %button{:type => "button", :class => "btn", "ng-class" => "{active: data.subtype == 'Foundation'}", "ng-click" => "data.subtype = 'Foundation'"} Foundation
+                      %button{:type => "button", :class => "btn", "ng-class" => "{active: data.subtype == 'Government'}", "ng-click" => "data.subtype = 'Government'"} Government
+                      %button{:type => "button", :class => "btn", "ng-class" => "{active: data.subtype == 'Nonprofit'}", "ng-click" => "data.subtype = 'Nonprofit'"} Nonprofit
+                      %button{:type => "button", :class => "btn", "ng-class" => "{active: data.subtype == 'Other'}", "ng-click" => "data.subtype = 'Other'"} Other
+                - if @person.individual?
+                  .controls
+                    = form.label :salutation, :class => 'control-label'
+                    .control= form.text_field :salutation
+                  .controls
+                    = form.label :first_name, "First Name", :class => 'control-label'
+                    .control= form.text_field :first_name
+                  .controls
+                    = form.label :middle_name, "Middle Name", :class => 'control-label'
+                    .control= form.text_field :middle_name
+                  .controls
+                    = form.label :last_name, "Last Name", :class => 'control-label'
+                    .control= form.text_field :last_name
+                  .controls
+                    = form.label :suffix, :class => 'control-label'
+                    .control= form.text_field :suffix
+                  .controls
+                    = form.label :title, :class => 'control-label'
+                    .control= form.text_field :title
+                .controls
+                  = form.label :company_name, "Company Name", :class => 'control-label'
+                  .control= form.text_field :company_name
+                .controls
+                  = form.label :email, :class => 'control-label'
+                  .control= form.text_field :email
+                .controls.control-label Birthday
+                .year{:data => { 'person-birth_year' => @person.birth_year }}
+                .day{:data => { 'person-birth_day' => @person.birth_day }}
+                  .control
+                    = form.select :birth_month, [["January", 1], ["February", 2], ["March", 3], ["April", 4], ["May", 5], ["June", 6], ["July", 7], ["August", 8], ["September", 9], ["October", 10], ["November", 11], ["December", 12]], { :include_blank => true }, { :class => 'span2', :id => 'birth_month' }
+                    = form.select :birth_day, [], { :include_blank => true }, { :class => 'span1', :id => 'birth_day' }
+                    = form.select :birth_year, [], { :include_blank => true }, { :class => 'span1', :id => 'birth_year' }
+                - if @person.individual? && @person.member.nil?
+                  .controls
+                    - unless except.include? :convert
+                      = link_to "Convert to Company", '#convert-to-company', 'data-toggle' => 'modal'
+
+            - unless except.include? :address
+              #address.tab-pane
+                = form.fields_for :address do |address_form|
+                  .controls
+                    = address_form.label :address, :class => 'control-label'
+                    .control
+                      = address_form.text_field :address1
+                  .controls
+                    %label{:class => 'control-label'}
+                    .control
+                      = address_form.text_field :address2
+                  .controls
+                    = address_form.label :country, :class => 'control-label'
+                    .control
+                      = address_form.select :country, [@person.address.country], :selected => @person.address.country
+                  .controls
+                    = address_form.label :state, "State / Province", :class => 'control-label'
+                    .control
+                      = address_form.select :state, [@person.address.state], :selected => @person.address.state, :class => "region"
+                  .controls
+                    = address_form.label :city, :class => 'control-label'
+                    .control
+                      = address_form.text_field :city
+                  .controls
+                    = address_form.label :zip, "Zip / Postal Code", :class => 'control-label'
+                    .control
+                      = address_form.text_field :zip
+
+            - unless except.include? :phone
+              #phone.tab-pane
+                - @person.phones.build if @person.phones.empty?
+                = form.fields_for :phones do |phone_form|
+                  = render "people/phone_fields", :f => phone_form
+
+                .control-group
+                  %label.control-label
+                  .controls
+                    %i.fa.fa-plus-circle.icon-gray
+                    = link_to_add_fields 'Add another number', form, :phones, "people"
+
+            - unless except.include? :social
+              #social-media.tab-pane
+                .controls
+                  = form.label :website, :class => 'control-label'
+                  .control
+                    .input-prepend
+                      %span.add-on http://
+                      = form.text_field :website
+                .controls
+                  = form.label :twitter_handle, 'Twitter', :class => 'control-label'
+                  .control
+                    .input-prepend
+                      %span.add-on @
+                      = form.text_field :twitter_handle
+                .controls
+                  = form.label :facebook_url, 'Facebook', :class => 'control-label'
+                  .control
+                    .input-prepend
+                      %span.add-on http://facebook.com/
+                      = form.text_field :facebook_url
+                .controls
+                  = form.label :linked_in_url, 'LinkedIn', :class => 'control-label'
+                  .control
+                    .input-prepend
+                      %span.add-on http://linkedin.com/in/
+                      = form.text_field :linked_in_url
+
+            - unless except.include? :relationships
+              #relationships.tab-pane
+                - @person.relationships.build
+                = form.fields_for :relationships do |relationship_form|
+                  = render "relationship_fields", :f => relationship_form
+
+                .control-group
+                  %label.control-label
+                  .controls
+                    %i.fa.fa-plus-cirlce.icon-gray
+                    = link_to_add_fields 'Add another relationship', form, :relationships
+
+            - unless except.include? :households
+              - if @person.individual?
+                #households.tab-pane
+                  - if @person.household
+                    %p
+                      == #{@person} is a member of the #{link_to @person.household.name, @person.household} household
+                  - else
+                    %p
+                      = link_to "Add to new household", new_household_url(:individuals => [@person.id]), :class => "btn"
+
+    .modal-footer
+      = form.submit 'Save', :class => 'btn btn-primary save-person'
+      = link_to 'Cancel', '#', :class => 'btn', 'data-dismiss' => 'modal'
+
+
+- content_for :custom_js do
+  // change modal based on tab
+  :javascript
+    $(document).ready(function() {
+      $('.tab-relationships a').click(function (e) {
+        e.preventDefault();
+        $(this).tab('show');
+      })
+      $('.tab-households a').click(function (e) {
+        e.preventDefault();
+        $(this).tab('show');
+      })
+      $('.tab a').click(function (e) {
+        e.preventDefault();
+        $(this).tab('show');
+        $('#edit-person .save-person').show();
+      })
+    });

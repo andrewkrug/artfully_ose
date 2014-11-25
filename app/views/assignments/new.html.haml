@@ -1,0 +1,31 @@
+- in_section :people
+- content_for :header do
+  %h1 Assign Person to an Order
+
+.row
+  .span4
+    = form_tag new_order_assignment_path, {:method => 'get', :class => 'form-search'} do
+      = hidden_field_tag :commit, "Search"
+      %ul
+        %li
+          = text_field_tag :search, "", :placeholder => "Email address or name", :class => "input-medium search-query"
+          = submit_tag "Search", :class => 'btn'
+  .span8.super-search-results
+    - if @people.empty?
+      &nbsp;
+    -else
+      %table.table.people-list
+        - @people.each do |person|
+          %tr
+            %td
+              = form_tag order_assignment_path do
+                = hidden_field_tag :person_id, person.id
+                = submit_tag "Select", :class=>'btn btn-small'
+            %td.name
+              = link_to "#{person.first_name} #{person.last_name}", person_url(person)
+              %br
+              = person.email
+            %td.tags
+              = render :partial => 'shared/tags_uneditable', :locals => { :tag_list => person.tag_list }
+
+      = will_paginate @people, :inner_window => 2, :outer_window => 0

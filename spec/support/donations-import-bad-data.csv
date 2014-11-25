@@ -1,0 +1,5 @@
+Email,First,Last,Date,Payment Method,Donation Type,Deductible Amount,Non-Deductible Amount
+calripken@example.com,Cal,Ripken,3/4/2010,Other,In-Kind,50.00,
+adamjones10@example.com,Adam,Jones,11/01/2010,Cash,Cash,50.00,
+,Mark,Cuban,1/1/1999,Check,Check,15000,70000,
+,Tim,Lincicum,,Check,Check,15000,70000,

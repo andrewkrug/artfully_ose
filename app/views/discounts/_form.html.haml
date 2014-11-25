@@ -1,0 +1,95 @@
+%fieldset
+  %legend Discount
+  .control-group
+    = f.label :code, "Discount Code", :class => 'control-label'
+    .controls
+      = f.text_field :code, :class => 'input'
+      %p.help-block 4-15 characters, not case sensitive
+
+  .control-group
+    .controls
+      %label.checkbox
+        = f.check_box :active
+        Discount is active and can be used now.
+
+%fieldset
+  .control-group
+    = f.label :show_ids, "Shows", :class => 'control-label'
+    .controls
+      = f.select :show_ids, options_for_select(@event.shows.collect {|s| [l(DateTime.parse(s.local_datetime), :format => :day_time), s.id] }, @discount.show_ids), {}, {'data-placeholder' => "All Shows", :class => 'input chosen', :multiple => true}
+  .control-group
+    = f.label :ticket_types, "Ticket Types", :class => 'control-label'
+    .controls
+      = f.select :ticket_types, options_for_select(@ticket_type_names, @discount.ticket_types.to_a), {}, {'data-placeholder' => "All Prices", :class => 'input chosen', :multiple => true}
+
+%fieldset
+  .control-group
+    = f.label :promotion_type, "Promotion Type", :class => 'control-label'
+    .controls
+      %label.radio
+        = f.radio_button :promotion_type, 'DollarsOffTickets', :class => 'promotion-type-radio'
+        X dollars off each ticket
+      %label.radio
+        = f.radio_button :promotion_type, 'BuyOneGetOneFree', :class => 'promotion-type-radio'
+        Buy one get one free
+
+%fieldset
+  = f.fields_for :properties, discount.properties do |p|
+    .control-group.promotion-type-properties#DollarsOffTickets{:style => "display: none;"}
+      = p.label :amount, "Amount off each ticket", :class => 'control-label'
+      .controls
+        = p.text_field :amount, :class => 'input-small section-price currency', :value => discount.properties[:amount]
+        
+    .control-group.promotion-type-properties#BuyOneGetOneFree
+
+%fieldset
+  .control-group
+    = f.label :minimum_ticket_count, "Minimum purchase of", :class => 'control-label'
+    .controls
+      = f.text_field :minimum_ticket_count, :class => 'input input-mini', :placeholder => "1"
+      tickets.
+
+%fieldset
+  %legend Inventory
+  .control-group
+    .controls
+      .radio
+        = radio_button_tag "unlimited_capacity", true, @discount.limit.blank? || @discount.limit == 0
+        Unlimited discounted tickets per event.
+      .radio
+        = radio_button_tag "unlimited_capacity", false, @discount.limit.present?
+        Only
+        = f.text_field :limit, :class => 'span1', :placeholder => 10
+        tickets can be sold with this discount per event.
+      
+- content_for :custom_js do
+  = stylesheet_link_tag 'jquery/chosen'
+  = javascript_include_tag 'jquery-lib/chosen.jquery'
+
+  :javascript
+    var show_appropriate_properties = function() {
+      touchCurrency();
+      var promotion_type = $('.promotion-type-radio:checked').attr('value');
+      $('.promotion-type-properties').hide();
+      $('.control-group#' + promotion_type).show();
+    };
+
+    $(document).ready(function() {
+      $('.promotion-type-radio').click(function() {
+        show_appropriate_properties();
+      });
+      show_appropriate_properties();
+
+      $('#unlimited_capacity_true').click(function() {
+        $('#discount_limit').val('');
+      });
+
+      $('#discount_limit').focus(function() {
+        $('#unlimited_capacity_false').attr('checked', 'checked');
+      });
+
+      $('#discount_code').focus();
+
+      // use the fancy multi-select
+      $('.chosen').chosen();
+    });

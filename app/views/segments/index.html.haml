@@ -1,0 +1,19 @@
+- in_section :people
+- content_for :title do
+  List Segments
+- content_for :header do
+  %h1 List Segments
+
+.row
+  .span8.offset2
+    - if @segments.empty?
+      %p.detailed-list= "You have no list segments yet! #{link_to "Create one", new_search_path} by searching for people.".html_safe
+    - else
+      %ul.detailed-list
+        - @segments.each do |segment|
+          %li
+            %h4
+              = link_to segment.name, segment
+            .details-long= segment.description.html_safe
+    - if @segments.present?
+      = will_paginate @segments, :inner_window => 2, :outer_window => 0

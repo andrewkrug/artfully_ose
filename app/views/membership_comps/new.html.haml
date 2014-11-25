@@ -1,0 +1,95 @@
+.row
+  .span8
+    %h3 Comp Membership
+    =form_for @membership_comp, :html => { :class => 'form-horizontal' } do |form| 
+      =form.hidden_field :person_id
+      =form.hidden_field :search_id
+      =form.hidden_field :segment_id
+    
+      .control-group
+        = form.label "Membership Type", :class => 'control-label'
+        .controls
+          = form.select :membership_type, options_from_collection_for_select(@membership_types, 'id', 'name', @membership_comp.membership_type), :include_blank => true
+
+      .control-group#number_of_memberships_control_group{:style => "display:none"}
+        = form.label :number_of_memberships, "Number of Memberships", :class => 'control-label'
+        .controls
+          = form.text_field :number_of_memberships
+          
+      .control-group
+        = form.label :notes, "Order Notes", :class => 'control-label'
+        .controls
+          = form.text_area :notes, :rows => 2, :class => "span3"
+          .tip.muted Patrons will not see these notes.
+          
+      .control-group
+        = form.label :ends_at, "Expires On", :class => 'control-label'
+        .controls
+          = form.text_field :ends_at, :class => :datepicker
+
+      .control-group
+        .controls
+          %label.radio
+            = form.radio_button :send_email, false
+            Do not notify these patrons.
+          %label.radio
+            = form.radio_button :send_email, true
+            Notify these patrons by email and include the following message:
+
+      .control-group
+        .controls
+          = form.text_area :welcome_message, :rows => 5, :class => "span5"
+
+
+      .form-actions
+        =form.submit "Next", :class => 'btn'
+        
+  .span4
+    %h3 People
+    %table.table#people-list
+      - @membership_comp.people[0..9].each do |person|
+        %tr
+          %td.name
+            = person
+            %br
+            = person.email
+      -if @membership_comp.people.length > 10
+        %tr
+          %td
+            ="...and #{@membership_comp.people.length - 10} more"
+
+- content_for :custom_js do 
+  :javascript
+    var membership_type_hash = #{@membership_types_hash.to_json}
+    $('#membership_comp_membership_type').change(function () {
+      mt = membership_type_hash[$('#membership_comp_membership_type').val()]
+
+      if (mt == undefined) {
+        $('#number_of_memberships_control_group').hide()
+        return;
+      }
+
+      $('#membership_comp_ends_at').val(mt['formatted_ends_at'])
+      allow_multiple_memberships = mt['allow_multiple_memberships']
+      if (allow_multiple_memberships == true) {
+        $('#number_of_memberships_control_group').show()
+      } else {
+        $('#number_of_memberships_control_group').hide()
+      }
+    })
+
+    $('#membership_comp_send_email_false').click(function () {
+      $('#membership_comp_welcome_message').hide()
+    })
+
+    $('#membership_comp_send_email_true').click(function () {
+      $('#membership_comp_welcome_message').show()
+    })
+
+    $(document).ready(function() {
+      if ($('input[name="membership_comp[send_email]"]:checked').val() == true) {
+        $('#membership_comp_welcome_message').hide()
+      } else {
+        $('#membership_comp_welcome_message').show()
+      }
+    })

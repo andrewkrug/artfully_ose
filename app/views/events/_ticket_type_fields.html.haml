@@ -1,0 +1,102 @@
+.fields.ticket-type-fields
+  .well
+    .control-group
+      =f.label :name, "Name", :class => 'control-label'
+      .controls
+        =f.text_field :name, :class => 'span4'
+
+    -with_kit :membership do
+      - if current_user.current_organization.membership_types.empty?
+        .control-group
+          =label_tag "Member ticket?", "Member ticket?", :class => 'control-label'
+          .controls
+            %label.radio.inline
+              = f.radio_button :member_ticket, true, :class => "member-ticket-yes", :disabled => "true"
+              Yes
+            %label.radio.inline
+              = f.radio_button :member_ticket, false, :class => "member-ticket-no", :disabled => "true"
+              No  
+            %p.muted
+              You need to create a membership before you can sell member tickets.
+              =link_to "Get started here.", new_membership_type_path
+
+      - else
+        .control-group
+          =label_tag "Member ticket?", "Member ticket?", :class => 'control-label'
+          .controls
+            %label.radio.inline
+              = f.radio_button :member_ticket, true, :class => "member-ticket-yes"
+              Yes
+            %label.radio.inline
+              = f.radio_button :member_ticket, false, :class => "member-ticket-no"
+              No
+
+        .membership-fields{:style => "display: none"}
+          .control-group
+            =f.label :membership_type_id, "Membership", :class => 'control-label'
+            .controls
+              =f.select :membership_type_id, options_from_collection_for_select(MembershipType.in_play(current_user.current_organization), 'id', 'name', f.object.membership_type_id), {}, :class => 'span4'
+
+          .control-group
+            =f.label :tickets_per_membership, "Tickets per Membership", :class => 'control-label'
+            .controls
+              =f.text_field :tickets_per_membership, :class => 'input-small'
+              %p.muted Leave blank for unlimited.
+
+    .control-group
+      =f.label :price, "Price", :class => 'control-label'
+      .controls
+        .input-prepend
+          %span.add-on $
+          - if can? :create, :paid_events
+            =f.text_field :price, :placeholder => '0.00', :class => 'input-small section-price', :value => number_as_cents(f.object.price, :format => "%n")
+          - else
+            %span.section-price-disabled{'data-toggle' => "modal", 'data-target' => "#request-paid-ticket-kit"}
+              =f.text_field :price, :placeholder => '0.00', :class => 'input-small disabled section-price-disabled', :value => number_as_cents(f.object.price, :format => "%n"), :disabled => 'disabled'
+        - unless can? :create, :paid_events
+          %p.muted
+            %a{:href=>"#request-paid-ticket-kit", 'data-toggle' => "modal"} Paid Ticketing Kit not enabled.
+
+    .control-group
+      =f.label :limit, "Ticket Type Limit", :class => 'control-label'
+      .controls
+        =f.text_field :limit, :class => 'input-small'
+        %p.muted
+          Leave blank for unlimited.
+          %a{:href=>"#unlimited-help", 'data-toggle' => "modal"} Learn more.
+        
+    .control-group
+      =f.label :description, "Description", :class => 'control-label'
+      .controls
+        =f.text_area :description, :class => 'span4', :size => '10x2'
+        %p.muted
+          This description will appear on your storefront as well as on patron receipts.
+    
+    .control-group
+      =f.label :visibility, "Visibility", :class => 'control-label'
+      .controls
+        - TicketType.channels_for(current_user.current_organization).each do |channel, icon|
+          =f.check_box channel
+          =channel_checkbox channel
+          %br
+    
+    .control-group.pull-right
+      .controls
+        - show_remove_links = true if show_remove_links.nil?
+        - if show_remove_links
+          %span.remove-fields-link
+            = f.hidden_field :_destroy
+            %i.fa.fa-minus-circle.icon-gray
+            = link_to_remove_fields "remove", f
+
+  #unlimited-help.modal
+    .modal-header
+      .close{'data-dismiss'=>'modal'} x
+      %h3 Ticket Type Limits
+    .modal-body
+      %p
+        You can set a limit on how many tickets will be sold at this price. If you prefer not to limit the number of tickets sold at this price, leave the "Limit" field blank.
+      %p
+        Of course, across all prices, we won't sell more tickets than you specified in the "Capacity" field.
+    .modal-footer
+      = button_tag "Close", :class => "btn", 'data-dismiss' => 'modal'

@@ -1,0 +1,9 @@
+#venue
+  %h6 Venue
+  =link_to image_tag("https://maps.google.com/maps/api/staticmap?size=140x140&maptype=roadmap&markers=color:red|#{event.venue.address_as_url_query}&sensor=false&zoom=15"), "https://maps.google.com/maps?q=#{event.venue.address_as_url_query.html_safe}&z=15"
+  %div
+    %strong=event.venue.name
+  %div=event.venue.address1
+  -unless event.venue.address2.blank?
+    %div=event.venue.address2
+  %div=event.venue.city_state_zip_as_string

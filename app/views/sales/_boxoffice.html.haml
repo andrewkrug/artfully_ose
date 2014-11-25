@@ -1,0 +1,141 @@
+= form_tag event_show_sales_path, :class => 'boxoffice-form' do |f|
+  .row
+    .span2
+      %h6.padded-left 1. Tickets
+    .span10
+      .ticket-list
+        // unavailable tickets at the bottom
+        - @sale.ticket_types.sort_by { |t| -@tickets_remaining[t.id] }.each do |ticket_type|
+          .ticket{:class => ('unavailable' if @tickets_remaining[ticket_type.id] < 1), 'data-ticket-id' => ticket_type.id}
+            %a.ticket-quantity-button.subtract -
+            = number_field_tag "quantities[#{ticket_type.id}]", 0, :class => 'ticket-quantity', 'data-remaining' => @tickets_remaining[ticket_type.id], 'data-ticket-price' => number_to_dollars(ticket_type.price), :disabled => (@tickets_remaining[ticket_type.id] < 1)
+            %a.ticket-quantity-button.add +
+            %span.lead.ticket-type
+              %strong= ticket_type.name
+              = number_as_cents(ticket_type.price, cents_if_needed:true)
+              %span.muted
+                (#{content_tag :span, @tickets_remaining[ticket_type.id], :class => 'remaining', 'data-ticket-id' => ticket_type.id} remaining)
+
+        - if @event.organization.authorization_hash[:authorized]
+          .ticket
+            .input-prepend
+              %span.add-on $
+              = number_field_tag 'donation', nil, :placeholder => '0.00', :id => 'order-donation', :class => 'order-donation'
+              %span.lead
+                %strong
+                  Donation
+
+        - if Discount.where(event_id:@event.id).any?
+          .discount
+            .ticket
+              .input
+                = text_field_tag 'discount', nil, :id => 'order-discount', :class => 'order-discount'
+                %span.lead
+                  %strong
+                    Discount Code
+
+            .ticket
+              .input
+                %span.lead.message
+
+        #order-total
+          %h3
+            .loading.hide
+              #{image_tag('loading.gif')} calculating total...
+            .message
+              $0.00 Total
+          = hidden_field_tag 'total'
+  .row.row-blue-padded
+    .span2
+      .row-blue-padded-left
+        %h6 2. Payment
+    .span10
+      .control-group
+        .btn-toolbar.payment-select
+          .btn-group
+            %a.btn{'data-payment-select' => 'cash'}
+              Cash
+            %a.btn{'data-payment-select' => 'credit'}
+              Credit
+            %a.btn{'data-payment-select' => 'check'}
+              Check
+            %a.btn{'data-payment-select' => 'comp'}
+              Comp
+        = hidden_field_tag 'payment_method'
+      #credit-fields.payment-fields{:style => 'display:none;'}
+        .control-group
+          %label
+            Card Number
+            %span.muted.required (required)
+          .controls= text_field_tag("credit_card[number]", params[:credit_card][:card_number], :placeholder => "XXXX-XXXX-XXXX-XXXX", :class => 'input-medium credit_card_number')
+        .control-group
+          %label
+            Card Expiration
+            %span.muted.required (required)
+          .date_field.controls
+            = select_tag("credit_card[month]", options_for_select(1..12, params[:credit_card]["month"]), :class => 'input-small inline')
+            = select_tag("credit_card[year]", options_for_select(Time.now.year..Time.now.year + 10, params[:credit_card]["year"]), :class => 'input-small inline')
+      #check-fields.payment-fields{:style => 'display:none;'}
+        .control-group
+          = label_tag("check[number]", "Check Number")
+          .controls= text_field_tag("check[number]", params[:check].try([:number]), :class => 'input-medium')
+
+  .row
+    .span2
+      %h6.padded-left 3. Buyer Info
+    .span10
+      #user-info
+        #existing-user-popover
+        = hidden_field_tag(:person_id, "", :name => "person[id]")
+        .control-group
+          %label
+            First Name
+            %span.muted.required.name-required{:style => 'display:none;'} (required)
+          .controls
+            = text_field_tag(:person_first_name, "", :id => "person_first_name", :name => "person[first_name]", :placeholder => "First name", :class => 'person_first_name')
+        .control-group
+          %label
+            Last Name
+            %span.muted.required.name-required{:style => 'display:none;'} (required)
+          .controls
+            = text_field_tag(:person_last_name, "", :id => "person_last_name", :name => "person[last_name]", :placeholder => "Last name", :class => 'person_last_name')
+        .control-group
+          %label
+            Email
+            %span.muted.required.contact-required{:style => 'display:none;'} (required or phone)
+          .controls= email_field_tag(:person_email, "", :id => "person_email", :name => "person[email]", :placeholder => "example@email.com", :class => 'person_email')
+        .control-group
+          %label
+            Phone Number
+            %span.muted.required.contact-required{:style => 'display:none;'} (required or email)
+          .controls
+            = text_field_tag(:person_phone, "", :id => "person_phone", :name => "person[phones_attributes][][number]", :placeholder => "(XXX) XXX-XXXX", :class => 'person_phone')
+        .control-group
+          %label
+            Order Notes
+            %span.muted.required
+          .controls= text_area_tag(:order_notes, "", :id => "order_notes", :name => "order_notes")
+
+  .row.row-blue-padded
+    .span2
+      .row-blue-padded-left
+        %h6 4. Check in
+    .span10
+      .control-group
+        %label.checkbox
+          = check_box_tag "auto_check_in"
+          Mark tickets as received on doorlist.
+
+  .row
+    .span10.offset2
+      = submit_tag 'Checkout', :class => 'btn btn-large', :disabled => 'disabled', :id => 'checkout-now-button'
+
+#submit-confirmation.modal.hide.fade
+  .modal-header
+    %button.close.modal-close.hide{'type' => 'button', 'data-dismiss' => 'modal'} x
+    %h3 Processing...
+  .modal-body
+    .loading= image_tag('loading.gif')
+    .content
+  .modal-footer
+    %button.btn.btn-primary.modal-close.hide{'data-dismiss' => 'modal'} Close

@@ -1,0 +1,6 @@
+.modal-header
+  .close{'data-dismiss'=>'modal'} x
+  %h3 New Contribution
+
+.modal-body
+  =render :partial => "form", :locals => {:contribution => @contribution, :cancel_path => person_path(@contribution.person_id)}

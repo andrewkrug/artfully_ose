@@ -1,0 +1,10 @@
+= parent_form.fields_for target do |person_form|
+  %li
+    .label= person_form.label :first_name, "First Name"
+    .element= person_form.text_field :first_name
+  %li
+    .label= person_form.label :last_name, "Last Name"
+    .element= person_form.text_field :last_name
+  %li
+    .label= person_form.label :email, "Email Address"
+    .element= person_form.text_field :email

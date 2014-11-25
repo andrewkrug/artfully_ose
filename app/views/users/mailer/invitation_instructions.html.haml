@@ -1,0 +1,14 @@
+- @organization = @resource.invited_by.user_memberships.first.organization
+%h1 Hi #{@resource.email}.
+
+%p #{@organization.name} has invited you to their Artful.ly account! Artful.ly is a new web-app that helps artists sell tickets, take donations, and manage contacts.
+
+%p
+  To check it out, accept #{@organization.name}&rsquo;s invitation and set up your login info,
+  = link_to 'follow this link.', accept_invitation_url(@resource, :invitation_token => @resource.invitation_token)
+
+%p
+  If you do not want to join this organization, just ignore this email. Your account won’t be created until you click the link above and set your password.
+
+%p
+  If you have any question about #{@organization.name}&rsquo;s invitation, please contact #{mail_to @organization.email}.

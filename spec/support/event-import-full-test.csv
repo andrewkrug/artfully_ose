@@ -1,0 +1,8 @@
+Event Name,Venue Name,Show Date,Email,First,Last,Address1,City,State,Zip,Payment Method,Amount,Tags,Order Date
+Test Import,Test Venue,2010/3/4,,Monique,Meloche,2104 W Superior,Chicago,IL,60612,Cash,30,Gallery Weekend Chicago|Gala 2011 Ticket|,2012/2/1
+Test Import,Test Venue,2010/3/4,dda@example.com,Dirk,Denison,1123 W Washington Ave,Chicago,IL,60607,Cash,30.00,Gallery Weekend Chicago|Gala 2010 Ticket|,2012/2/1
+Test Import,Test Venue,2010/3/4,jcahn@example.edu,James,Cahn,2400 N Lakeview,Chicago,IL,60614,Credit Card,30.00,Gala 2010 Ticket|,2013/2/1
+Test Import,Test Venue,2010/3/4,sueg333@example.com,Susan,Goldschmidt,422 W Webster Ave,Chicago,IL,60614,Credit Card,30.00,Donor|,2012/2/1
+Test Import,Test Venue,2010/3/4,sueg333@example.com,Susan,Goldschmidt,422 W Webster Ave,Chicago,IL,60614,Credit Card,30.00,Donor|,2012/2/1
+Test Event,Test Venue,2011/12/12,plank@example.com,Plank,Goldschmidtt,422 W Webster Ave,Chicago,IL,60614,Credit Card,,Donor|,2012/2/1
+Test Event,Test Venue,2011/12/12,tim@example.com,,Goldschmidtt,422 W Webster Ave,Chicago,IL,60614,I.O.U.,,Donor|,2012/2/1

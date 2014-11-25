@@ -1,0 +1,140 @@
+- content_for :header do
+  %h1 Configure 501(c)(3) Donation Kit
+
+#edit-donation-kit
+  = form_for @kit do |f|
+    .row-fluid.bottom-room
+      .span3
+        = f.label :about_organization_text, 'About Your Organization', :class => 'control-label'
+        .guide
+          %p
+            Briefly describe your organization's activities and goals to a potential patron.
+      .span9
+        = f.text_area :about_organization_text, :class => 'input-xxlarge wysihtml5', :rows => 8
+
+    .row-fluid.bottom-room
+      .span3
+        = f.label :donation_ask_text, 'Donation Ask for Storefront', :class => 'control-label'
+        .guide
+          %p
+            Why should someone donate to your organization? This appeal appears on your Donation Storefront.
+      .span9
+        = f.text_area :donation_ask_text, :class => 'input-xxlarge wysihtml5', :rows => 8
+
+    .row-fluid.bottom-room
+      .span3
+        = f.label :donate_now_text, 'Navigation Button Name', :class => 'control-label'
+        .guide
+          %p
+            Customize the name of orange donate button on your Storefront navigation bar.
+      .span9
+        = f.text_field :donate_now_text, :class => 'input-xxlarge'
+
+    .row-fluid.bottom-room
+      .span3
+        = f.label :donation_nudge_text, 'Donation Nudge for Cart', :class => 'control-label'
+        .guide
+          %p
+            This short appeal appears in the shopping cart to encourage patrons to add a donation to their order.
+      .span9
+        = f.text_field :donation_nudge_text, :class => 'input-xxlarge'
+
+    .row-fluid.bottom-room
+      %hr
+
+    .row-fluid.bottom-room
+      .span3
+        = f.label :suggested_gifts, 'Suggested Gifts', :class => 'control-label'
+      .span9
+        - idx = 0
+        - Array(@kit.suggested_gifts).each do |s|
+          .suggested-gift-container
+            = f.text_field "suggested_gift_#{idx}_level_name", :name => "regular_donation_kit[suggested_gifts][#{idx}][level_name]",
+                                                               :placeholder => 'Level Name (optional)',
+                                                               :value => s['level_name'].present? ? s['level_name'] : ''
+            = f.text_field "suggested_gift_#{idx}_amount", :name => "regular_donation_kit[suggested_gifts][#{idx}][amount]",
+                                                           :placeholder => '$ Amount',
+                                                           :value => s['amount'].present? ? s['amount'] : ''
+            %a{ href: 'javascript:;', :class => 'suggested-gift-remove' }
+              Remove
+            - idx = idx + 1
+        .suggested-gift-container.new-suggested-gift-container
+          = f.text_field "suggested_gift_#{idx}_level_name", :name => "regular_donation_kit[suggested_gifts][#{idx}][level_name]",
+                                                             :placeholder => 'Level Name (optional)',
+                                                             :value => ''
+          = f.text_field "suggested_gift_#{idx}_amount", :name => "regular_donation_kit[suggested_gifts][#{idx}][amount]",
+                                                         :placeholder => '$ Amount',
+                                                         :value => ''
+          %a{ href: 'javascript:;', :class => 'suggested-gift-add' }
+            Add
+
+    .row-fluid.bottom-room
+      .span3
+        = f.label :open_gift_field, 'Display open gift field', :class => 'control-label'
+      .span9
+        = f.check_box :open_gift_field, :checked => @kit.open_gift_field.nil? || @kit.open_gift_field == '1'
+
+    .row-fluid.bottom-room
+      %hr
+
+    .row-fluid.bottom-room
+      .span3
+        = f.label :thanks_msg_text, 'Thanks Message', :class => 'control-label'
+        .guide
+          %p
+            This appears on the confirmation page after your patron makes a donation.
+      .span9
+        = f.text_area :thanks_msg_text, :class => 'input-xxlarge', :rows => 8
+
+    .row-fluid.bottom-room
+      .span3
+        = f.label :email_msg_text, 'Email Message', :class => 'control-label'
+        .guide
+          %p
+            This appears in the email order confirmation your patron receives after making a donation.
+      .span9
+        = f.text_area :email_msg_text, :class => 'input-xxlarge', :rows => 8
+
+    .row-fluid.bottom-room
+      %hr
+
+    .row-fluid.bottom-room
+      .span3
+        = f.label :donation_only_storefront, 'Donation-Only Storefront Link'
+      .span9
+        = link_to store_donate_url(@kit.organization.cached_slug).gsub(/^https?:\/+/, ''), store_donate_url(@kit.organization.cached_slug), :target => '_blank'
+
+    .row-fluid.bottom-room
+      .span3
+        = f.label :open_gift_field, 'Display Donation-Only Storefront', :class => 'control-label'
+      .span9
+        = f.check_box :donation_only_storefront
+
+    .row-fluid.bottom-room
+      .span3
+        &nbsp
+      .span9
+        =f.submit 'Save', :class => 'btn btn-primary'
+
+
+#about_organization_text-preview-modal.modal
+  .modal-header
+    .close{'data-dismiss' => 'modal'} x
+    %h3 About Organization Text Preview
+
+  .modal-body
+    #about_organization_text-preview
+      (About Organization Text Preview)
+  .modal-footer
+    = link_to 'Close', '#', :class => 'btn', 'data-dismiss' => 'modal'
+
+#donation_ask_text-preview-modal.modal
+  .modal-header
+    .close{'data-dismiss' => 'modal'} x
+    %h3 Donation Ask Preview
+
+  .modal-body
+    #donation_ask_text-preview
+      (Donation Ask Preview)
+  .modal-footer
+    = link_to 'Close', '#', :class => 'btn', 'data-dismiss' => 'modal'

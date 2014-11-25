@@ -1,0 +1,16 @@
+- in_section :events
+- content_for :header do
+  =render :partial=>'header'
+
+.row
+  .span3
+    - in_sub_section :share
+    =render :partial=>'menu'
+  .span9
+    .row
+      .span10.offset1.storefront-links
+
+        %h1 Online Storefront
+        %p#storefront-text Anyone can buy tickets at:
+        %blockquote#storefront-link
+          =link_to "#{store_old_storefront_event_url(@event)}".html_safe, store_old_storefront_event_path(@event), :target => "_blank"

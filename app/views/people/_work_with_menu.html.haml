@@ -1,0 +1,39 @@
+.dropdown
+  =icon_link_to('Work with...', "#menu#bulkactions", 'fa-asterisk', 'dropdown-toggle dropdown btn', '')
+
+  %ul.dropdown-menu
+    %li= link_to "Edit #{@person.possessive} Info", '#edit-person', 'data-toggle' => 'modal', :id => "edit_link"
+    -with_kit (:membership) do
+      -if person.email.blank? || person.company?
+        %li= link_to "Comp Membership", "#comp-membership", 'data-toggle' => 'modal'
+      -else
+        %li= link_to "Comp Membership", new_person_membership_comp_path(person)
+      
+      -unless @person.member.nil?
+        %li= link_to "View Memberships", person_memberships_path(@person)
+
+    -with_kit(:passes) do
+      -unless @person.passes.empty?
+        %li= link_to "View Passes", person_passes_path(@person)
+
+    %li= link_to "Merge", new_merge_path(:loser => person.id)
+
+    - if @person.destroyable?
+      %li= link_to "Delete", @person, :method => :delete, :confirm => "Are you sure you want to delete #{@person}?"
+
+    %li= link_to "Sell To", new_console_sale_path(:person_id => person.id)
+
+-if person.email.blank? || person.company?
+  -with_kit (:membership) do
+    #comp-membership.modal
+      .modal-header
+        .close{'data-dismiss'=>'modal'} x
+        %h3 Comp Membership
+      .modal-body
+        -if person.email.blank?
+          Sorry! We can't comp memberships to patrons who don't have an email.
+        -elsif person.company?
+          Sorry! We can't comp memberships to companies or institutions.
+      .modal-footer
+        = button_tag "Close", :class => "btn", 'data-dismiss' => 'modal'
+

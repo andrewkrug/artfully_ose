@@ -1,0 +1,18 @@
+- in_section :events
+- content_for :header do
+  =render :partial=>'events/header'
+
+.row
+  .span3
+    - in_sub_section :shows
+    =render :partial=>'events/menu'
+  .span9
+    #show-calendar{'data-event-id' => @event.id}
+    #calendar-help
+      .pull-right
+        %span{:style => 'background-color: #ADADAD'} &nbsp&nbsp&nbsp&nbsp
+        Unpublished shows
+        %span{:style => 'background-color: #33ADDD'} &nbsp&nbsp&nbsp&nbsp
+        Published shows
+      %div{:style => "clear:both"}
+                  

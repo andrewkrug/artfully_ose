@@ -1,0 +1,5 @@
+.modal-header
+  %h3 New Action
+
+.modal-body
+  = render :partial => 'actions/form', :locals => {:action => action, :target => target}

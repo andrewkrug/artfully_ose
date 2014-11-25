@@ -1,0 +1,28 @@
+- content_for :header do
+  %h1= "Membership Types"
+
+.row.bottom-room
+  .pull-right
+    =icon_link_to("New Membership Type", new_membership_type_path, 'fa-plus', 'btn','')
+    =link_to "Download CSV", membership_types_path(:format => "csv"), :class => "btn"
+
+%table.table#membership-types-table
+  %tr
+    %th Name
+    %th.right # Sold
+    %th.right Members
+    %th.right Price
+    %th.right Visibility
+    %th.right
+  -@membership_types.each do |membership_type|
+    %tr
+      %td=link_to membership_type.name, edit_membership_type_path(membership_type)
+      %td.right=membership_type.memberships.count
+      %td.right=link_to membership_type.members.group(:member_id).length, segment_path(membership_type.segment)
+      %td.right=number_as_cents membership_type.price
+      %td.right
+        %a{:href => "#", :class => "artfully-tooltip", :rel => "tooltip", "data-original-title" => "This membership is currently #{"not" unless membership_type.on_sale?} visible in your online Storefront.", "data-trigger" => "hover"}
+          %span.badge{:class => "#{'badge-success' if membership_type.on_sale?}"}="S"
+
+      %td.right
+        =icon_link_to("Store link", membership_type_storefront_path(membership_type), 'fa-shopping-cart', 'btn btn-mini', '')

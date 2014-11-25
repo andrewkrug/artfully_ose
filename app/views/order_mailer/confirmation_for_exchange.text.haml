@@ -1,0 +1,26 @@
+Exchange Confirmation
+
+="Order number: #{@order.id}"
+="Exchange Date: #{l(@order.created_at_local_to_organization)}"
+
+Here are your new tickets:
+
+- unless @order.tickets.empty?
+  - @order.ticket_summary.rows.each do |row|
+    =row.show.event.name
+    =l row.show.datetime_local_to_event, :format => :long_with_day
+    -unless row.show.event.contact_email.blank?
+      ="Event contact email: #{row.show.event.contact_email}"
+    -unless row.show.event.contact_phone.blank?
+      ="Event contact phone: #{row.show.event.contact_phone}"
+    -row.ticket_type_hash.each do |ticket_type, tickets|
+      -tickets.each do |ticket|
+        = "#{ticket.ticket_type.name}: $#{format("%.2f", (ticket.sold_price/100.0))}"
+        =ticket_type.description
+        
+
+    =row.show.event.venue.name
+    =row.show.event.venue.address1
+    -unless row.show.event.venue.address2.blank?
+      =row.show.event.venue.address2
+    =row.show.event.venue.city_state_zip_as_string

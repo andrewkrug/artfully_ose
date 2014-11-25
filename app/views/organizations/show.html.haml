@@ -1,0 +1,27 @@
+- in_section :dashboard
+- content_for :header do
+  %h1 Account Administration
+
+.bottom-room.bordered-section
+  .row
+    .span3
+      %h3{:style => "margin-top: 0px"} Details
+      - if can? :manage, current_user.current_organization
+        = link_to "Edit", edit_organization_path(@organization), {:class => "btn"}
+    .span9
+      %ul.kv
+        %li.row-fluid
+          .key.span3 Organization Name
+          .value.span9= @organization.name
+        %li.row-fluid
+          .key.span3 Email
+          .value.span9= @organization.email
+        %li.row-fluid
+          .key.span3 Time Zone
+          .value.span9= @organization.time_zone
+
+.bottom-room.bordered-section
+  = render :partial => "kits/list", :locals => { :organization => @organization }
+
+.bottom-room.bordered-section
+  = render :partial => "user_memberships/list", :locals => { :organization => @organization }

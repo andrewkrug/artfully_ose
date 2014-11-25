@@ -1,0 +1,28 @@
+!!! 5
+%html{:lang => "en", "ng-app" => "artfully"}
+  %head
+    %title= "#{yield :title} : #{t 'artfully.page_title'}"
+    :plain
+      <link href='http://fonts.googleapis.com/css?family=Open+Sans+Condensed:300' rel='stylesheet' type='text/css'>
+      <link href='http://fonts.googleapis.com/css?family=Sanchez' rel='stylesheet' type='text/css'>
+    = favicon_link_tag
+    = stylesheet_link_tag "bootstrap", :media => :all
+    = stylesheet_link_tag "application"
+    = stylesheet_link_tag :printing, :media => :print
+    = render 'layouts/custom_css_includes'
+    = csrf_meta_tag
+    = render :partial => 'layouts/google_analytics'
+  %body{'data-controller' => controller.controller_path, 'data-action' => controller.action_name}
+    = render :partial => 'layouts/menu'
+    .container
+      #heading= yield :header
+      = render :partial => 'layouts/flash', :locals => { :flash => flash }
+      - flash.discard
+      = content_for?(:menu_sub_template) ? yield(:menu_sub_template) : yield
+      = render 'layouts/footer'
+
+    = javascript_include_tag 'application'
+    = render 'layouts/custom_js_includes'
+    = yield :custom_js
+    = render :partial => "shared/preload_assets"
+    #footnotes_holder

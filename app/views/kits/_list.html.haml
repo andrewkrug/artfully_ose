@@ -1,0 +1,9 @@
+.row.bottom-room
+  .span3
+    %h3{:style => "margin-top: 0px"} Kits
+  .span9
+    %ul
+      %li Paid Ticketing
+      %li People
+      %li= link_to "Membership", [:edit, @organization.membership_kit], :id => "configure_#{@organization.membership_kit.type.underscore}"
+      %li= link_to "Passes", [:edit, @organization.passes_kit], :id => "configure_#{@organization.passes_kit.type.underscore}"

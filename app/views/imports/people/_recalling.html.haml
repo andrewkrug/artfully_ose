@@ -1,0 +1,15 @@
+.row
+
+  .span4
+    %h3 Recalling Contacts
+    %p= link_to "Back to imports/exports", imports_path, :class => "btn"
+
+  .span8
+    %h3 This import is currently being recalled.
+    %p This may take a little while. Thank you for your patience.
+
+:javascript
+
+  setTimeout(function () {
+    window.location.reload();
+  }, 5000);

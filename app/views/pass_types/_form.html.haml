@@ -1,0 +1,76 @@
+=form_for @pass_type, :as => :pass_type, :html => { :class => 'form-horizontal' } do |f|
+
+  %fieldset
+    %legend Basics
+    .control-group
+      = f.label :name, "Name", :class => 'control-label'
+      .controls
+        = f.text_field :name, :class => 'input span6'
+    .control-group
+      = f.label :description, "Description", :class => 'control-label'
+      .controls
+        = f.text_area :description, :rows => "5", :class => "span6"
+
+    .control-group
+      = f.label :starts_at, "Pass Starts", :class => 'control-label'
+      .controls
+        = f.text_field :starts_at, :value => "#{(l @pass_type.starts_at, :format => :date_for_input) unless @pass_type.starts_at.nil?}", :class => :datepicker
+    .control-group
+      = f.label :ends_at, "Pass Ends", :class => 'control-label'
+      .controls
+        = f.text_field :ends_at, :value => "#{(l @pass_type.ends_at, :format => :date_for_input) unless @pass_type.ends_at.nil?}", :class => :datepicker
+
+  %fieldset
+    %legend Pricing
+    .control-group
+      = f.label :tickets_allowed, "Number of Tickets", :class => 'control-label'
+      .controls
+        = f.text_field :tickets_allowed, :class => 'span2'
+    .control-group
+      = f.label :price, "Price", :class => 'control-label'
+      .controls
+        = f.text_field :price, :class => 'span2 section-price currency'
+
+    =render :partial => "pass_types/pass_type_fees", :locals => {:f => f}
+
+  %fieldset
+    %legend Storefront Copy
+    .control-group
+      = f.label :thanks_copy, :class => 'control-label' do
+        Thanks Message
+        .tip.muted Thanks message will appear on the confirmation page after the patron completes purchase of the pass.
+      .controls
+        = f.text_area :thanks_copy, :rows => "5", :class => "span6"
+    .control-group
+      = f.label :email_copy, :class => 'control-label' do
+        Email Message
+        .tip.muted Email message will be included in the patron's pass details email.
+      .controls
+        = f.text_area :email_copy, :rows => "5", :class => "span6"
+
+  %fieldset
+    %legend Sales
+    .control-group
+      = f.label :fee, "Sales Start", :class => 'control-label'
+      .controls
+        = f.text_field :sales_start_at, :value => "#{(l @pass_type.sales_start_at, :format => :date_for_input) unless @pass_type.sales_start_at.nil?}", :class => :datepicker
+    .control-group
+      = f.label :fee, "Sales End", :class => 'control-label'
+      .controls
+        = f.text_field :sales_end_at, :value => "#{(l @pass_type.sales_end_at, :format => :date_for_input)  unless @pass_type.sales_end_at.nil?}", :class => :datepicker
+
+    .control-group
+      = f.label :on_sale, :class => 'control-label' do
+        Show On Storefront
+        .tip.muted If checked, this will be available on your
+        =link_to "Pass Storefront", store_passes_path(current_user.current_organization.cached_slug), :target => "_blank"
+      .controls
+        %label
+          = f.check_box :on_sale
+    .form-actions
+      =f.submit "Save", :class => "btn btn-primary"
+      =link_to "Cancel", pass_types_path, :class => "btn"
+
+-content_for :custom_js do
+  :javascript
+    $(document).ready(function() { touchCurrency(); })

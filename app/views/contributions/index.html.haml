@@ -1,0 +1,37 @@
+- in_section :transactions
+- content_for :header do
+  %h1 Donations
+
+#donations-search
+  = form_tag contributions_path, :method => :get, :class => 'well form-inline' do
+    .pull-left
+      = label_tag :start, "From", :class => "control-label"
+      = text_field_tag :start,"#{l @search.start, :format => :date_for_input}", :class => 'datepicker input-small'
+      = label_tag :stop, "To", :class => "control-label"
+      = text_field_tag :stop, "#{l @search.stop, :format => :date_for_input}", :class => 'datepicker input-small'
+    .pull-right
+      = submit_tag "Search", :class => "btn"
+      = submit_tag "Download", :class => "btn"
+
+- unless @search.results.empty?
+  #donations
+    %table.table
+      %thead
+        %tr	
+          %th Order
+          %th Time
+          %th Person
+          %th.right Total Contribution
+          %th.right Non-deductible
+      %tbody
+        - @search.results.each do |order|
+          - order.items.select(&:donation?).each do |item|
+            %tr
+              %td= link_to order.id, order_path(order.id)
+              %td= l order.created_at_local_to_organization
+              %td= link_to_person order.person
+              %td.right= number_as_cents item.total_price
+              %td.right= number_as_cents item.nongift_amount
+    = will_paginate(@search.results)
+- else
+  %h4= "No donations found between #{l @search.start} and #{l @search.stop}"

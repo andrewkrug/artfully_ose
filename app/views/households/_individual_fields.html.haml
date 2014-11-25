@@ -1,0 +1,8 @@
+.fields.individual-fields
+  .control-group
+    .controls
+      = text_field_tag "", "", :placeholder => "Individual", :class => 'input-medium individual-name-input'
+      = hidden_field_tag "individuals[]", "", :class => 'individual-id'
+      %span.remove-fields-link
+        %i.fa.fa-minus-circle.icon-gray
+        = link_to "remove", "#", :onclick => "$(this).closest('.individual-fields').remove(); return false;"

@@ -1,0 +1,37 @@
+@mixin shadow($color: #333333)
+  -moz-box-shadow: 0px 2px 2px $color
+  -webkit-box-shadow: 0px 2px 2px $color
+  box-shadow: 0px 2px 2px $color
+
+@mixin top-bottom-shadow($color: #333333)
+  -moz-box-shadow: 0 8px 2px -3px $color
+  -webkit-box-shadow: 0 8px 2px -3px $color
+  box-shadow: 0 8px 2px -3px $color
+
+@mixin gradient($start, $finish, $offset-start: 0%, $offset-finish: 100%)
+  background: $start
+  background: -moz-linear-gradient(top, $start $offset-start, $finish $offset-finish)
+  background: -webkit-gradient(linear, left top, left bottom, color-stop($offset-start, $start), color-stop($offset-finish, $finish))
+  background-image: -khtml-gradient(linear, left top, left bottom, from($start), to($finish))
+  background-image: -moz-linear-gradient(top, $start, $finish)
+  background-image: -ms-linear-gradient(top, $start, $finish)
+  background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, $start), color-stop(100%, $finish))
+  background-image: -webkit-linear-gradient(top, $start, $finish)
+  background-image: -o-linear-gradient(top, $start, $finish)
+  background-image: linear-gradient(top, $start, $finish)
+
+@mixin rounded-corners($top, $right, $down, $left)
+  -moz-border-radius: $top $right $down $left
+  -webkit-border-radius: $top $right $down $left
+  border-radius: $top $right $down $left
+
+@mixin inset-text($color: #fff)
+  color: $color
+  text-shadow: -1px -1px 0 rgba(0, 0, 0, 0.3)
+
+@mixin opacity($opacity)
+  opacity: $opacity
+  -moz-opacity: $opacity
+  -khtml-opacity: $opacity
+  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=" + round($opacity*100) + ")"
+  filter: "alpha(opacity=" + round($opacity*100) + ")"

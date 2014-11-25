@@ -1,0 +1,38 @@
+.suggested-households
+  - if @by_address.count < 1 && @by_spouse.count < 1
+    %h3 Suggested Households
+    %p
+      There are no suggested households.
+
+  - if @by_address.count > 0
+    %h4 Similar Addresses
+    %table.by-address.table
+      - @by_address.each do |row|
+        - next if row.individuals.empty?
+        %tr
+          %td.people
+            - row.individuals.each do |person|
+              .well.span3
+                %h5= person
+                = person.address
+
+          %td.controls{:style => "width: 80px;"}
+            = link_to "Join", suggested_household_new_household_path(row), :class => "btn btn-primary btn-block"
+            %br
+            = link_to "Ignore", ignore_suggested_households_path(row), :method => :put, :class => "btn btn-danger btn-block"
+
+
+  - if @by_spouse.count > 0
+    %h4 Spouses
+    %table.by-spouse.table
+      - @by_spouse.each do |row|
+        %tr
+          %td.people
+            - row.individuals.each do |person|
+              .well.span3
+                %h5= person
+
+          %td.controls{:style => "width: 80px;"}
+            = link_to "Join", suggested_household_new_household_path(row), :class => "btn btn-primary btn-block"
+            %br
+            = link_to "Ignore", ignore_suggested_households_path(row), :method => :put, :class => "btn btn-danger btn-block"

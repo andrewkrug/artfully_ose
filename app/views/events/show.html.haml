@@ -1,0 +1,68 @@
+- content_for :header do
+  =render :partial=>'header'
+
+.row
+  .span3
+    - in_sub_section :overview
+    =render :partial=>'menu'
+  .span9
+    .row-fluid
+      .span6    
+        = render :partial => "glance", :locals => { :report => @event.glance }       
+      .span6
+        %h3 Next Show
+        = render :partial => "day_date_show", :locals => { :show => @event.next_public_show, :message => "There are no upcoming shows" }
+    .row-fluid
+      .span6
+        #description
+          %h3 Description
+          -unless @event.description.blank?
+            =simple_format @event.description  
+          -else
+            .no-image#add-a-description
+              #text
+                =link_to 'Add an event description', edit_event_path(@event)
+                %p
+                  This will be displayed to patrons when purchasing tickets 
+      .span6
+        %h3 Venue
+        #venue.row-fluid
+          .span6
+            -unless @event.venue.city.blank?
+              =link_to image_tag("http://maps.google.com/maps/api/staticmap?size=140x140&maptype=roadmap&markers=color:red|#{@event.venue.address_as_url_query}&sensor=false&zoom=15"), "http://maps.google.com/maps?q=#{@event.venue.address_as_url_query.html_safe}&z=15"
+            -else
+              .no-image#add-a-venue
+                #text
+                  =icon_tag '07-map-marker'
+                  %br
+                  =link_to 'Add venue address', edit_event_venue_path(@event)
+          .span6
+            %strong=@event.venue.name
+            %div=@event.venue.address1
+            -unless @event.venue.address2.blank?
+              %div=@event.venue.address2
+            %div=@event.venue.city_state_zip_as_string
+    - if @event.destroyable?
+      .row-fluid
+        .span6
+          #delete
+            %h3 Delete
+            %p You can delete this event at any time until you've sold or comped any tickets for it.  Deleting an event will erase all data.  
+            =link_to "Delete This Event", "#deleteEvent", :class => 'btn btn-danger', 'data-toggle' => 'modal'   
+          
+          
+- if @event.destroyable?
+  .modal{:id => "deleteEvent"}
+    .modal-header
+      .close{'data-dismiss'=>'modal'} x
+      .row-fluid
+        .span10
+          %h3="Delete: #{@event.name}"
+    .modal-body
+      %p
+        %strong 
+          Are you sure?
+      %p="Deleting an event <b>CANNOT</b> be reversed.  If you are sure that you want to delete the event named <b>#{@event.name}</b> then confirm by clicking the red button.".html_safe
+      %p
+        &nbsp;
+      =link_to "Yes, Delete This Event", event_path(@event), :method => :delete, :class => 'btn btn-danger'    

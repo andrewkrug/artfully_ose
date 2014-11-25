@@ -1,0 +1,50 @@
+- in_section :dashboard
+
+= render :partial => 'layouts/admin_messages'
+
+.row
+  .span4
+    .well
+      .row-fluid
+        .span4
+          = gravatar_image_tag(current_user.email, :alt => 'User icon', :class => 'dashboard-grav', :gravatar => { :size => 64 })
+        .span8
+          - if current_user.is_in_organization?          
+            .email
+              %b= "#{truncate(current_user.email, :length => 28, :separator => ' ', :omission => '...')}"
+
+            .link= link_to "Account Administration", organization_path(current_user.current_organization)
+            .link= link_to "Sign Out", destroy_user_session_path
+          - else
+            You are not in an organization yet.  Ask your organization administrator to add you, or
+            =link_to "create your own.", new_organization_path
+
+    %h3 Events
+    - unless @events.blank?
+      %ul#event-list.row-fluid
+        - @events.each do |event|
+          %li.row-fluid.event-list-item{:style => "margin-left: 0px; margin-right:10px'"}
+            .span12
+              .row-fluid
+                .span4.event-icon-container
+                  = render :partial => 'shared/event_image_icon', :locals => { :event => event }
+                .span8
+                  %h4.event-link= link_to event.name, event_path(event), :title => 'event-name'
+                  %ul.mini-stats
+                    %li= "#{pluralize event.sold, 'ticket'} sold"
+                    %li= "#{pluralize event.on_sale, 'ticket'} on sale"
+                    %li= "#{number_as_cents(event.sales_total)} total sales"
+
+    -if @events.blank?
+      .no-image#add-a-description
+        #text
+          =link_to 'Create a new event', new_event_path
+          %p
+            Creating an event is the first step toward scheduling shows and selling tickets. 
+    -else
+      = link_to "Create Event", new_event_path, :class => "btn btn-primary"
+      %span.pull-right
+        =icon_link_to("View All Events", events_path, 'fa-arrow-right', 'btn', '')
+
+  .span8
+    =render :partial => 'recent_activity'

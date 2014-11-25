@@ -1,0 +1,25 @@
+.row
+  .span4
+    %p This import was created at #{l import.created_at}, but has since been recalled.
+    %p= link_to "Back to imports/exports", imports_path, :class => "btn"
+
+  .span8
+    .well
+      %h3 This import has been recalled.
+
+    -unless @messages.empty?
+      %h4 These people had actions or orders, so we weren't able to delete them.
+      %table.table.table-bordered.table-striped
+        %tr
+          %th{:width => 250} Email
+          %th First
+          %th Last
+          %th 
+        - @messages.each_with_index do |message, index|
+          - unless message.person.nil?
+            %tr
+              %td=message.person.email
+              %td=message.person.first_name
+              %td=message.person.last_name
+              %td=icon_link_to "", person_path(message.person), 'fa-share', '', ''
+      = will_paginate @messages, :param_name => 'messages_page'

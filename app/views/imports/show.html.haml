@@ -1,0 +1,6 @@
+- in_section :imports
+
+- content_for :header do
+  %h1= t(".heading", :default => "Imports")
+
+= render :partial => "imports/#{@import.kind}/#{@import.status}", :locals => {:import => @import}

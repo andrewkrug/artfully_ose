@@ -1,0 +1,49 @@
+- in_section :transactions
+- content_for :header do
+  %h1 Orders
+
+.order-search
+  = form_tag orders_path, {:method => :get, :class => 'super-search form-search'} do
+    = text_field_tag :search, "", :placeholder => "Enter a patron name, event, or order number...", :class => "span6"
+    = submit_tag "Search", :class => "btn"
+    - if !params["search"].nil?
+      = submit_tag "Download", :class => "btn"
+
+#orders-table
+  - if !params["search"].nil? && @results.empty?
+    %p No orders matched your search.
+  - elsif @results.nil?
+    -#Case needed for Cucumber testing
+  - else
+    -if params["search"].nil?
+      %h3 Recent Orders
+    -else
+      %h3 Search Results
+
+    #orders
+      %table.standalone.zebra.table
+        %thead
+          %tr
+            %th ID
+            %th Person
+            %th Order Date
+            %th Event
+            %th Total
+        %tbody
+          -@results.each do |order|
+            %tr
+              %td=link_to "#{order.id}", order_path(order)
+              %td= link_to_person order.person
+              -unless order.created_at.nil?
+                %td= l order.created_at_local_to_organization
+              -else
+                %td
+              -if order.items.size > 0 and "Ticket" == order.items.first.product_type
+                -ticket = Ticket.find(order.items.first.product_id)
+                %td=link_to "#{ticket.event.name}", event_path(ticket.event.id)
+              -else
+                %td
+              %td= number_as_cents order.total
+
+      =will_paginate @results
+

@@ -1,0 +1,8 @@
+%tr
+  %td.relationship_starred.starable{:id => [person.id, 'relationship', rel.id]}
+    -if rel.starred?
+      &#10029;
+    -else
+      &#10025;
+  %td.relationship_type=rel.relationship(person)
+  %td.relationship_person=link_to_person rel.person(person)

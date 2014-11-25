@@ -1,0 +1,42 @@
+%fieldset
+  .control-group
+    .controls
+      %label.checkbox
+        = f.check_box :active
+        Pass is active and can be used now.
+  .control-group
+    = f.label :limit_per_pass, "Ticket Limit per Pass", :class => 'control-label'
+    .controls
+      = f.text_field :limit_per_pass, :class => "span1"
+      %p.muted
+        Leave blank for unlimited.
+
+%fieldset
+  .control-group
+    = f.label :ticket_types, "Allowed Ticket Types", :class => 'control-label'
+    .controls
+      = f.select :ticket_types, options_for_select(@ticket_type_names, @events_pass_type.ticket_types.to_a), {}, {'data-placeholder' => "Select a Ticket Type", :class => 'input chosen', :multiple => true}
+  .control-group
+    = f.label :excluded_shows, "Excluded Shows", :class => 'control-label'
+    .controls
+      = f.select :excluded_shows, options_for_select(@event.shows.collect {|s| [l(DateTime.parse(s.local_datetime), :format => :day_time), s.id] }, @events_pass_type.excluded_shows.collect(&:to_i)), {}, {'data-placeholder' => "No Shows Selected", :class => 'input chosen', :multiple => true}
+
+- content_for :custom_js do
+  = stylesheet_link_tag 'jquery/chosen'
+  = javascript_include_tag 'jquery-lib/chosen.jquery'
+
+  :javascript
+    $(document).ready(function() {
+      $('.chosen').chosen();
+
+      $('#events_pass_type_limit_per_pass').popover({title: "Heads Up!", content: "Setting this to zero means patrons cannot use this pass to buy tickets for this event.", placement: "right", trigger: "manual"});
+
+      $('.chosen').chosen();
+      $('#events_pass_type_limit_per_pass').keyup(function () {
+        if (parseInt($('#events_pass_type_limit_per_pass').val()) == 0) {
+          $('#events_pass_type_limit_per_pass').popover('show')
+        } else {
+          $('#events_pass_type_limit_per_pass').popover('hide')
+        }
+      })
+    });

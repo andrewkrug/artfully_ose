@@ -1,0 +1,108 @@
+- in_section :events
+- content_for :header do
+  =render :partial=>'events/header'
+
+.row
+  .span3
+    - in_sub_section :details
+    =render :partial=>'menu'
+  .span9
+    = render "shared/error_messages", :target => @event
+
+    = form_for( @discount, :html => { :class => 'form-horizontal' }) do |f|
+
+      %fieldset
+        %legend New Discount
+
+        .control-group
+          = f.label :code, "Discount Code", :class => 'control-label'
+          .controls
+            = f.text_field :code, :class => 'input', :placeholder => "COWBELL"
+            %p.help-block 4-12 characters, not case sensative
+
+        .control-group
+          .controls
+            %label.checkbox
+              = f.check_box :active
+              Discount is active and can be used now
+
+
+      / %fieldset
+      /   %legend
+      /   .control-group
+      /     = f.label :show_ids, "Discount is valid for these shows", :class => 'control-label'
+      /     .controls
+      /       = f.select :show_ids, options_for_select(@event.shows.map {|s| [s.datetime.strftime("%D %l:%M%P"), s.id] }), {:include_blank => "All Shows"}, {'data-placeholder' => "All Shows", :class => 'input chosen', :multiple => true}
+
+      /   .control-group
+      /     = f.label :promotion_type, :class => 'control-label'
+      /     .controls
+      /       %label.radio
+      /         = f.radio_button :promotion_type, 'two-for-one', :class => 'promotion-type-radio'
+      /         Two for the price of one
+      /       %label.radio
+      /         = f.radio_button :promotion_type, 'custom', :class => 'promotion-type-radio'
+      /         Custom discount
+
+      /   %legend
+      /   = f.fields_for :discount_sections do |builder|
+      /     = render 'discount_section_fields', :f => builder
+
+      /   .control-group
+      /     .controls
+      /       %i.fa.fa-plus-cirlce.icon-gray
+      /       = link_to_add_fields 'Add another Ticket Type', f, :discount_sections, "", "toggleAppropriateFieldsAccordingToPromotionType();"
+
+
+      /   %legend
+
+      /   .control-group
+      /     .controls
+      /       %label.radio
+      /         = f.radio_button :unlimited_capacity, true, :checked => true
+      /         Unlimited discounted tickets
+      /       %label.radio
+      /         = f.radio_button :unlimited_capacity, false
+      /         Only #{f.text_field :limit, :class => 'span1', :placeholder => 10} tickets can be sold at this discount
+
+      /   .control-group
+      /     .controls
+      /       Discount requires a minimum purchase of
+      /       = f.text_field :minimum_purchase, :class => 'span1', :placeholder => "1"
+      /       ticket
+          
+      .form-actions
+        = f.submit "Save", :class => 'btn'
+
+/ - content_for :custom_js do
+/   = stylesheet_link_tag 'jquery/chosen'
+/   = javascript_include_tag 'jquery-lib/chosen.jquery'
+
+/   :javascript
+/     function toggleAppropriateFieldsAccordingToPromotionType() {
+/       if ($('.promotion-type-radio:checked').val() == 'custom') {
+/         $('.custom-discount-price').show();
+/       } else {
+/         $('.custom-discount-price').hide();
+/       }
+/     }
+
+/     $(document).ready(function() {
+/       toggleAppropriateFieldsAccordingToPromotionType();
+
+/       // use the fancy multi-select
+/       $('.chosen').chosen();
+
+/       // update the regular price display when someone changes the ticket dropdown
+/       $(document).on('change', '.section-select', function(event) {
+/         var price = $(this).find('option:selected').attr('data-price');
+/         var price_span = $(this).closest('.section-fields').find('.regular-price');
+/         price_span.text(price);
+/         price_span.formatCurrency();
+/       })
+
+/       // show discounted price field when selecting "custom discount"
+/       $(document).on('click', '.promotion-type-radio', function(event) {
+/         toggleAppropriateFieldsAccordingToPromotionType();
+/       })
+/     })

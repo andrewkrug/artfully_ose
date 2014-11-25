@@ -1,0 +1,160 @@
+- in_section :people
+- content_for :title do
+  #{@person}
+
+=render "people/header"
+
+.row
+  .span12
+    .row-fluid
+      .span6
+        %ul.in-table{'ng-controller' => 'MembershipActionsCtrl'}
+          %li.dropdown{:id => "#menu#bulkactions"}
+            =icon_link_to('Work with...', "#menu#bulkactions", 'fa-asterisk', 'dropdown-toggle dropdown btn', '')
+            =image_tag "loading.gif", :class => 'loading-indicator', 'ng-show' => 'loading'
+            .alert{'ng-show' => 'error'}
+              %button.close{'ng-click' => 'error = false'}
+                &times;
+              ='{{errorMessage}}'
+            %ul.dropdown-menu
+              -# %li= link_to "Full Refund", "#full-refund", 'data-toggle' => 'modal'
+              -# %li= link_to "Partial Refund", "#partial-refund", 'data-toggle' => 'modal'
+              %li
+                = link_to "Change Expiration", "#extend", 'data-toggle' => 'modal'
+              %li
+                = link_to "Change Membership Type", "#change", 'ng-click' => 'change($event)'
+              %li
+                = link_to "Cancel Membership", "#cancel", 'ng-click' => 'cancel($event)'
+      .span6.right
+        = icon_link_to("View Record", person_path(@person), 'fa-share-alt', 'btn', '')
+        -# = link_to "Log In", "#", 'data-toggle' => 'modal', :class => 'btn'
+        = link_to "Reset Password", "#reset-password-modal", 'data-toggle' => 'modal', :class => 'btn btn-danger'
+
+    =form_tag bulk_update_person_memberships_path(@person), :method => :post do
+      #items
+        %table.zebra.table{'ng-init' => "scope = { showExpired: false, expiredStyle: {textDecoration: 'line-through'} }"}
+          %thead
+            %tr
+              %th.grouped-checkbox= check_box_tag :all, nil, false, :class => :checkall
+              %th Membership Type
+              %th Starts
+              %th Expires
+              %th.right Price Paid
+          %tbody
+            - @person.memberships.each do |membership|
+              - if membership.expired?
+                %tr{'ng-show' => 'scope.showExpired', 'ng-style' => 'scope.expiredStyle'}
+                  %td.grouped-checkbox= check_box_tag "membership_ids[]", membership.id, false, :id => "membership_id_#{membership.id}", 'ng-disabled' => 'true'
+                  %td.item-description=membership.membership_type.name
+                  %td.starts-at=l membership.starts_at, :format => :slashed_date
+                  %td.ends-at=l membership.ends_at, :format => :slashed_date
+                  %td.price.right=number_as_cents membership.total_paid
+              - else
+                %tr
+                  %td.grouped-checkbox= check_box_tag "membership_ids[]", membership.id, false, :id => "membership_id_#{membership.id}"
+                  %td.item-description=membership.membership_type.name
+                  %td.starts-at=l membership.starts_at, :format => :slashed_date
+                  %td.ends-at=l membership.ends_at, :format => :slashed_date
+                  %td.price.right=number_as_cents membership.total_paid
+
+      - if @expired_count > 0
+        = link_to "See #{@expired_count} lapsed & expired memberships", '#', 'ng-show' => '!scope.showExpired', 'ng-click' => 'scope.showExpired = true'
+        = link_to "Hide #{@expired_count} lapsed & expired memberships", '#', 'ng-show' => 'scope.showExpired', 'ng-click' => 'scope.showExpired = false'
+
+      #extend.modal
+        .modal-header
+          .close{'data-dismiss'=>'modal'} x
+          %h3 Change Expiration
+        .modal-body
+          .control-group
+            %label Change the expiration of these memberships to:
+            .controls
+              .datepicker-alt-field
+              =hidden_field_tag "ends_at", ""
+        .modal-footer
+          =submit_tag "Change Expiration", :class => "btn btn-success"
+          =link_to "Cancel", "#", :class => "btn", 'data-dismiss'=>'modal'
+
+    #full-refund.modal
+      .modal-header
+        .close{'data-dismiss'=>'modal'} x
+        %h3 Refund Membership
+      .modal-body
+        %p="#{@person} will receive a full refund for these memberships"
+      .modal-footer
+        =link_to "Process Refund", "#", :class => "btn btn-success", 'data-dismiss'=>'modal'
+        =link_to "Cancel", "#", :class => "btn btn-danger", 'data-dismiss'=>'modal'
+
+    #change.modal{'ng-controller' => 'ChangeMembershipController'}
+      =form_tag person_membership_changes_path, :class => "form-horizontal", 'novalidate' => 'novalidate', 'name' => 'changeForm', :method => :post do
+        .modal-header
+          .close{'data-dismiss'=>'modal'} x
+          %h3 Change Membership Type
+        .modal-body
+          .control-group
+            %label.control-label="Selected Memberships"
+            .controls
+              %ol
+                %li{'ng-repeat' => 'membership in selected'}
+                  = hidden_field_tag('membership_ids[]', '{{membership.id}}')
+                  %label='{{membership.type}} - {{membership.price}}'
+          .control-group
+            %label.control-label="New Membership Type"
+            .controls
+              = select_tag :membership_type_id, options_for_membership_types(@membership_types, include_price: true)
+
+          .control-group
+            %label.control-label Payment Method
+            #payment-controls.controls
+              = select_tag :payment_method, options_for_select([%w(Cash cash), %w(Comp comp), ['Credit card', 'credit_card_manual']]), :prompt => '--', 'ng-model' => 'payment_method'
+
+          .control-group{'ng-show' => '!comped()'}
+            %label.control-label Change Fee Per Membership
+            .controls
+              = text_field_tag :price, '0', :class => 'span1 currency', 'ng-model' => 'price', 'ng-change' => 'updateTotal()'
+
+          .control-group{'ng-show' => '!comped()'}
+            %label.control-label Total Change Fee
+            .controls
+              %label.total='{{total}}'
+
+          #payment-info.well{'ng-show' => "!comped() && 'credit_card_manual' == payment_method"}
+            .control-group
+              %label.control-label='Name on Card'
+              .controls= text_field_tag('credit_card_info[name]')
+            .control-group
+              %label.control-label='Card Number'
+              .controls= text_field_tag('credit_card_info[number]')
+            .control-group
+              %label.control-label='Expiration Date'
+              .date_field.controls
+                = select_tag('credit_card_info[month]', options_for_select(1..12), :class => 'input-small inline')
+                = select_tag('credit_card_info[year]', options_for_select(Time.now.year..Time.now.year + 10), :class => 'input-small inline')
+
+        .modal-footer
+          = submit_tag "Process Membership Change", :class => "btn btn-success"
+          =link_to "Cancel", "#", :class => "btn", 'data-dismiss'=>'modal'
+
+    #partial-refund.modal
+      .modal-header
+        .close{'data-dismiss'=>'modal'} x
+        %h3 Refund Membership
+      .modal-body
+        .control-group
+          %label Enter refund amount:
+          .controls
+            =text_field_tag "whatever", "", :class => "currency"
+        %p="#{@person} will receive a partial refund for the above amount and these memberships will be cancelled."
+      .modal-footer
+        =link_to "Process Refund", "#", :class => "btn btn-success", 'data-dismiss'=>'modal'
+        =link_to "Cancel", "#", :class => "btn btn-danger", 'data-dismiss'=>'modal'
+
+    #reset-password-modal.modal
+      .modal-header
+        .close{'data-dismiss'=>'modal'} x
+        %h3 Reset Password
+      .modal-body
+        %p="This member will receive an email with a link to reset their password so they can log in to their member dashboard."
+      .modal-footer
+        =link_to "Send Password Reset", reset_password_person_path(@person), :class => "btn btn-primary", 'data-dismiss'=>'modal', :method => :post
+        =link_to "Cancel", "#", :class => "btn", 'data-dismiss'=>'modal'

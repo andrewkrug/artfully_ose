@@ -1,0 +1,9 @@
+.row
+  .span4
+    %p This import was created at: <br> #{l import.created_at}
+    %p= link_to "Back to imports/exports", imports_path, :class => "btn"
+
+  .span8    
+    .well
+      %h3 This file has been imported into Artful.ly.
+      %p #{pluralize @import.rows.count, "orders"} were imported.  

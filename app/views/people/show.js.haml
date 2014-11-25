@@ -1,0 +1,5 @@
+$('#action-list tbody').append("#{j render(:partial => 'actions/action', :collection => @actions)}");
+- if @actions.next_page
+  $('#endless-scroll-pagination').replaceWith("#{j will_paginate(@actions, :id => 'endless-scroll-pagination')}");
+- else
+  $('#endless-scroll-pagination').remove();

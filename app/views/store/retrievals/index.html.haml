@@ -1,0 +1,11 @@
+.row
+  .span6.offset3
+    %h1 What's my pass code?
+    %p Enter the email address that you provided when you purchased the pass and we'll send you a reminer email right away.
+    %p
+      &nbsp;
+    %p
+      %form.form-horizontal{:method => "POST", :action => store_retrievals_path(@store_organization.cached_slug)}
+        =text_field_tag :email, ""
+        =submit_tag "Submit", :class => "btn"
+

@@ -1,0 +1,17 @@
+= devise_error_messages!
+
+= form_for resource, :as => resource_name, :url => invitation_path(resource_name), :html => { :method => :put, :class => 'form-horizontal' } do |form|
+  %fieldset
+    %legend Set Your Member Password
+
+    .control-group
+      = form.label :password, :class=>'control-label'
+      .controls= form.password_field :password, autocomplete: 'off'
+
+    .control-group
+      = form.label :password_confirmation, "Retype Password", :class=>'control-label'
+      .controls= form.password_field :password_confirmation, autocomplete: 'off'
+    = form.hidden_field :invitation_token
+    
+    .form-actions
+      = form.submit "Save", :class => "btn"

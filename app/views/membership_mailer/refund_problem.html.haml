@@ -1,0 +1,18 @@
+%h1 Refund Failed
+
+%p
+  Order number: #{@order.id}
+  %br
+  Refund total: -$#{format("%.2f", @amount)}
+  %br
+  %br
+
+- unless @items.empty?
+  There was a problem while attempting to issue a refund for these memberships:
+  %ol.ticket-list
+    - @items.each do |item|
+      %li
+        ="#{item.product.membership_type.name}"
+
+%strong
+  ="#{@message}"

@@ -1,0 +1,12 @@
+%ul.detailed-list.tags{:id => "people-#{subject.id}-tags"}
+  - tags.each do |tag|
+    %li.tag.rounder.deletable= tag
+
+  %li.tag.new-tag= link_to_function '<i class="fa fa-plus-circle"></i> Add tag'.html_safe, "$(this).parent().hide(); $('.new-tag-form').show(); $('#new-tag-field').focus();"
+
+= form_tag person_new_tag_path(subject), :method => :post, :class => 'new-tag-form form-search', :autocomplete => 'off', :style => 'display:none', :remote=>'true' do
+  = hidden_field_tag :subject_id, subject.id, {:id=>'subject-id-field'}
+  -# = text_field_tag :tag, nil, {:id=>'new-tag-field'}
+  = text_field_tag :tag, "", :id=>"new-tag-field", :class => "typeahead", "data-provide"=>"typeahead", "data-items"=>"5", "data-source"=>"[" + @tags_string.html_safe + "]" 
+  = submit_tag "Add Tag", :class => "btn"
+  .tag-error

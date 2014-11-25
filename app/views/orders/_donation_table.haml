@@ -1,0 +1,16 @@
+- unless order.all_donations.empty?
+  -# ToDo: Add controls for refunding donations
+  #donations
+    = form_tag do
+      %table.standalone.zebra
+        %thead
+          %tr
+            %th.grouped-checkbox= check_box_tag :all, nil, false, :class => :checkall
+            %th Type
+            %th Amount
+        %tbody
+          - order.all_donations.each do |item|
+            %tr
+              %td.grouped-checkbox= check_box_tag "item_#{item.id}", item.id, false, :disabled => true
+              %td Donation
+              %td= number_as_cents item.price

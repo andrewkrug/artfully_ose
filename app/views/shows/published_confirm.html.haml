@@ -1,0 +1,20 @@
+- in_section :events
+- content_for :header do
+  %h1 Show this Show
+  %h2 Add this show to the widget
+
+.row
+  .span12
+    %h3= @show.event.name
+    %h4= l(@show.datetime_local_to_event)
+    %p= "You are showing the #{l @show.datetime_local_to_event} showing of #{@show.event.name}."
+
+    = form_tag published_event_shows_path(@show.event) do |form|
+      = hidden_field_tag :confirm, :true
+      = hidden_field_tag :show_id, @show.id
+      %p If this is correct, please click confirm it by clicking
+      = submit_tag "Publish"
+
+    %p
+      If this is not correct,
+      = link_to "cancel this action and return to the show page", event_show_url(@show.event, @show)

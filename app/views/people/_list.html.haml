@@ -1,0 +1,12 @@
+- if people.empty?
+  %p No results found.
+- else
+  %table.table.people-list
+    - people.each do |person|
+      %tr
+        %td.name
+          = link_to_person person
+          %br
+          = person.email
+        %td.tags
+          = render :partial => 'shared/tags_uneditable', :locals => { :tag_list => person.tag_list }

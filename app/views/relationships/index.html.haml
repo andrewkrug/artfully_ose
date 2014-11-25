@@ -1,0 +1,32 @@
+- in_section :people
+- content_for :title do
+  #{@person}
+
+= render "people/header"
+
+.row
+  .span12
+    = icon_link_to("View Record", polymorphic_path(@person), 'fa-share-alt', 'btn', '')
+
+.row
+  .span2
+    %h4 Relations
+    %ul
+      %li= link_to("All", polymorphic_url([@person, :relationships]))
+      - relationship_counts_for(@person).each do |relation, count|
+        %li== #{link_to("#{relation.description.titleize.pluralize}", polymorphic_url([@person, :relationships], :relation_id => relation.id))} (#{count})
+
+  .span10
+    %h3== #{@relation} Relationships
+    %table.table.people-list
+      - @relationships.each do |relationship|
+        %tr
+          %td.starred.starable{"data-person-id" => relationship.person.id, "data-type" => 'relationship', "data-action-id" => relationship.id, :class => (relationship.starred? ? "active" : "not-active") }
+            &#10029;
+          %td.name
+            = link_to_person(relationship.other)
+            %span.muted= relationship.relation.description.titleize
+            %br
+            = relationship.other.email
+          %td.tags
+            = render :partial => 'shared/tags_uneditable', :locals => { :tag_list => relationship.other.tag_list }

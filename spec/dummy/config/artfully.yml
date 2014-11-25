@@ -1,0 +1,9 @@
+# ticket_fee: the fee applied to each ticket sale in CENTS. Put down 200 for a $2.00 ticket fee.
+
+---
+development:
+  ticket_fee: 200
+  contact_email: envvar@yahoo.com
+test:
+  ticket_fee: 200
+  contact_email: envvar@yahoo.com

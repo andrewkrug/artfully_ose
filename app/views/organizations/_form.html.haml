@@ -1,0 +1,25 @@
+%fieldset
+  .control-group
+    = form.label :name, "Organization Name", :class => 'control-label'
+    .controls
+      = form.text_field :name, :value => @organization.name, :required => true, :class => 'input-xlarge no-fa'
+
+  .control-group
+    = form.label :email, 'Organization Email', :class=>'control-label'
+    .controls
+      = form.email_field :email, :placeholder => 'contact@organization.org', :required => true, :class => 'input-xlarge email-popup', "data-content" => "Your patrons will be able to respond to this email address when receiving ticket/donation receipts. You can change this at any time."
+      %span.help-inline (default contact for your patrons)
+
+  .control-group
+    = form.label :cached_slug, 'Storefront URL', :class=>'control-label'
+    .controls
+      = form.text_field :cached_slug, :placeholder => @organization.cached_slug, :required => true, :class => 'input-xlarge'
+
+  .control-group
+    = form.label :time_zone, "Time Zone", :class => 'control-label'
+    .controls= form.time_zone_select :time_zone, ActiveSupport::TimeZone.us_zones, {:default => "Eastern Time (US & Canada)"}, {:class => 'span5', :required => true}
+
+  .control-group
+    %label.controls.checkbox
+      = form.check_box :receive_daily_sales_report
+      Send me emails summarizing my sales for each day.

@@ -1,0 +1,37 @@
+= stylesheet_link_tag 'boxoffice'
+- content_for :custom_js do
+  = javascript_include_tag 'boxoffice'
+  :javascript
+    $(document).ready(function() {
+      // we wait to do this transition so
+      // users can see they have 2 nav options
+      setTimeout(
+        function(){
+          if(#{params[:render].present?}) {
+            switchBetweenBoxofficeAndDoorlist('#' + '#{params[:render]}');
+          } else {
+            // show doorlist
+            switchBetweenBoxofficeAndDoorlist('#doorlist');
+          }
+        }, 500)
+    })
+
+.row
+  .span12
+    %h3.event-name
+      = link_to @event.name, @event
+      %span.event-time= link_to l(@show.datetime_local_to_event, :format => :day_time), event_show_path(@event,@show)
+    %ul.nav.nav-pills.page-nav
+      %li= link_to 'Door List', '#doorlist'
+      %li= link_to 'Sell Tickets', '#boxoffice'
+
+:css
+  .footer {
+    display:none;
+  }
+
+#page-holder
+  #doorlist.page{'data-partial-href' => "#{door_list_event_show_sales_path(@event,@show)}"}
+    = render 'doorlist'
+  #boxoffice.page
+    = render 'boxoffice'

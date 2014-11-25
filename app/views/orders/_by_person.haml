@@ -1,0 +1,25 @@
+%table.standalone.zebra.table
+  %thead
+    %tr
+      %th Order
+      %th Time
+      %th Event and Show
+      %th Amount
+  %tbody
+    - if orders.empty?
+      %tr
+        %td{:colspan => 4}
+          No orders for this person
+    - orders.each do |order|
+      - order.items.select(&:ticket?).each_with_index do |item, index|
+        %tr
+          - if index == 0
+            - rowspan = order.items.select(&:ticket?).size
+            %td{:rowspan => rowspan}= link_to order.id, order_path(order.id)
+            %td{:rowspan => rowspan}= l(order.created_at_local_to_organization, :format => :short)
+          %td 
+            ="#{item.product.event.name}"
+            %br
+            ="#{l item.product.show.datetime_local_to_event}"
+          %td= number_as_cents item.price
+= will_paginate(orders)

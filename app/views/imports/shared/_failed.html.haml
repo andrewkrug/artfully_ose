@@ -1,0 +1,18 @@
+.well
+  .row-fluid
+    .span2
+      =icon_tag('184-warning@2x', {:alt => "Import error"})
+    .span10
+      %h3 The was an error during the import
+
+%ul
+  %p
+    We had to stop the import because we found the following errors.  No records have been imported.  Please correct the errors and 
+    =link_to "try your import", imports_path
+    again.
+    
+  - import.import_errors.each do |error|
+    %li
+      %h4= error.error_message
+      - if error.row_data
+        %p= error.row_data.inspect

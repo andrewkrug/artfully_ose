@@ -1,0 +1,129 @@
+- content_for :preview_text do
+  Your Daily Order Report of
+  = @tix.organization.name.html_safe
+  =l @tix.start_date, :format => :date
+  = number_to_currency((@tix.total + @donations.total) / 100.0)
+
+:css
+  th.order     { width: 60px; }
+  th.customer  { width: 140px;}
+  th.total     { width: 80px; text-align: right }
+  td.total     { text-align: right }
+  td           { vertical-align: top}
+  table        { margin-bottom: 50px }
+
+%h1
+  Daily Total: #{number_to_currency((@tix.total + @donations.total) / 100.0)}
+%h2
+  #{@tix.organization.name}: #{l @tix.start_date, :format => :date}
+
+- if !@tix.rows.empty?
+  %h3 Tickets: #{number_to_currency(@tix.total / 100.0)}
+  %table.tabular-data{:cellspacing => "0"}
+    %tr
+      %th.order Order
+      %th.customer Customer
+      %th Details
+      %th.total Total
+    - @tix.rows.each do |row|
+      %tr
+        %td.order-number= link_to row.id, order_url(id: row.id)
+        %td= link_to row.person, person_url(id: row.person_id)
+        %td
+          = row.ticket_details
+          %br 
+          %br
+          = row.special_instructions
+        %td.total= row.total
+
+- if !@tix.exchange_rows.empty?
+  %h3 Exchanges
+  %table.tabular-data{:cellspacing => "0"}
+    %tr
+      %th.order Order
+      %th.customer Customer
+      %th Details
+    - @tix.exchange_rows.each do |row|
+      %tr
+        %td.order-number= link_to row.id, order_url(id: row.id)
+        %td= link_to row.person, person_url(id: row.person_id)
+        %td= row.ticket_details
+
+- if !@donations.rows.empty?
+  %h3 Donations: #{number_to_currency(@donations.total / 100.0)}
+  %table.tabular-data{:cellspacing => "0"}
+    %tr
+      %th.order Order
+      %th.customer Customer
+      %th Details
+      %t.total Total
+    - @donations.rows.each do |row|
+      %tr
+        %td.order-number= link_to row.id, order_url(id: row.id)
+        %td= link_to row.person, person_url(id: row.person_id)
+        %td
+        %td.total= row.total
+
+- if !@passes.rows.empty?
+  %h3 Passes: #{number_to_currency(@passes.total / 100.0)}
+  %table.tabular-data{:cellspacing => "0"}
+    %tr
+      %th.order Order
+      %th.customer Customer
+      %th #
+      %th Pass
+      %th.total Total
+    - @passes.rows.each do |row|
+      %tr
+        %td.order-number= link_to row.id, order_url(id: row.id)
+        %td= link_to row.person, person_url(id: row.person_id)
+        %td=row.quantity
+        %td=row.pass_type
+        %td.total= row.total
+
+- if !@memberships.rows.empty?
+  %h3 Memberships: #{number_to_currency(@memberships.total / 100.0)}
+  %table.tabular-data{:cellspacing => "0"}
+    %tr
+      %th.order Order
+      %th.customer Customer
+      %th #
+      %th Membership
+      %th.total Total
+    - @memberships.rows.each do |row|
+      %tr
+        %td.order-number= link_to row.id, order_url(id: row.id)
+        %td= link_to row.person, person_url(id: row.person_id)
+        %td=row.quantity
+        %td=row.membership
+        %td.total= row.total
+
+  - if @memberships.lapsed_memberships.any?
+    %h3 Membership Lapses
+    %table.tabular-data{:cellspacing => "0"}
+      %tr
+        %th.customer Customer
+        %th Membership
+      - @memberships.lapsed_memberships.each do |membership_lapse|
+        %tr
+          %td.order-number= link_to membership_lapse.member.person, person_url(membership_lapse.member.person)
+          %td=membership_lapse.membership_type.name
+
+
+- if @tix.rows.empty?
+  %p There were no ticket orders placed.
+
+- if @donations.rows.empty? && @tix.organization.has_kit?(:regular_donation)
+  %p There were no donations made.
+
+- if @passes.rows.empty? && @tix.organization.has_kit?(:passes)
+  %p There were no passes purchased.
+
+- if @memberships.rows.empty? && @tix.organization.has_kit?(:membership)
+  %p There were no memberships purchased.
+
+- content_for :footer do
+  = render :partial => "fine_print"
+  %p
+    To turn off this daily email report,
+    = link_to "edit your organization here.", edit_organization_url(@tix.organization)

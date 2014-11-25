@@ -1,0 +1,15 @@
+- in_section :events
+- content_for :header do
+  %h1 Door List
+  %h2= "#{@show.event.name} at #{@show.event.venue.name}"
+  %h3= "#{l @show.datetime_local_to_event, :format => :long_with_day}"
+
+  .from-here
+    =link_to "Download as CSV", door_list_event_show_path(@event, @show, format: "csv"), :class => "btn"
+    =link_to "Download as PDF", door_list_event_show_path(@event, @show, format: "pdf"), :class => "btn"
+    =icon_link_to("Return to show", event_show_path(@show.event, @show), 'fa-share', 'btn', '')
+
+.row
+  .span12
+    - unless @door_list.items.empty?
+      = render :partial => 'shared/door_list_table', :locals => { :door_list_items => @door_list.items}

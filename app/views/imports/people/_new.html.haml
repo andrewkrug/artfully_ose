@@ -1,0 +1,160 @@
+- in_section :imports
+- content_for :header do
+  %h1 Import People
+
+.row
+  .span3
+    %h2
+      %span.badge.badge-big.badge-info 1
+      Template
+    #{link_to 'Download an empty CSV file', template_imports_path(:type => "people")} with these headers already filled in.
+  
+  .span6
+    %h2
+      %span.badge.badge-big.badge-info 2
+      Format
+    .bottom-room= render :partial => "imports/shared/knowledge_base"
+    %table.table.table-bordered.table-striped.docs
+      %tr
+        %td.field-slim Email
+        %td="The email address of the person. People records in Artful.ly have unique email addresses, so if you're importing an email address that has already been assigned to a person, we'll merge the data for you. #{link_to "Read more", "#merging", {'data-toggle' => 'modal'}}".html_safe
+      %tr
+        %td.field-slim First Name
+        %td The first name of the person.
+      %tr 
+        %td.field-slim Last Name
+        %td The last name of the person.
+      %tr
+        %td.field-slim Company Name
+        %td
+          If this is a company record, the name of the company. Otherwise,
+          it's the name of the company that the person works for.
+
+    %h3 Optional Fields
+    %table.table.table-bordered.table-striped.docs
+      %tr
+        %td.field-slim Salutation
+        %td The person's salutation (Mr., Mrs., etc...)
+      %tr
+        %td.field-slim Middle Name
+        %td The person's middle name
+      %tr
+        %td.field-slim Suffix
+        %td The person's suffix (MD, Sr, Jr, Esq...)
+      %tr
+        %td.field-slim Title
+        %td The person's title in the company
+      %tr
+        %td.field-slim Address 1
+        %td First line of the person's address
+      %tr
+        %td.field-slim Address 2
+        %td Second line of the person's address
+      %tr
+        %td.field-slim City
+        %td The person's city
+      %tr
+        %td.field-slim State
+        %td The person's state
+      %tr
+        %td.field-slim Zip
+        %td The person's zip code
+      %tr
+        %td.field-slim Country
+        %td The person's country
+      %tr
+        %td.field-slim Phone 1 type
+        %td Work, Home, Cell, Fax, or Other
+      %tr
+        %td.field-slim Phone 1
+        %td The person's first phone number
+      %tr
+        %td.field-slim Phone 2 type
+        %td Work, Home, Cell, Fax, or Other
+      %tr
+        %td.field-slim Phone 2
+        %td The person's second phone number
+      %tr
+        %td.field-slim Phone 3 type
+        %td Work, Home, Cell, Fax, or Other
+      %tr
+        %td.field-slim Phone 3
+        %td The person's third phone number
+      %tr
+        %td.field-slim Website
+        %td The person's website
+      %tr
+        %td.field-slim Twitter
+        %td The person's handle on Twitter
+      %tr
+        %td.field-slim Facebook
+        %td The person's web address on Facebook
+      %tr
+        %td.field-slim LinkedIn 
+        %td The person's web address on LinkedIn
+      %tr
+        %td.field-slim Birth month 
+        %td The person's birth month (April, Apr, or 4)
+      %tr
+        %td.field-slim Birth day 
+        %td The person's birth day
+      %tr
+        %td.field-slim Birth year 
+        %td The person's birth year
+      %tr
+        %td.field-slim Do Not Email 
+        %td Indicate that this person is not to receive email communication from your organization.  Use "true" in this column if the person should not be emailed. This is for your organization's internal use only. The person will still receive purchase and donation receipts from Artful.ly.
+      %tr
+        %td.field-slim Do Not Call 
+        %td Indicate that this person is not to receive phone communication from your organization.  Use "true" in this column if the person should not be called. This is for your organization's internal use only.
+      %tr
+        %td.field-slim Tags
+        %td
+          %span.label.label-success
+            Important!
+          &nbsp Tags you'd like to associate with this person, separated by vertical bars (e.g., "vip|board").
+      %tr
+        %td.field-slim Type
+        %td
+          Individual, Business, Foundation, Government, Nonprofit or Other (for other kinds of companies). It must be one of those options,
+          or it will automatically be set as Individual. This field also changes what the required fields are: Individuals
+          require first name, last name, or email address, and everything else requires either a company name or
+          email address.
+    
+  .span3  
+    %h2
+      %span.badge.badge-big.badge-info 3
+      Upload
+    %p
+      Please only upload
+      %b Comma Separated Values (CSV)
+      files.  We cannot process 
+      %b XLS
+      or
+      %b XLSX
+      files.
+    %p
+      = render :partial => "shared/error_messages", :locals => { :target => @import }
+      = raw s3_http_upload_tag :key => "imports/#{UUID.new.generate}",
+          :content_type => "text/csv",
+          :redirect => new_import_url,
+          :acl => "public-read",
+          :max_filesize => 50.megabytes,
+          :submit_button => '<input type="hidden" value="people"/><div class="cancel-submit"><input id="import_submit" class="btn" name="commit" type="submit" value="Import"></div>'
+
+#merging.modal
+  .modal-header
+    .close{'data-dismiss'=>'modal'} x
+    %h3 Merging People
+  .modal-body
+    %p
+      If you're importing a record whose email address already exists in Artful.ly, Artful.ly will record the new information only when it does not exist already in Artful.ly. New data will not overwrite existing data.
+      %p
+      For example, consider that jim@example.com is in Artful.ly with a first name of Jim but no last name. If you import a file with jim@example.com in it, and a first name of Bill and a last name of Smith, the merged record will be:
+      %p
+        %ul
+          %li Email: jim@example.com
+          %li First: Jim
+          %li Last:  Smith
+  .modal-footer
+    %button.btn.btn-success{'data-dismiss'=>'modal'} OK

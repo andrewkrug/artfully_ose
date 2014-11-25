@@ -1,0 +1,45 @@
+- content_for :title do
+  Buy tickets to #{@event.name}
+
+.container#single-show-container
+  .row
+    .span8  
+
+      #event-header.side-section
+        %h1#logo= @event.name
+        -if @event.subtitle
+          #subtitle= @event.subtitle 
+        %h4= @event.producer
+        %h4= @event.shows.first.show_time
+
+      #about-event.side-section
+        #description
+          -if @event.description && @event.description.length > 2000
+            .toggle-truncated
+              .truncated
+                = simple_format "#{truncate(@event.description, :length => 2000)} (#{link_to 'more','#', :class => 'toggle'})"
+              .not-truncated{:style => 'display:none;'}
+                =simple_format "#{@event.description} (#{link_to 'less','#', :class => 'toggle'})"
+          - else
+            =simple_format @event.description
+
+      #show
+        - if @shows.blank? || @shows.first.nil?
+          There are no tickets available for purchase.
+        -else
+          =render :partial => 'store/shows/show', :locals => {:show => @shows.first, :collapsed => false}
+
+
+    .span4
+      .side-section.event-image
+        %center
+          - if @event.image?
+            = image_tag @event.image.url, :class => "event-poster", "data-toggle" => "modal", "data-target" => "#poster-modal"
+
+      .side-section.store-event-display
+        - unless @event.venue.address_as_string.blank?
+          =render :partial => "venue", :locals => { :event => @event }
+
+#poster-modal.modal.hide.fade
+  .modal-body
+    = image_tag @event.image.url

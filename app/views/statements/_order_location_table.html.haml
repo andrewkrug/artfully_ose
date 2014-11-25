@@ -1,0 +1,20 @@
+%table.standalone.table
+  %thead
+    %tr
+      %th Order Location
+      %th.right{:style=>'width:100px'} Tickets
+      %th.right{:style=>'width:100px'} Gross
+      %th.right{:style=>'width:100px'} Processing
+      %th.right{:style=>'width:100px'} Net
+  %tbody
+    - statement.order_location_rows.each do |order_location, row|
+      %tr
+        %td=order_location
+        %td.right=row.tickets
+        %td.right
+          %strong=number_as_cents row.gross
+        %td.right=number_as_cents row.processing
+        %td.right=number_as_cents row.net
+    %tr
+      %td.right{:colspan => 5}
+        = icon_link_to "Slices", statement_slices_path(@show.id, 'slice[]' => 'order_location_proc'), 'fa-chevron-right', 'btn', ''

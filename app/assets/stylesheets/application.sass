@@ -1,0 +1,808 @@
+@import "./jquery/*"
+@import "./sass/mixins"
+@import "./sass/event_list"
+@import "./sass/tags"
+@import "./sass/box-office"
+@import "font-awesome"
+
+#preload_assets
+  display: none
+
+.left
+  float: left
+
+.clear
+  clear: both
+
+ul
+  list-style: none
+  margin-left: 0px
+
+h1
+  font-size: 2.5em
+h2
+  margin-bottom: 10px
+  font-size: 2.0em
+
+h3
+  margin-bottom: 10px
+  font-size: 1.6em
+
+h4.event-link
+  margin: 0px 0px 2px 0px
+
+a
+  font-weight: bold
+
+a.weak
+  font-weight: normal
+
+#organization-details
+  margin-top: 50px
+
+#kit-table
+  td.status
+    width: 60px
+    text-align: center
+    padding-bottom: 1.4em
+    p
+      line-height: 4em
+  td.type
+    vertical-align: top
+  .kit-type
+    font-weight: bold
+
+ul#memberships
+  li
+    margin: 0 10px 10px 0px
+  .email
+    font-weight: bold
+
+.bordered
+  border: 3px solid #ccc
+  text-align: center
+  border-radius: 5px
+  moz-border-radius: 5px
+
+.nav-grav
+  padding-top: 3px
+  border-radius: 5px
+  moz-border-radius: 5px
+  height: 32px
+
+.medium-grav
+  padding-top: 3px
+  border-radius: 5px
+  moz-border-radius: 5px
+  height: 64px
+
+.user-grav
+  height: 48px
+  width: 48px
+  padding: 2px
+
+.large-grav
+  height: 130px
+  width: 130px
+  padding: 2px
+
+.no-image
+  border-radius: 10px
+  moz-border-radius: 10px
+  border: 2px dashed #999
+  background-color: #ddd
+  height: 75px
+  width: 75px
+  text-align: center
+  a, #text
+    padding-top: 27px
+    font-weight: bold
+    color: #666
+  a
+    cursor: pointer
+  p
+    color: #999
+
+.full
+  width: 100%
+
+#add-a-description
+  width: 100%
+  height: 150px
+  margin-bottom: 9px
+  #text
+    padding-top: 50px
+
+#add-a-venue
+  width: 100%
+  height: 150px
+  #text
+    padding-top: 50px
+
+#no-pass-sales
+  text-align: center
+  width: 100%
+  height: 100px
+  #text
+    padding-top: 25px
+
+#add-a-pass-type
+  width: 75%
+  height: 150px
+  #text
+    padding-top: 50px
+    
+#day-date
+  width: 95%
+  height: 120px
+  border: 2px solid #999
+  background-color: #eee
+  #month
+    border-bottom: 2px solid #999
+    text-align: center
+    color: #eee
+    font-weight: bold
+    border-radius: 0px
+    moz-border-radius: 0px
+    font-size: 18px
+    padding: 5px 0px
+  #day
+    text-align: center
+    font-size: 84px
+    padding: 14px 0px
+    color: #175C71
+
+ul#event-list
+  li.event-list-item
+    margin-bottom: 20px
+
+ul.mini-stats
+  li
+    line-height: 20px
+
+ul.kv
+  li
+    margin-bottom: 10px
+
+ul#recent-list
+  li
+    margin-bottom: 10px
+
+.recent-activity-text
+  font-size: 14px
+  line-height: 18px
+
+.quiz-form
+  label.control-label
+    font-size: 1.8em
+    width: 240px
+  .controls
+    margin-left: 250px
+  .form-actions
+    padding-left: 250px
+
+.modal
+  display: none
+
+.modal-header h3
+  margin: 0
+
+.modal-footer form
+  display: inline-block
+  margin: 0
+
+.event-subtitle
+  font-weight: normal
+
+#event-header-logo-container
+  text-align: right
+
+#event-header-logo
+  border-radius: 5px
+  moz-border-radius: 5px
+
+#storefront-link
+  font-size: 1.5em
+
+#storefront-text
+  margin-top: 40px
+  font-size: 1.3em
+
+.section-fields
+  margin-bottom: 40px
+  &.discount-tickets
+    margin-bottom: 50px
+
+#show-headline
+  background-color: #eee
+  padding: 15px
+  margin-bottom: 15px
+
+.merge-confirm-block
+  background-color: #eee
+  padding: 15px
+  margin-bottom: 15px
+
+#merge-arrow
+  text-align: center
+  margin-bottom: 15px
+
+#admin #heading
+  h1
+    margin-bottom: 25px
+
+form.sprited, li.sprited
+  display: none
+
+tr.published form.published,
+tr.unpublished form.unpublished,
+tr.built form.built,
+tr.pending form.pending,
+tr.destroyable form.destroyable,
+ul.published li.published,
+ul.unpublished li.unpublished,
+ul.built li.built,
+ul.pending li.pending,
+ul.destroyable li.destroyable
+  display: inline
+
+tr.unpublished
+  background-color: #EEE
+
+tr.valign
+  td
+    vertical-align: middle
+
+.dialog
+  display: none
+
+.hidden
+  display: none !important
+
+#contact-information
+  #image
+    margin-right: 10px
+
+ul.report
+  li
+    clear: both
+  span.stat
+    display: inline-block
+    font-weight: bold
+    width: 100px
+    text-align: left
+    margin: 0px
+  span.current
+    display: inline-block
+    width: 75px
+    text-align: right
+    margin: 0px
+
+tr.returned, tr.refunded, tr.exchanged
+  td.item-description, td.price
+    text-decoration: line-through
+
+.in-table
+  margin-bottom: 0px
+
+table.example-contact
+  .field
+    font-weight: bold
+
+tr.no-border
+  td
+    border-top: 0px
+
+.label.hidden
+  display: none
+
+.invisible
+  visibility: hidden
+
+#offers-by-me
+  padding-top: 25px
+
+.admin-message
+  font-weight: bold
+  font-size: 1.5em
+
+#reseller-profile-datatable
+  margin-top: 25px
+
+.with-gap-above
+  margin-top: 50px
+
+span.help
+  background-color: #666
+  color: white
+  font-weight: bold
+  margin-left: 20px
+  font-size: 14px
+  padding: 4px
+  @include rounded-corners(6px, 6px, 6px, 6px)
+
+.tight
+  margin-left: 0px !important
+
+input.datepicker, input.datetimepicker
+  cursor: pointer
+
+.form-vertical > input,
+.form-vertical > select,
+.form-vertical > .control,
+.form-vertical > .input-prepend
+  margin-bottom: 1.5em
+
+.form-vertical > .control > input
+  margin-bottom: 0
+
+.advanced-search input[type="date"]
+  width: 125px
+
+.advanced-search .range-separator
+  width: 20px
+  display: inline-block
+  text-align: center
+
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button
+  -webkit-appearance: none
+  margin: 0
+
+.details-long
+  margin-bottom: 1em
+
+.details-long ul
+  list-style: disc
+  margin-left: 17px
+  margin-bottom: 1em
+
+a.red
+  color: red
+
+a.red:hover
+  color: red
+  text-decoration: underline
+
+.event-icon-container
+  height: 80px
+
+.bottom-room
+  margin-bottom: 15px
+
+.btn3
+  width: 150px
+
+table.docs
+  td.field
+    width: 200px
+    font-weight: bold
+  td.field-slim
+    width: 150px
+    font-weight: bold
+
+.bottom-room
+  margin-bottom: 15px
+
+//Bootstrap 2.3 broke .right in table cells, hance the !important
+.center
+  text-align: center !important
+.right
+  text-align: right !important
+
+.headline-caption
+  font-size: 12px
+  color: #999
+  text-transform: uppercase
+
+.headline-stat
+  font-size: 2em
+  font-weight: bold
+
+// Datepicker Icons
+.ui-datepicker
+  z-index: 1050 !important
+
+.ui-datepicker .ui-icon, .ui-datepicker .ui-icon
+  background: none !important
+  text-indent: 0 !important
+  padding: 0 0 0 0.2em !important
+
+.ui-datepicker span.ui-icon:before, .ui-datepicker span.ui-icon:before
+  font-family: FontAwesome
+  font-weight: normal
+  font-style: normal
+  display: inline-block
+  text-decoration: inherit
+  font-size: 1.1em
+  line-height: 1
+
+.ui-datepicker .ui-icon-circle-triangle-w:before
+  content: "\f053"
+
+.ui-datepicker .ui-icon-circle-triangle-e:before
+  content: "\f054"
+
+table.docs
+  td.field
+    width: 200px
+    font-weight: bold
+
+#footnotes_holder
+  position: absolute
+  top: 0
+  left: 0
+  background-color: black
+  z-index: 2000
+  a
+    color: white
+    font-size: 14pt
+    span
+      background-color: black !important
+  #queries_debug_info
+    background-color: white
+    color: black
+    p
+      color: black
+      a
+        color: black
+
+.popover.right .popover-content, .popover.right .popover-title
+  text-align: left
+
+.badge-big
+  font-size: 30px
+
+a.artfully-tooltip, a.artfully-tooltip:hover
+  text-decoration: none
+
+body[data-controller=people][data-action=show],
+body[data-controller=households][data-action=show],
+body[data-controller=memberships][data-action=index],
+body[data-controller=passes][data-action=index]
+  padding-top: 10px
+
+
+.table.search-results
+  td.controls
+    width: 10px
+  td.name
+    label
+      font-weight: bold
+      display: inline
+
+.person-header,
+.household-header
+  overflow: hidden
+  background: #eee
+  border-bottom: 1px solid #ccc
+  padding: 20px
+  border-bottom-left-radius: 8px
+  border-bottom-right-radius: 8px
+  margin-bottom: 20px
+
+.person-avatar,
+.household-avatar
+  float: left
+  margin-right: 20px
+  img
+    border-radius: 4px
+    width: 150px
+    height: 150px
+
+.person-header .view-household
+  margin-right: 20px
+
+.person-header .view-household .btn
+  margin: 4px auto
+
+.person-values-and-tags,
+.household-values-and-tags
+  float: right
+
+.company-and-title
+  margin-bottom: 20px
+
+.person-values,
+.household-values
+  margin-bottom: 20px
+  border: 1px solid #ccc
+  border-radius: 4px
+  float: right
+  text-align: center
+  padding: 5px
+  li
+    min-width: 75px
+    border-right: 1px solid #cecece
+    float: left
+    padding: 0 10px
+    &:last-child
+      border: none
+    h3, h6
+      margin: 0
+
+.person-tags
+  width: 300px
+  clear: right
+
+.person-links,
+.household-links
+  float: left
+  a
+    display: block
+    padding-bottom: 10px
+    padding-left: 32px
+    &.email
+      background: image-url('glyphish/people/email.png') no-repeat
+    &.twitter
+      background: image-url('glyphish/people/210-twitterbird.png') no-repeat
+    &.facebook
+      background: image-url('glyphish/people/208-facebook.png') no-repeat
+    &.linked-in
+      background: image-url('glyphish/people/linkedin.png') no-repeat
+    &.website
+      background: image-url('glyphish/people/website.png') no-repeat
+    &.member-number
+      background: image-url('glyphish/gray/108-badge.png') no-repeat
+
+.person-inline-form, td.person-inline-form
+  border-top: 1px solid #ccc
+  padding: 20px
+  padding-bottom: 1px
+  background: #eee
+  clear: left
+  a.delete-with-trash
+    margin-right: 40px
+
+a.delete-with-trash
+  font-size: 13px
+  float: right
+  padding-left: 18px
+  color: #666
+  font-weight: normal
+  display: block
+  background: image-url('glyphish/people/218-trash2-small.png') no-repeat
+
+.action-form
+  .action-type, .action-subtype, .dollar-inputs, .datetimepicker
+    float: left
+    margin-right: 18px
+  .dollar-inputs
+    span.add-on
+      margin-bottom: 9px
+
+tr.action td
+  padding-top: 9px
+  &.icon
+    padding: 5px
+  &.starable
+    padding: 7px
+
+.btn.action-icon
+  background-position: 0 5px
+  padding-left: 20px
+  font-weight: normal
+  text-indent: -5000px
+  background: #eee
+  background-repeat: no-repeat
+  background-position: center center
+  cursor: default // temp until the filter button works
+  &.hear-icon
+    background-image: image_url('actions/hear.png')
+  &.say-icon
+    background-image: image_url('actions/say.png')
+  &.go-icon
+    background-image: image_url('actions/go.png')
+  &.do-icon
+    background-image: image_url('actions/do.png')
+  &.get-icon
+    background-image: image_url('actions/get.png')
+  &.give-icon
+    background-image: image_url('actions/give.png')
+  &.join-icon
+    background-image: image_url('actions/join.png')
+
+.edit-action-link
+  font-weight: normal
+  text-shadow: none
+  letter-spacing: 0.5px
+
+.toggle-truncated
+  cursor: pointer
+
+#edit-person,
+#edit-household
+  width: 740px
+  margin-left: -360px
+  form
+    margin-bottom: 0
+  .form-horizontal
+    .controls
+      margin-left: 0
+    .control-label
+      padding-right: 18px
+  .modal-footer
+    margin-bottom: 0
+
+#edit-household
+  #address.tab-pane
+    .wide
+      .controls
+        label
+          width: auto
+        .control
+          select
+            width: 400px
+  #address.tab-pane
+    .controls
+      label.wide
+        width: auto
+
+table#action-list td, table#notes-list td
+  line-height: 20px
+  border-top: 0px
+
+.loading
+  background: image_url('loading.gif') no-repeat
+
+#endless-scroll-pagination
+  &.loading
+    background: image_url('loading.gif') no-repeat
+  color: #ccc
+  ul
+    display: none
+
+.starable
+  width: 10px
+  font-size: 17px
+  font-weight: bold
+  &:hover
+    cursor: pointer
+  &.active
+    color: #f8930a
+  &.not-active
+    color: #ccc
+
+.starable-spacer
+  width: 10px
+  font-size: 17px
+  color: transparent
+
+form > fieldset:last-of-type > *:last-child
+  margin-bottom: 45px
+
+#exchange-details
+  display: block
+  margin-top: 1em
+
+  .lead
+    margin-bottom: 4px
+
+  ol
+    li
+      margin-bottom: 1.5em
+
+  .well.negative
+    background-color: #ffe0e0
+    .lead
+      color: #d00
+    h6
+      color: #d55
+
+#exchange-arrow
+  text-align: center
+
+  i
+    height: 50px
+    margin: 30px 0
+    display: block
+
+.recent-actions
+  .recent-action-time
+    font-size: 0.9em
+
+p.alternate_form_link
+  text-align: right
+
+.big-money
+  font-size: 30px
+
+#show-calendar
+  .fc-event
+    cursor: pointer
+
+#new-show-calendar
+  .past-date
+    background-color: #efefef
+
+[ng\:cloak], [ng-cloak], .ng-cloak
+  display: none !important
+
+.ui-autocomplete
+  z-index: 3000 !important
+  max-height: 300px
+  overflow: scroll
+
+.wysihtml5-editor
+  h3
+    font-size: 1.3em
+    color: #666
+    margin-bottom: .5em
+  h4
+    color: #666
+    font-size: 1.25em
+    margin-bottom: .5em
+  h5
+    color: #666
+    font-size: 1.25em
+    margin-bottom: .5em
+    color: #99BABB
+  h6
+    color: #666
+    font-size: 1.25em
+    margin-bottom: .5em
+    color: #9d2235
+
+#edit-membership-kit, #edit-donation-kit
+  label
+    font-weight: bold
+
+
+.bordered-section
+  border-bottom: 1px solid #ACACAE
+
+.control-group
+  .controls
+    label
+      margin-bottom: 5px
+      padding-top: 5px
+
+.btn-add-preset-amount
+  margin-top: -10px
+  margin-left: 9px
+
+.flat-button
+  background-image: none
+
+#console-build-order
+  margin-top: 12px
+
+.console-button
+  height: 100px
+  padding: 36px 28px
+  font-size: 22px
+  line-height: normal
+  background-image: none
+  color: white
+
+.console-button-smalltext
+  padding: 30px 28px
+  font-size: 18px
+ 
+/* Portrait tablet to landscape and desktop */
+@media (min-width: 980px) and (max-width: 1200px)
+  .console-button  
+    font-size: 18px
+  .console-button-smalltext
+    padding: 28px 20px
+    font-size: 18px
+ 
+/* Landscape phone to portrait tablet */
+@media (max-width: 979px)
+  .console-button  
+    font-size: 16px
+    padding: 38px 10px
+  .console-button-smalltext
+    padding: 16px 16px
+    font-size: 16px
+ 
+@media (max-width: 767px)
+  .console-button 
+    padding: 36px 10px
+    font-size: 24px
+  .console-button-smalltext
+    padding: 34px 16px
+    font-size: 22px
+      
+#birth_year
+  padding: 0px

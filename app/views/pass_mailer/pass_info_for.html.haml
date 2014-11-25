@@ -1,0 +1,21 @@
+%p="Hello #{@person}!"
+
+%p
+  To use your pass, go to our storefront here #{link_to store_organization_events_url(@pass_summary.organization.cached_slug), store_organization_events_url(@pass_summary.organization.cached_slug)}. Add some tickets to your cart, then enter your pass code.
+
+- @pass_summary.rows.each do |pass_type, passes|
+  %p
+    =pass_type.email_copy
+  .passes-container{:style => "text-align: -webkit-center;"}
+    .passes-display{:style => "width: 400px;font-weight: bold;padding: 20px;color: #185969"}
+      .pass=pass_type.name
+      - passes.each do |pass|
+        .pass-container{:style => 'margin-bottom:20px'}
+          .pass=pass.pass_code
+          .details{:style => "font-weight: normal; font-size: 12pt;"}
+            %em="#{pluralize(pass.tickets_allowed,"ticket credit")}, #{pass.tickets_allowed - pass.tickets_purchased} remaining"
+
+%p
+  If you have questions, please contact us at #{@pass_summary.organization.email}
+
+%p Thanks!

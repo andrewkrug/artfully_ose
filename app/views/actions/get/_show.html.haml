@@ -1,0 +1,3 @@
+=render :partial => "actions/shared/show", :locals => { :action => action }
+
+%p= link_to "View order details <i class='fa fa-share'></i>".html_safe, order_path(action.subject)

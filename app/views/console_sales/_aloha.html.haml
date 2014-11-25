@@ -1,0 +1,26 @@
+%h3 &nbsp;
+.row-fluid{:style => "margin-bottom: 10px"}
+  .span4
+    =link_to "Tickets", "#tickets-modal", :class => "btn btn-primary btn-block console-button", 'data-toggle' => 'modal'
+  .span4
+    =link_to "Donation", "#donation-modal", :class => "btn btn-primary btn-block console-button", 'data-toggle' => 'modal'
+  .span4
+    -with_kit(:membership) do
+      =link_to "Memberships", "#memberships-modal", :class => "btn btn-primary btn-block console-button", 'data-toggle' => 'modal'
+-with_kit(:passes) do
+  .row-fluid
+    .span4
+      =link_to "Passes", "#passes-modal", :class => "btn btn-primary btn-block console-button", 'data-toggle' => 'modal'
+    
+-unless current_sales_console_cart.empty?
+  %hr
+  .row-fluid
+    .span4
+      -if current_user.current_organization.can? :access, :passes
+        =link_to "Apply Pass or Discount Code", "#discount-modal", :class => "btn btn-primary btn-block console-button console-button-smalltext", 'data-toggle' => 'modal'
+      -else
+        =link_to "Apply Discount Code", "#discount-modal", :class => "btn btn-primary btn-block console-button console-button-smalltext", 'data-toggle' => 'modal'
+    .span4
+      =link_to "Clear Order", console_sale_path(current_sales_console_cart), :method => :delete, :data => { :confirm => 'Are you sure you want to clear this order?' }, :class => "btn btn-danger btn-block console-button"
+    .span4
+      =link_to "Check Out", "#", :class => "btn btn-success btn-block console-button", :id => "console-checkout-now-button"

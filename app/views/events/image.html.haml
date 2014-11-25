@@ -1,0 +1,37 @@
+- in_section :events
+- content_for :header do
+  =render :partial=>'header'
+
+.row
+  .span3
+    - in_sub_section :details
+    =render :partial=>'menu'
+  .span9
+    .row-fluid
+      .span8
+        = render "shared/error_messages", :target => @event
+
+        .instructions.row-fluid
+          .span2
+            =icon_tag('266-upload@2x', {:alt => "instructions", :align => "left"})
+          .span10
+            %p
+              ="Spruce up this event with an image! This image will be displayed on both your #{link_to "Storefront", store_old_storefront_event_path(@event)} (where patrons will purchase tickets) and within your Artful.ly management pages.".html_safe
+            %ul{:style => "list-style-type: circle;"}
+              %li Image size is limited to 1 MB
+              %li We recommend your image be at least 300 pixels wide
+              %li Only .jpg, .jpeg, .gif, and .png file formats are supported
+              %li Your image will be displayed with equal height and width
+              %li You can come back to this page to change the image at any time
+        = form_for( @event, :html => { :multipart => true } ) do |form|
+          .control-group
+            =form.label :image, "Choose your image:", :class => 'control-label'
+            .controls
+              =form.file_field :image
+
+          .form-actions
+            = form.submit "Upload", :class => 'btn btn-primary'
+            = form.submit "Upload &amp; Next".html_safe, :class => 'btn btn-success'
+
+    .image-display
+      =image_tag(@event.image.url) if @event.image?        

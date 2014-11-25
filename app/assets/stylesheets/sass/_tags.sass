@@ -1,0 +1,60 @@
+@import "mixins"
+
+.rounder
+  @include rounded-corners(3px, 3px, 3px, 3px)
+  
+ul.tags
+  li
+    display: inline-block
+    position: relative
+    margin-bottom: 3px
+    &.new-tag
+      background: none
+      border: 1px dashed #999
+      a
+        color: rgb(51, 51, 51)
+        font-weight: normal
+        &:hover
+          text-decoration: none
+      &:hover
+        background: #fff
+  ul.controls
+    position: absolute
+    background: #fff
+    right: 0
+    top: 0
+    text-align: right
+    display: none
+    li
+      display: inline-block
+      a, span
+        padding: 0 4px
+        font-weight: bold
+        text-decoration: none
+        font-size: .875em
+        display: inline-block
+        color: red
+      a:hover
+        color: red
+    
+.tag
+  background-color: #f8930a
+  padding: 2px 4px 2px 4px
+  font-size: 10pt
+  color: #EEEEEE
+.tag-member
+  background-color: #175c71
+  padding: 3px 5px 3px 5px
+  a 
+    font-weight: normal
+    color:white
+.tag-passholder
+  background-color: #8e0a34
+  padding: 3px 5px 3px 5px
+  font-weight: normal
+  a 
+    font-weight: normal
+    color:white
+
+.tag-error
+  color: #991111

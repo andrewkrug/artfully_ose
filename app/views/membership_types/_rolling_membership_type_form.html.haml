@@ -1,0 +1,5 @@
+.control-group
+  = f.label :duration, "Duration", :class => 'control-label'
+  .controls
+    = f.text_field :duration, :class => "span1"
+    = f.select :period, ["Months", "Years"], {}, :class => "span2"

@@ -1,0 +1,37 @@
+#door-list-table
+  %table#door-list.table
+    %thead
+      %tr
+        %th
+          %a{:href => "#", :class => "artfully-tooltip", :rel => "tooltip", "data-original-title" => "Checking this box will create a Went Action on this person's record.", "data-trigger" => "hover"}
+            %span.badge{:class => "badge"} ?
+        %th First
+        %th Last
+        %th Email
+        %th Ticket Type
+        %th Method
+        %th Price
+    %tbody
+      - door_list_items.each do |door_list_item|
+        %tr
+          -# Changing this will also require a corresponding change in box-office.js#doorListRowFor
+          %td
+            = check_box_tag "validated", "validated", door_list_item.ticket.validated, :class => 'door-list-checkbox', 'data-ticket-id' => door_list_item.ticket.id
+          %td= door_list_item.buyer.first_name
+          %td= door_list_item.buyer.last_name
+          %td= door_list_item.buyer.email
+          %td= door_list_item.ticket.ticket_type.name
+          %td= door_list_item.payment_method
+          %td= number_as_cents(door_list_item.ticket.sold_price)
+        - if door_list_item.special_instructions.present?
+          %tr.no-border
+            %td
+            %td{:colspan => 6}
+              Special Instructions:
+              = door_list_item.special_instructions
+        - if door_list_item.notes.present?
+          %tr.no-border
+            %td
+            %td{:colspan => 6}
+              Notes:
+              = door_list_item.notes

@@ -1,0 +1,21 @@
+%h2 #{@organization.name} has successfully synced your Artful.ly account with the following MailChimp lists:
+
+- if @added_list_names.any?
+  %h3 Added:
+  %ul
+    - @added_list_names.each do |name|
+      %li= name
+
+- if @removed_list_names.any?
+  %h3 Removed:
+  %ul
+    - @removed_list_names.each do |name|
+      %li= name
+
+%p #{pluralize @kit.count_from_mailchimp, 'person'} synced from MailChimp
+%p #{pluralize @kit.count_merged_mailchimp, 'person'} merged from MailChimp
+
+%p From now on your Artful.ly People records and MailChimp members should stay in sync.
+
+%p Cheers,
+%p The Artful.ly Team

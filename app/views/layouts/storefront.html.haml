@@ -1,0 +1,46 @@
+!!!
+%html{:xmlns => "http://www.w3.org/1999/xhtml", "xml:lang" => "en", :lang => "en"}
+  %head
+    %title= "#{yield :title}"
+    = stylesheet_link_tag :storefront
+    = render :partial => 'layouts/google_analytics', :locals => { :segment => "storefront" }
+  %body
+    .navbar.navbar-fixed-top
+      .navbar-inner
+        .container
+          = link_to @store_organization.name, store_organization_events_url(@store_organization.cached_slug), :class => 'brand'
+          %ul.nav#main-menu-options
+            %li= link_to "Buy Tickets", store_events_path(@store_organization.cached_slug)
+            - if @store_organization.has_kit?(:passes)
+              %li= link_to "Buy Passes", store_passes_path(@store_organization.cached_slug)
+            - if @store_organization.has_kit?(:membership)
+              -if member_signed_in?
+                %li= link_to "Buy Memberships", store_memberships_path(@store_organization.cached_slug)
+              -else
+                %li= link_to "Become a Member", store_memberships_path(@store_organization.cached_slug)
+            - if @store_organization.has_active_donation_only_storefront?
+              -if @store_organization.kit(:regular_donation).donate_now_text.present?
+                %li= link_to @store_organization.kit(:regular_donation).donate_now_text, store_donate_path(@store_organization.cached_slug), :class => "btn btn-small btn-warning primary"
+              -else
+                %li= link_to "Donate Now", store_donate_path(@store_organization.cached_slug), :class => "btn btn-small btn-warning primary"
+          - if @store_organization.has_kit?(:membership)
+            %ul.nav.pull-right#menu-member-login
+              -if member_signed_in?
+                %li.dropdown
+                  = nav_dropdown member_menu_caption
+                  %ul.dropdown-menu
+                    %li= link_to "My Membership", members_root_path
+                    %li= link_to "Sign Out", destroy_member_session_path
+              -else
+                %li= link_to "Member Login", new_member_session_path
+          %ul.nav.pull-right
+            %li
+              =icon_link_to("#{current_cart.items.size}", store_order_path(@store_organization.cached_slug), 'fa-shopping-cart', '', 'cart-item-count')
+
+    .content.container
+      = render :partial => 'layouts/flash', :locals => { :flash => flash }
+      - flash.discard
+      = yield
+
+    = javascript_include_tag "https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"
+    = javascript_include_tag :storefront

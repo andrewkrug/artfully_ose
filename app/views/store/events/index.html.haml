@@ -1,0 +1,23 @@
+- content_for :title do
+  #{@store_organization.name} events, shows, and tickets
+
+.row
+  .span8.offset2
+    -@events.each do |event|
+      .store-event-display{:id => "store-event-display-#{event.id}"}
+        .row-fluid
+          .span3
+            -if event.image?
+              =image_tag(event.image.url, :class => "event-image")
+          .span9
+            #event-header
+              %h1=event.name
+              %h4=event.subtitle
+            %p
+              =simple_format event.description
+            %p
+              =event.venue.name
+              %br
+              =event.venue.address_as_string
+            %p
+              =link_to "Buy Tickets", store_event_path(@store_organization.cached_slug, event), :id => 'buy-tickets', :class => 'btn btn-primary'

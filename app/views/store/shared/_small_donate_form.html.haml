@@ -1,0 +1,25 @@
+- donation_kit = @donation_kit || @store_organization.kit(:regular_donation)
+
+- if current_cart.donations.empty?
+  #storefront-donate-now-container
+    %h6 Donate
+
+    - if donation_kit
+      -if donation_kit.donation_nudge_text.present?
+        %p= donation_kit.donation_nudge_text
+      -else
+        %p
+          Help support our work by adding a donation to your order!
+          %br
+          Donations are tax-deductible to the extent permitted by law.
+    - else @store_organization.authorization_hash[:type] == :sponsored
+      %p= "#{@store_organization.authorization_hash[:fsp_name]} is a fiscally sponsored project of Fractured Atlas, a non-profit arts service organization. Donations for the purposes of #{@store_organization.authorization_hash[:fsp_name]} must be made payable to Fractured Atlas and are tax-deductible to the extent permitted by law."
+
+    = form_tag store_order_path(@store_organization.cached_slug), :method => :post, :class => 'add-donation-to-cart form-inline' do
+      = hidden_field_tag :_source, 'cart'
+      .preset-amount.last
+        .input-prepend
+          %span.add-on $
+          = text_field_tag :donation_amount, '', :class => 'span1'
+
+        = submit_tag 'Add Donation', :class => 'btn btn-primary', :id => 'add-donation'

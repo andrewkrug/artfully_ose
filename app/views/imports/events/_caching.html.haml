@@ -1,0 +1,17 @@
+.row
+  .span4
+    %h3 Importing Events
+
+    %p This import was created at: <br> #{l import.created_at}
+
+    %p= link_to "Back to imports/exports", imports_path, :class => "btn"
+
+  .span8
+    %h3 This file is currently being processed by Artful.ly.
+    %p This may take a little while. Thank you for your patience.
+
+:javascript
+
+  setTimeout(function () {
+    window.location.reload();
+  }, 5000);

@@ -1,0 +1,26 @@
+- in_section :events
+- content_for :header do
+  =render :partial=>'header'
+
+.row
+  .span3
+    - in_sub_section :details
+    =render :partial=>'menu'
+  .span9
+    = render "shared/error_messages", :target => @event
+    = form_for( @event, :html => { :class => 'form-horizontal' } ) do |form|
+      .control-group
+        =form.label :name, "Ask for more information during checkout?", :class => 'control-label'
+        .controls
+          =form.check_box :show_special_instructions
+          
+      .control-group
+        =form.label :name, "Special Instructions Caption", :class => 'control-label'
+        .controls
+          =form.text_field :special_instructions_caption
+          
+      .form-actions
+        = render :partial => "shared/save_save_and_next", :locals => {:form => form}
+
+    
+

@@ -1,0 +1,19 @@
+- in_section :events
+- content_for :header do
+  %h1 Add a new event
+= render "shared/error_messages", :target => @event
+.row
+  .span8.offset2
+    .form-horizontal
+      = form_for( @event, :html => { :class => 'quiz-form' }) do |form|
+        .control-group
+          =form.label :name, "I'm organizing", :class => 'control-label'
+          .controls
+            = form.text_field :name, :placeholder=>"Event name"
+        = form.fields_for :venue, @event.venue do |venue_form|
+          .control-group
+            =venue_form.label :name, "that happens at", :class => 'control-label'
+            .controls
+              = venue_form.text_field :name, :placeholder=>"Venue name"
+        .form-actions
+          = form.submit "Create Event", :class => 'btn btn-large'

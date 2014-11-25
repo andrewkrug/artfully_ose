@@ -1,0 +1,19 @@
+.row
+  .span8.offset2
+    %h3 What type of membership is this?
+    .row-fluid
+      .span6
+        %h4 Season
+        %p
+          Members sign up and receive benefits for your theatrical season, a calendar year, or some other term with a fixed end date. Here sign-ups and renewals are focused at a certain time of year.
+      .span6
+        %h4 Rolling
+        %p
+          Members sign up and receive benefits for a number of months or years from their sign-up date. Here members can start at any time and renewal takes place whenever an individual's membership expires.
+    .row-fluid
+      .span6
+        .style-selection.center
+          =link_to "Setup Seasonal Membership", new_membership_type_path(:type => "SeasonalMembershipType"), :class => :btn
+      .span6
+        .style_selection.center
+          =link_to "Setup Rolling Membership", new_membership_type_path(:type => "RollingMembershipType"), :class => :btn

@@ -1,0 +1,84 @@
+:plain
+  <style>
+    @import http://artfully-pdf-css.s3.amazonaws.com/helvetica.css;
+    
+    body {
+      padding: 0;
+      margin: 0;
+      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      font-size: 13px;
+      line-height: 18px;
+      color: #000;
+    }
+    .ticket {
+      width: 5.5in; 
+      height: 2in;
+      border: 1px solid #000;
+      clear: both;
+      margin-bottom: 20px;
+      box-sizing: border-box;
+    }
+    .ticket:nth-child(4n+4) {
+      margin-bottom: 1.1in;
+    }
+    .qr-code img {
+      margin-left: 1px;
+      margin-top: 1px;
+      width: 150px;
+      height: 150px;
+    }
+    .left-side {
+      margin-left: 10px;
+      margin-top: 10px;
+    }
+    .show-name {
+      font-weight: bold;
+    }
+    .show-time {
+      margin-bottom: 10px;
+    }
+    .right-side {
+      float: right;
+    }
+    .order-number {
+      margin-left: 10px;
+    }
+    .venue {
+      margin-bottom: 10px;
+    }
+    .person-name {
+      font-weight: bold;
+    }
+  </style>
+
+- pdfable.tickets.each do |item|
+  :ruby
+    order        = pdfable
+    person       = order.person
+    organization = order.organization
+    product      = item.product
+    event        = product.event
+    show         = product.show
+    venue        = event.venue
+
+  .ticket
+    .right-side
+      .qr-code
+        %img{:src => (product.qr_code_url rescue 'http://placehold.it/150/ffffff.png&text=No+QR+Code')}
+      .order-number Order ##{order.id}
+
+    .left-side
+      .organization-name= organization.name
+      .show-name= event.name
+      .show-time= I18n.localize show.datetime_local_to_event
+
+      .venue
+        #{venue.name} <br /> 
+        - if venue.address1.present?
+          #{venue.address1} <br /> 
+        - if venue.address2.present?
+          #{venue.address2} <br /> 
+        #{[venue.city,venue.state].select {|s| s.present?}.join(',')} #{venue.zip}
+
+      .person-name #{person.first_name} #{person.last_name}
+      .product #{product.ticket_type.name} #{number_as_cents product.price}

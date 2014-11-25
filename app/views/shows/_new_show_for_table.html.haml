@@ -1,0 +1,6 @@
+= form_for show, :url => event_shows_path(event, show) do |f|
+  %td{:colspan => "4"}
+    = f.text_field :datetime, :value => l(show.datetime_local_to_event, :format => :datetime_for_input), :readonly => true, :class => :datetimepicker
+    - default_chart_id_as_s = show.chart_id.nil? ? nil : show.chart_id.to_s
+    = f.select :chart_id, options_from_collection_for_select(event.charts, "id", "name", default_chart_id_as_s)
+    = f.submit "Create New", :class => [ :mini, :full ]

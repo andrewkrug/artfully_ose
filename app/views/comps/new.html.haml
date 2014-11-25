@@ -1,0 +1,37 @@
+- content_for :custom_js do
+  = javascript_include_tag :comps
+- in_section :events
+- content_for :header do
+  %h1 Comp Tickets
+
+.row
+  .span12
+    = form_for @comp do |form|
+      = hidden_field_tag(:show_id, @show.id)
+      - @selected_tickets.each do |st|
+        =hidden_field_tag "selected_tickets[]", st
+      #the-details
+        %fieldset.floater.thirdish
+          %h4 Recipient
+          = hidden_field_tag(:person_id, "", :id => "person_id")
+          = text_field_tag(:search, params[:search], :id => "search", :placeholder => "First, last, or email...")
+          %a#new-person-link{:style=>'font-size:9pt; margin-left: 5px',:href=>'#'}
+            Create new person
+          .picked-person
+            .picked-person-name.picked-person-clear
+            .picked-person-email.picked-person-clear
+            .picked-person-company-name.picked-person-clear
+        %fieldset.floater.thirdish
+          %h4 Reason
+          = text_area_tag(:reason_for_comp, params[:reason_for_comp], :id => "reason-for-comp", :placeholder => "Reason for comp...")
+
+        %fieldset.floater.thirdish
+          %h4 Save
+          #save-comp
+            %button#save-comp-button{:style => 'width:100%'}
+              Comp Tickets
+        
+        .clear
+
+= render "shared/new_person_popup"
+

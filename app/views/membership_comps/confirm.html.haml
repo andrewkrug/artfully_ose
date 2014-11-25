@@ -1,0 +1,86 @@
+.row
+  .span8
+    %h3 Confirm Membership Comp
+    %table.table#confirm-membership-award
+      =form_for @membership_comp do |form|  
+        %tr
+          %td Type
+          %td#confirm-membership-type-name=@membership_comp.membership_type.name
+        -if @membership_comp.membership_type.allow_multiple_memberships?
+          %tr
+            %td Number of Memberships
+            %td#confirm-number-of-memberships=@membership_comp.number_of_memberships
+        %tr
+          %td Expires On
+          %td#confirm-ends-at=@membership_comp.ends_at
+        %tr
+          %td Send Email
+          %td#confirm-send-email=(@membership_comp.send_email ? "Yes" : "No")
+        %tr
+          %td Order Notes
+          %td#confirm-notes=@membership_comp.notes
+
+    %h3 What Happens Now?
+    %p 
+      =check_mark
+      These people will become members of your organization. 
+    -if @membership_comp.send_email
+      %p 
+        =check_mark
+        They will get an email to setup an account with your orgnaization if they have not already done so.
+        =link_to "Click here to see a preview of this email", "#email-preview", 'data-toggle' => 'modal'
+      %p 
+        =check_mark
+        Current members will not receive an email
+    -else
+      %p 
+        =check_mark
+        Nobody will receive emails about their membership.
+
+    -if @number_of_companies > 0
+      %p
+        =check_mark
+        We can't comp memberships to #{pluralize @number_of_companies, "company"}.
+    -if @number_without_emails > 0
+      %p
+        =check_mark
+        We can't comp memberships to #{pluralize @number_without_emails, "person"} because we don't have an email address on file.
+
+
+    =form_for @membership_comp do |form| 
+      =form.hidden_field :membership_type, :value => @membership_comp.membership_type.id
+      =form.hidden_field :number_of_memberships
+      =form.hidden_field :sold_price
+      =form.hidden_field :ends_at
+      =form.hidden_field :send_email
+      =form.hidden_field :welcome_message
+      =form.hidden_field :notes
+      =form.hidden_field :confirm, :value => true
+      =form.hidden_field :person_id
+      =form.hidden_field :search_id
+      =form.hidden_field :segment_id
+      .form-actions
+        =form.submit "Comp Memberships", :class => 'btn btn-success'
+
+    #email-preview.modal
+      .modal-header
+        .close{'data-dismiss'=>'modal'} x
+        %h3 Email Preview
+      .modal-body
+        =@email_preview.html_safe
+      .modal-footer
+        %button.btn{'data-dismiss'=>'modal'} Close
+
+  .span4
+    %h3 People
+    %table.table#people-list
+      - @membership_comp.people[0..9].each do |person|
+        %tr
+          %td.name
+            = person
+            %br
+            = person.email
+      -if @membership_comp.people.length > 10
+        %tr
+          %td
+            ="...and #{@membership_comp.people.length - 10} more"

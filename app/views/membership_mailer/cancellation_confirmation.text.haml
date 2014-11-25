@@ -1,0 +1,6 @@
+#{pluralize_word(@memberships.count, 'Cancellation')} complete
+
+The following memberships have been cancelled:
+
+- @memberships.each do |membership|
+  ="  * #{membership.membership_type.name}"

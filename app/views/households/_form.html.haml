@@ -1,0 +1,26 @@
+= form_for(household, :html => {:class => 'form-vertical'}) do |form|
+  %ul
+    %li
+      = form.label :name, "Household Name"
+      = form.text_field :name
+    %li
+      - household.individuals.each do |individual|
+        .fields.individual-fields
+          .control-group
+            .controls
+              = text_field_tag :individual_name, individual, :class => 'input-medium', :readonly => true
+              = hidden_field_tag "individuals[]", individual.id, :class => 'individual-id'
+              %span.remove-fields-link
+                %i.fa.fa-minus-circle.icon-gray
+                = link_to "remove", "#", :onclick => "$(this).closest('.individual-fields').remove(); return false;"
+
+      = render :partial => "individual_fields", :locals => {:form => form}
+
+      .control-group
+        %label.control-label
+        .controls
+          %i.fa.fa-plus-circle.icon-gray
+          = link_to_add_fields 'Add another individual', form, :individuals
+
+  .form-actions
+    = render :partial => 'shared/submit_cancel', :locals => { :form => form, :cancel_path => households_path }

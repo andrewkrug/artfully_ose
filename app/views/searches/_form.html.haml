@@ -1,0 +1,189 @@
+= form_for search, url: searches_path, method: "POST", html: {class: 'form-vertical advanced-search'} do |f|
+  = hidden_field :commit, "Search"
+
+  %h4 People
+  .accordion#accordion2
+    .accordion-group
+      .accordion-heading
+        %a.accordion-toggle{"data-toggle"=>"collapse","data-parent"=>"#accordion2",:href=>"#collapseOne"}
+          Tag
+      #collapseOne.accordion-body.collapse
+        .accordion-inner
+          = f.text_field :tagging, placeholder: "Tag Name", :class => "typeahead", "data-provide"=>"typeahead", "data-items"=>"10", "data-source"=>"[" + @tags_string.html_safe + "]"
+
+    .accordion-group
+      .accordion-heading
+        %a.accordion-toggle{"data-toggle"=>"collapse","data-parent"=>"#accordion2",:href=>"#collapseTwo"}
+          Tickets
+      #collapseTwo.accordion-body.collapse
+        .accordion-inner
+          = f.select :has_purchased_for, options_for_select([["Purchased tickets for", true], ["Have not purchased for", false]], selected: search.has_purchased_for)
+          = f.select :event_id, options_for_select(@event_options, selected: search.event_id), include_blank: ""
+          %h5 For Shows Between
+          .control
+            = date_field_tag "search[show_date_start]", search.show_date_start.try(:strftime, "%F")
+            %span.range-separator through
+            = date_field_tag "search[show_date_end]", search.show_date_end.try(:strftime, "%F")
+
+    .accordion-group
+      .accordion-heading
+        %a.accordion-toggle{"data-toggle"=>"collapse","data-parent"=>"#accordion2",:href=>"#collapseThree"}
+          Donations
+      #collapseThree.accordion-body.collapse
+        .accordion-inner
+          .control
+            .input-prepend
+              %span.add-on $
+              = f.text_field :min_donations_amount, placeholder: "min", class: "input-mini"
+            %span.range-separator to
+            .input-prepend
+              %span.add-on $
+              = f.text_field :max_donations_amount, placeholder: "max", class: "input-mini"
+          .control
+            = date_field_tag "search[min_donations_date]", search.min_donations_date.try(:strftime, "%F"), max: Time.now.strftime("%F")
+            %span.range-separator to
+            = date_field_tag "search[max_donations_date]", search.max_donations_date.try(:strftime, "%F"), max: Time.now.strftime("%F")
+
+    .accordion-group
+      .accordion-heading
+        %a.accordion-toggle{"data-toggle"=>"collapse","data-parent"=>"#accordion2",:href=>"#collapseFour"}
+          Value
+      #collapseFour.accordion-body.collapse
+        .accordion-inner
+          .input-prepend
+            %span.add-on $
+            = f.text_field :min_lifetime_value, :placeholder => "min", class: "input-mini"
+          %span.range-separator to
+          .input-prepend
+            %span.add-on $
+            = f.text_field :max_lifetime_value, :placeholder => "max", class: "input-mini"
+
+    .accordion-group
+      .accordion-heading
+        %a.accordion-toggle{"data-toggle"=>"collapse","data-parent"=>"#accordion2",:href=>"#collapseFive"}
+          Discount Code
+      #collapseFive.accordion-body.collapse
+        .accordion-inner
+          = f.select :discount_code, options_for_select(@discount_codes, search.discount_code), {:include_blank => true}
+
+
+    .accordion-group
+      .accordion-heading
+        %a.accordion-toggle{"data-toggle"=>"collapse","data-parent"=>"#accordion2",:href=>"#collapseSix"}
+          Location
+      #collapseSix.accordion-body.collapse
+        .accordion-inner
+          = f.number_field :zip, in: 00001..99999, placeholder: "Zipcode", class: "input-small"
+          = f.select :state, options_for_select(sorted_us_state_names, selected: search.state), {include_blank: "State"}, {class: "input-medium"}
+
+    -with_kit(:relationships) do
+      .accordion-group
+        .accordion-heading
+          %a.accordion-toggle{"data-toggle"=>"collapse","data-parent"=>"#accordion2",:href=>"#collapseSeven"}
+            Relationships
+        #collapseSeven.accordion-body.collapse
+          .accordion-inner
+            = f.select :relation_id, options_from_collection_for_select(Relation.order(:description), :id, :description), {include_blank: ""}, {class: "input-medium"}
+
+    .accordion-group
+      .accordion-heading
+        %a.accordion-toggle{"data-toggle"=>"collapse","data-parent"=>"#accordion2",:href=>"#collapseEight"}
+          Output
+      #collapseEight.accordion-body.collapse
+        .accordion-inner
+          .control-group
+            .controls
+              = f.label :output_indiduals, nil, :class => "checkbox" do
+                = f.check_box :output_individuals, {"ng-model" => "data.output_individuals", "ng-init" => "data.output_individuals = #{search.output_individuals}"}
+                Individuals
+            -with_kit(:relationships) do
+              .controls
+                = f.label :output_indiduals, nil, :class => "checkbox" do
+                  = f.check_box :output_households, {"ng-model" => "data.output_households", "ng-init" => "data.output_households = #{search.output_households}"}
+                  Households
+            .controls
+              = f.label :output_indiduals, nil, :class => "checkbox" do
+                = f.check_box :output_companies, {"ng-model" => "data.output_companies", "ng-init" => "data.output_companies = #{search.output_companies}"}
+                Companies
+
+              = f.label :person_subtype, "Company Type", "ng-show" => "data.output_companies == true", :class => "ng-cloak"
+              = f.select :person_subtype, options_for_select(["Business", "Foundation", "Government", "Nonprofit", "Other"]), {include_blank: ""}, {"ng-model" => "data.person_subtype", "ng-show" => "data.output_companies == true", :class => "ng-cloak", "ng-init" => "data.person_subtype = '#{search.person_subtype}'"}
+
+
+  -with_kit(:membership) do
+    %h4 Membership
+    .accordion#accordion3
+      .accordion-group
+        .accordion-heading
+          %a.accordion-toggle{"data-toggle"=>"collapse","data-parent"=>"#accordionOrders",:href=>"#collapseMembershipStarts"}
+            Starts
+        #collapseMembershipStarts.accordion-body.collapse
+          .accordion-inner
+            .control
+              %h5 From
+              = date_field_tag "search[min_membership_start_date]", search.min_membership_start_date.try(:strftime, "%F")
+
+              %h5 To
+              = date_field_tag "search[max_membership_start_date]", search.max_membership_start_date.try(:strftime, "%F")
+
+      .accordion-group
+        .accordion-heading
+          %a.accordion-toggle{"data-toggle"=>"collapse","data-parent"=>"#accordionOrders",:href=>"#collapseMembershipEnds"}
+            Ends
+        #collapseMembershipEnds.accordion-body.collapse
+          .accordion-inner
+            .control
+              %h5 From
+              = date_field_tag "search[min_membership_end_date]", search.min_membership_end_date.try(:strftime, "%F")
+
+              %h5 To
+              = date_field_tag "search[max_membership_end_date]", search.max_membership_end_date.try(:strftime, "%F")
+
+      .accordion-group
+        .accordion-heading
+          %a.accordion-toggle{"data-toggle"=>"collapse","data-parent"=>"#accordion3",:href=>"#collapseTwelve"}
+            Status
+        #collapseTwelve.accordion-body.collapse
+          .accordion-inner
+            = f.select :membership_status, Member.states.collect(&:capitalize), include_blank: ""
+
+      .accordion-group
+        .accordion-heading
+          %a.accordion-toggle{"data-toggle"=>"collapse","data-parent"=>"#accordion3",:href=>"#collapseEleven"}
+            Type
+        #collapseEleven.accordion-body.collapse
+          .accordion-inner
+            = f.select :membership_type_id, search_membership_type_options(@membership_types, @search.membership_type_id), include_blank: ""
+
+      / .accordion-group
+      /   .accordion-heading
+      /     %a.accordion-toggle{"data-toggle"=>"collapse","data-parent"=>"#accordion3",:href=>"#collapseNine"}
+      /       Start/End
+      /   #collapseNine.accordion-body.collapse
+      /     .accordion-inner
+      /       = date_field_tag "search[min_donations_date]", search.min_donations_date.try(:strftime, "%F"), max: Time.now.strftime("%F")
+      /       %span.range-separator to
+      /       = date_field_tag "search[max_donations_date]", search.max_donations_date.try(:strftime, "%F"), max: Time.now.strftime("%F")
+
+      / .accordion-group
+      /   .accordion-heading
+      /     %a.accordion-toggle{"data-toggle"=>"collapse","data-parent"=>"#accordion3",:href=>"#collapseTen"}
+      /       Year
+      /   #collapseTen.accordion-body.collapse
+      /     .accordion-inner
+      /       = f.select :membership_status, ["2013", "2012", "2010", "2009"], include_blank: ""
+
+  -with_kit(:passes) do
+    %h4 Passes
+    .accordion#accordion4
+      .accordion-group
+        .accordion-heading
+          %a.accordion-toggle{"data-toggle"=>"collapse","data-parent"=>"#accordion4",:href=>"#collapseEighty"}
+            Type
+        #collapseEighty.accordion-body.collapse
+          .accordion-inner
+            = f.select :pass_type_id, options_from_collection_for_select(@pass_types, 'id', 'name', @search.pass_type_id), include_blank: ""
+
+  .control
+    = f.submit "Search", :id => "advanced-search-submit", :class => 'btn'
+    = link_to "Simple Search", people_path

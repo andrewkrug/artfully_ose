@@ -1,0 +1,18 @@
+- in_section :reports
+- content_for :header do
+  %h1= t(".heading", :default => "Statement Reports")
+
+.row
+  .span4
+    %h3 About
+    %p= t(".about", :default => "Statements are an explanation of a sales for a specific show ")
+  .span8
+    %h3 Events
+    - if @events.blank?
+      %p You haven't create any events yet!
+      = link_to "Create an Event", new_event_path, :class => 'btn'
+    - else
+      %ul.nav.nav-pills.nav-stacked#event-list
+        - @events.each do |event|
+          %li.unselected
+            = link_to event.name, statements_path(:event_id => event.id), :title => 'event-name'

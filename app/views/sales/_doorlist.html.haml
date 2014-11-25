@@ -1,0 +1,79 @@
+.row.row-blue-padded
+  .span4.relative
+    .row-blue-padded-left
+      .progress.progress-doorlist
+        .bar.bar-doorlist
+  .span8
+    .row-blue-padded-right
+      .btn-group.download-door-list
+        %a.btn.dropdown-toggle{'data-toggle' => 'dropdown', 'href' => '#'}
+          %i.fa.fa-arrow-circle-down
+          Download Door List
+        %ul.dropdown-menu
+          %li= link_to 'CSV Download', door_list_event_show_path(@event, @show, :format => :csv)
+          %li= link_to 'PDF Download', door_list_event_show_path(@event, @show, :format => :pdf)
+      %span.search-container
+        = search_field_tag :live_search, nil, :placeholder => 'Search Door List', :class => 'span7', :class => 'search-doorlist'
+
+.row
+  .span4.relative
+    #buyer-details
+  .span8
+    #door-list-table
+      %table#door-list.table
+        %tbody
+          - tickets_grouped_by_buyer = @door_list.items.group_by {|i| i.buyer }.sort_by { |buyer, door_list_items| door_list_sort(buyer) }
+          - tickets_grouped_by_buyer.each do |buyer, door_list_items|
+            - special_instructions = door_list_grouped_attribute(door_list_items, :special_instructions)
+            - order_notes = door_list_grouped_attribute(door_list_items, :notes)
+            %tr.buyer{'data-buyer-id' => buyer.id, :id => "buyer-#{buyer.id}", 'data-search-blob' => "#{buyer.first_name} #{buyer.last_name} #{special_instructions} #{order_notes}"}
+              %td
+                %h4
+                  - if door_list_items.select {|d| !d.ticket.validated? }.empty?
+                    %i.remaining-ticket-indicator.fa.fa-circle
+                  - elsif door_list_items.select {|d| d.ticket.validated? }.any?
+                    %i.remaining-ticket-indicator.fa.fa-adjust
+                  - else
+                    %i.remaining-ticket-indicator.fa.fa-circle-o
+                  = door_list_name_and_company(buyer)
+                  - if special_instructions.present? || order_notes.present?
+                    %i.fa.fa-file
+              %td.buyer-ticket-count
+                %strong= door_list_items.length
+                ticket#{'s' unless door_list_items.length == 1}
+              %td.buyer-total
+                - amount = door_list_items.map {|d| d.ticket.sold_price }.inject(:+)
+                = number_as_cents(amount, cents_if_needed:true)
+                %br
+                = door_list_items.map {|d| d.payment_method }.uniq.to_sentence
+                .buyer-details-hidden{:style => 'display:none;', :id => "buyer-details-#{buyer.id}"}
+                  %h1= link_to buyer.to_s, buyer
+                  .content
+                    %ul
+                      - door_list_items.sort_by {|d| d.ticket.ticket_type }.each do |door_list_item|
+                        %li
+                          %p
+                            %label.lead
+                              = check_box_tag "validated", "validated", door_list_item.ticket.validated, :class => 'door-list-checkbox', 'data-ticket-id' => door_list_item.ticket.id, 'data-buyer-id' => buyer.id
+                              %strong
+                                = door_list_item.ticket.ticket_type.name
+                              = number_as_cents(door_list_item.ticket.sold_price, cents_if_needed:true)
+                              = door_list_item.payment_method
+                    %p
+                      -# We don't modify tickets after the show date, so there's the posibility that the
+                      -# ticket can be refunded after the show. The ticket remains "sold" but has no sold_item
+                      -# and it appears to the door list that it has no order. This is why we
+                      -# .select on the end of this statement.
+                      - order_ids = door_list_items.collect(&:order_id).uniq.select{|order| order.present?}
+                      %strong.muted Order#{'s' if order_ids.count > 1}:
+                      = safe_join(order_ids.map{|o| link_to o, order_path(o)}, ', ')
+
+                    - if special_instructions.present?
+                      %p
+                        %strong.muted Special Instructions:
+                        = special_instructions
+
+                    - if order_notes.present?
+                      %p
+                        %strong.muted Notes:
+                        = order_notes

@@ -1,0 +1,50 @@
+.row
+  .span12
+    .person-header
+      .span2
+        .person-avatar.row
+          = person_avatar_with_fallback(@person, 150)
+
+      .person-values-and-tags
+        %ul.person-values
+          %li#ticket-value
+            %h3= number_as_cents(@person.lifetime_ticket_value)
+            %h6= pluralize(@person.tickets.length, 'tickets')
+          %li#donation-value
+            %h3= number_as_cents(@person.lifetime_donations)
+            %h6= pluralize(Item.donations_by(@person).count, 'donation')
+          - with_kit(:membership) do
+            %li#membership-value
+              %h3=number_as_cents(@person.lifetime_memberships)
+              %h6=pluralize(@person.memberships.size, 'membership')
+          %li#lifetime-value
+            %h3= number_as_cents(@person.lifetime_value)
+            %h6 lifetime
+
+        %ul.detailed-list.tags#badges
+          -unless @person.member.nil?
+            %li.tag.rounder.tag-member= link_to "Member", person_memberships_path(@person), :style => "color:white"
+          -if @person.any_current_passes?
+            %li.tag.rounder.tag-passholder= link_to "Passholder", person_passes_path(@person), :style => "color:white"
+
+        .person-tags
+          = render :partial=>'shared/tags', :locals => { :tags => @person.tag_list, :subject => @person }
+
+
+      %h1 #{@person}
+      - unless @person.kind_of? Company
+        %h6.company-and-title= [@person.title, @person.company_name].select {|s| s.present? }.join(', ')
+
+      %ul.person-links
+        -if @person.email.present?
+          %li= mail_to @person.email, @person.email, :class => 'email'
+        -if @person.website.present?
+          %li= link_to @person.website, full_url(@person.website), :target => :blank, :class => 'website' 
+        -if @person.twitter_handle.present?
+          %li= link_to @person.twitter_handle, full_url(@person.twitter_handle, 'http://twitter.com/'), :class => 'twitter'
+        -if @person.facebook_url.present?
+          %li= link_to @person.facebook_url, full_url(@person.facebook_url, 'http://facebook.com/'), :class => 'facebook'
+        -if @person.linked_in_url.present?
+          %li= link_to @person.linked_in_url, full_url(@person.linked_in_url, 'http://linkedin.com/in/'), :class => 'linked-in'
+        -unless @person.member.blank?
+          %li= link_to @person.member.member_number, person_memberships_path(@person), :class => 'member-number'

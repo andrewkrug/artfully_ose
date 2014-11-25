@@ -1,0 +1,13 @@
+
+The ticket reseller <%= @reseller.name %> has accepted the following offer.
+
+Event:   <%= @event.name %>
+Show:    <%= @show.show_time %>
+Section: <%= @section.name %>
+Tickets: <%= pluralize @ticket_offer.count, "ticket" %>
+
+<% if @ticket_offer.rejection_reason.present? %>
+The reseller included the following comment:
+
+<%= @ticket_offer.rejection_reason %>
+<% end %>

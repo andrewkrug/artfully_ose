@@ -1,0 +1,20 @@
+%table.standalone.table
+  %thead
+    %tr
+      %th Payment Method
+      %th.right{:style=>'width:100px'} Tickets
+      %th.right{:style=>'width:100px'} Gross
+      %th.right{:style=>'width:100px'} Processing
+      %th.right{:style=>'width:100px'} Net
+  %tbody
+    - statement.payment_method_rows.each do |payment_method, row|
+      %tr
+        %td=payment_method.capitalize
+        %td.right=row.tickets
+        %td.right
+          %strong=number_as_cents row.gross
+        %td.right=number_as_cents row.processing
+        %td.right=number_as_cents row.net
+    %tr
+      %td.right{:colspan => 5}
+        = icon_link_to "Slices", statement_slices_path(@show.id, 'slice[]' => 'payment_method_proc'), 'fa-chevron-right', 'btn', ''

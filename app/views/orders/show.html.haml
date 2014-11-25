@@ -1,0 +1,24 @@
+- in_section :transactions
+- content_for :header do
+  %h1="Order #{@order.id}"
+
+.row
+  .span3
+    = render :partial => 'order_sidebar', :locals => { :order => @order, :person => @person, :total => @total }
+  .span9
+    - unless @order.all_items.empty?
+      = render :partial => 'refunds/grouped_form', :locals => { :order => @order }
+      = render :partial => 'exchanges/grouped_form', :locals => { :order => @order }
+      = render :partial => 'returns/grouped_form', :locals => { :order => @order }
+
+      = render :partial => 'item_table', :locals => { :order => @order, :is_child => false }
+
+- unless @order.children.empty?
+  - @order.children.each do |child|
+    %hr
+    .row
+      .span3
+        = render :partial => 'order_sidebar', :locals => { :order => child, :person => @person, :total => child.total, :work_with => false }
+      .span9
+        - unless child.items.empty?
+          = render :partial => 'item_table', :locals => { :order => child, :is_child => true }

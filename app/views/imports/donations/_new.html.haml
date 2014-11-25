@@ -1,0 +1,105 @@
+- in_section :imports
+- content_for :header do
+  %h1 Import Donations
+
+.row
+  .span3
+    %h2
+      %span.badge.badge-big.badge-info 1
+      Template
+    #{link_to 'Download an empty CSV file', template_imports_path(:type => "donations")} with these headers already filled in.
+  
+  .span6
+    %h2
+      %span.badge.badge-big.badge-info 2
+      Format  
+    %h3 Required Fields
+    .bottom-room= render :partial => "imports/shared/knowledge_base"
+    %table.table.table-bordered.table-striped.docs
+      %tr 
+        %td.field-slim Date
+        %td
+          %span.label.label-success
+            Important!
+          &nbsp Donation date must be in one of the following formats
+          =render :partial => "imports/shared/date_format"
+          Time of day is not required.
+      %tr 
+        %td.field-slim Donation Type
+        %td
+          %span.label.label-success
+            Important!  
+          &nbsp Valid options are:
+          %br
+          %br 
+          %b Monetary, In-Kind
+      %tr 
+        %td.field-slim Payment Method
+        %td
+          %span.label.label-success
+            Important!  
+          &nbsp Valid options are:
+          %br
+          %br
+          %b Cash, Credit card, Check, Other, Unknown.
+      %tr 
+        %td.field-slim Amount
+        %td
+          %span.label.label-success
+            Important!
+          &nbsp The total amount of the donation.  Don't include a '$' or other currency symbols.  The tax-deductible amount of the donation (usually the total amount received, unless the donor <a href='http://www.irs.gov/publications/p526/ar02.html#en_US_2011_publink1000229650' target=_blank>received something in return</a>).
+    
+    %h3 Please include one of the following
+    %table.table.table-bordered.table-striped.docs
+      %tr 
+        %td.field-slim First 
+        %td The first name of the person
+      %tr 
+        %td.field-slim Last
+        %td The last name of the person
+      %tr 
+        %td.field-slim Email
+        %td The email address of the person  
+      %tr
+        %td.field-slim Company Name
+        %td
+          If this is a company record, the name of the company. Otherwise,
+          it's the name of the company that the person works for.
+      
+    %h3 Optional Fields
+    %table.table.table-bordered.table-striped.docs
+      %tr 
+        %td.field-slim Deductible Amount
+        %td
+          %span.label.label-success
+            Important!
+          &nbsp The tax-deductible amount of the donation (usually the total amount received, unless the donor <a href='http://www.irs.gov/publications/p526/ar02.html#en_US_2011_publink1000229650' target=_blank>received something in return</a>).  If this is not included, the deductible amount will be equal to the value in Amount minus any value in Non-Deductible.  Don't include a '$' or other currency symbols.  
+      %tr 
+        %td.field-slim Non-Deductible Amount
+        %td
+          %span.label.label-success
+            Important!
+          &nbsp This is the non-deductible portion of the donation (i.e. the fair market value of <a href='http://www.irs.gov/publications/p526/ar02.html#en_US_2011_publink1000229650' target=_blank>something the donor received in return</a>).  If this is not included, the non-deductible amount will be equal to the value in Amount minus any value in Deductible.  Don't include a '$' or other currency symbols.   
+    %p You can also use all of the field names in People imports.
+  
+  .span3
+    %h2
+      %span.badge.badge-big.badge-info 3
+      Upload
+    %p
+      Please only upload
+      %b Comma Separated Values (CSV)
+      files.  We cannot process 
+      %b XLS
+      or
+      %b XLSX
+      files.
+    
+    %p
+      = render :partial => "shared/error_messages", :locals => { :target => @import }
+      = raw s3_http_upload_tag :key => "imports/#{UUID.new.generate}",
+          :content_type => "text/csv",
+          :redirect => new_import_url,
+          :acl => "public-read",
+          :max_filesize => 50.megabytes,
+          :submit_button => '<input type="hidden" name="type" value="donations"/><div class="cancel-submit"><input id="import_submit" class="btn" name="commit" type="submit" value="Import"></div>'

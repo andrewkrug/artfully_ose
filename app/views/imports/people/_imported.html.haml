@@ -1,0 +1,55 @@
+.row
+  .span4
+    %p This import was created at: <br> #{l import.created_at}
+    %p= link_to "Back to imports/exports", imports_path, :class => "btn"
+    %p= link_to "Recall this import", "#recall", :data => {:toggle => "modal"}, :class => "btn btn-danger"
+
+  .span8
+    .well
+      %h3 This file has been imported into Artful.ly.
+      %p="This import file had #{pluralize @import.rows.count, "person"}."
+
+    -unless @messages.empty?
+      %h4 Merged
+      %p These people already existed, so we merged the records for you.
+      %table.table.table-bordered.table-striped
+        %tr
+          %th{:width => 250} Email
+          %th First
+          %th Last
+          %th 
+        - @messages.each_with_index do |message, index|
+          - unless message.person.nil?
+            %tr
+              %td=message.person.email
+              %td=message.person.first_name
+              %td=message.person.last_name
+              %td=icon_link_to "", person_path(message.person), 'fa-share', '', ''
+      = will_paginate @messages, :param_name => 'messages_page'
+
+    - unless @people.empty?
+      %h4 Imported
+      %p These people were imported.
+      %table.table.table-bordered.table-striped
+        %tr
+          %th{:width => 250} Email
+          %th First
+          %th Last
+          %th 
+        - @people.each_with_index do |row, index|
+          %tr
+            %td=row.email
+            %td=row.first_name
+            %td=row.last_name
+            %td=icon_link_to "", person_path(row), 'fa-share', '', ''
+            
+      = will_paginate @people
+
+#recall.modal
+  .modal-header
+    .close{'data-dismiss'=>'modal'} x
+    %h3 Recall this import
+  .modal-body
+    %p Recalling deletes all the People records created by this import. If an action, order or ticket has been added to a record since it was imported, that record will be excluded from the recall.
+  .modal-footer
+    = link_to "Recall", recall_import_path(@import), :class => "btn btn-primary"

@@ -1,0 +1,33 @@
+- content_for :title do
+  Purchase a Pass
+  
+.container
+  %h1 Purchase a Pass
+
+  .row#membership-storefront
+    .span8  
+      #salesy{:style => "margin-bottom: 20px"} 
+        =@passes_kit.marketing_copy_heading.html_safe
+
+      - @pass_types.each do |pass_type|
+        .row-fluid{:id => "pass-type-#{pass_type.id}"}
+          .span12
+            %ul#memberships.unstyled
+              %li
+                .title.active
+                  .price
+                    =number_as_cents pass_type.price
+                  .pass_type_name
+                    =pass_type.name
+            =pass_type.description
+            %br
+            %br
+            .section
+              = form_for pass_type, :as => :pass_type, :url => store_order_path(@store_organization.cached_slug), :html => {:id => "edit_pass_type_#{pass_type.id}"}, :method => :post do |f| 
+                = f.hidden_field :id
+                = select_tag :quantity, options_for_select((1..6).to_a.map {|i| [pluralize(i, "#{pass_type.passerize}"), i]})
+                = f.submit 'Add to cart', :class => 'add-to-cart btn btn-primary', :style => 'margin-top: -10px'
+      
+    .span4
+      .side-section
+        =@passes_kit.marketing_copy_sidebar.html_safe

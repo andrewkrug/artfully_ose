@@ -1,0 +1,89 @@
+- in_section :people
+- content_for :header do
+  %h1 Exchanging Tickets
+
+.row
+  .span4#event-select-container
+    %h3 1. Choose an Event
+    = select_tag "event_selector", options_for_select(@events.collect{ |e| [e.name, url_for(params.merge({:event_id => e.id, :show_id => nil, :ticket_type_id => nil}))] }, url_for(params.merge({:event_id => @event.try(:id), :show_id => nil, :ticket_type_id => nil}))), include_blank: true, class: "visit-on-select span4"
+
+  .span4#show-select-container
+    - unless @shows.nil?
+      %h3 2. Choose a Show
+      - if @shows.empty?
+        %p Sorry, there are no upcoming shows with tickets available
+      - else
+        = select_tag "show_selector", options_for_select(@shows.collect{ |show| [l(show.datetime_local_to_event, :format => :short), url_for(params.merge({:show_id => show.id, :ticket_type_id => nil}))] }, url_for(params.merge({:show_id => @show.try(:id), :ticket_type_id => nil}))), include_blank: true, class: "visit-on-select span4"
+
+  .span4#ticket-type-select-container
+    - unless @show.nil?
+      %h3 3. Choose a Ticket Type
+      = select_tag "ticket_type_selector", options_for_select(@show.chart.ticket_types.collect{ |ticket_type| [(truncate(ticket_type.name, :length => 20, :separator => ' ', :omission => '...') + ' ' + number_as_cents(ticket_type.price)), url_for(params.merge({:ticket_type_id => ticket_type.id}))] }, url_for(params.merge({:ticket_type_id => @ticket_type.try(:id)}))), include_blank: true, class: "visit-on-select ticket-type-select span4"
+
+- unless @ticket_type.nil?
+  = form_tag '/exchanges' do
+    = hidden_field_tag :order_id, params[:order_id]
+    = hidden_field_tag :show_id, params[:show_id]
+    = hidden_field_tag :ticket_type_id, params[:ticket_type_id]
+    - params[:items].each do |item_id|
+      = hidden_field_tag "items[]", item_id
+    #exchange-details
+      - unless @num_available_tickets < @items.length
+        .row
+          .span3.offset2#outgoing-tickets
+            .well
+              %ol.unstyled
+                - @items.each do |item|
+                  %li.ticket-detail
+                    %h6= item.show.event.name
+                    = l(item.show.datetime_local_to_event, :format => :short)
+                    %br
+                    = item.product.ticket_type.name
+                    .lead=number_as_cents item.total_price
+          #exchange-arrow.span2
+            %i.fa.fa-arrow-right.fa-3x
+
+          .span3#incoming-tickets
+            .well{class: ("negative" if @free_upgrade)}
+              %ol.unstyled
+                - @items.count.times do
+                  %li.ticket-detail
+                    %h6= @event.name
+                    = l(@ticket_type.show.datetime_local_to_event, :format => :short)
+                    %br
+                    = @ticket_type.name
+                    .lead=number_as_cents @ticket_type.price
+
+        .row
+          .span6.offset3
+            %p
+              When you click the "Confirm Exchange" button, The tickets on the left will be immediately exchanged for the tickets on the right. We'll update the show data and door list right away.
+
+            %p
+              Artful.ly will not refund or credit any accounts. If there is money to be collected from or refunded to a patron, please reconcile with the patron directly.
+
+
+            - if @order.skip_confirmation_email?
+              %p="We cannot send an email confirmation because we have no email address for #{@order.person}."
+            - else
+              .center
+                .control-group
+                  .controls
+                    %label.checkbox
+                      = check_box_tag :send_email_confirmation, "1", "", :style => "float:none"
+                      ="Also send an email confirmation to #{@order.person.email}."
+            
+            - unless @ticket_type.nil?
+              .center
+                = submit_tag "Confirm Exchange", :class => "btn btn-large btn-primary", :disable_with => "Exchanging..."
+
+- content_for :custom_js do
+  :javascript
+    $(".visit-on-select").on("change", function(scope) {
+      window.open($(this).val(), "_self");
+    })
+
+  - if @num_available_tickets && (@num_available_tickets < @items.length)
+    :javascript
+      $('.ticket-type-select').popover({title: "Not Enough Tickets", content: "There aren't enough tickets in this ticket type to complete your exchange.  Please pick another show or ticket type.", placement: "bottom", trigger: "manual"});
+      $('.ticket-type-select').popover('show')

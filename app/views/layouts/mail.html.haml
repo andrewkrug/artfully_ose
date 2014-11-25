@@ -1,0 +1,26 @@
+!!!
+%html{:xmlns => "http://www.w3.org/1999/xhtml", "xml:lang" => "en", :lang => "en"}
+  %head
+    %meta{'http-equiv' => 'Content-Type', :content => 'text/html'}/
+    :css
+      body { 
+        font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      }
+      table {
+        border: 0px;
+        margin: 0px;
+      }
+      td.money {
+        width: 120px;
+      }
+      table th {
+        text-align: left;
+      }
+      table td, table th {
+        border-bottom: 1px solid #999;
+        padding: 8px;
+      }
+
+  %body
+    %p{:style => "display:none;"}= yield :preview_text
+    = yield

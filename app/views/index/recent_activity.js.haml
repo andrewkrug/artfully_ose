@@ -1,0 +1,5 @@
+$('#recent-list ul').append("#{j render(:partial => 'actions/action', :collection => @recent_actions)}");
+- if @recent_actions.next_page
+  $('#recent-actions-paginationn').replaceWith("#{j will_paginate(@actions, :id => 'actions-pagination')}");
+- else
+  $('#recent-actions-pagination').remove();

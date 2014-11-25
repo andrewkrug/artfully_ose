@@ -1,0 +1,11 @@
+%h3 Upcoming Shows
+- if upcoming.empty?
+  %p There are no upcoming shows.
+- else
+  %ul.detailed-list#of_shows
+    - upcoming.each do |show|
+      %li
+        %h4= link_to (l show.datetime_local_to_event, :format => :short), event_show_path(event, show), :title => 'show-datetime'
+        %ul.controls
+          %li= link_to "Edit", edit_event_show_path(event, show) if can?(:edit, show)
+          %li= link_to "Delete", event_show_path(event, show), :data => {:confirm => "Are you sure you want to delete #{event.name}?"}, :method => :delete if can?(:destroy, show)

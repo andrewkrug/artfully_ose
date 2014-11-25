@@ -1,0 +1,49 @@
+- in_section :imports
+- content_for :header do
+  %h1 Imports and Exports
+
+.row
+
+  .span8
+    .bottom-room
+      %h3 Imports
+      .row-fluid
+        .span4
+          %h4 People
+          %p Do you have a database of contacts already?  Import those contacts into Artful.ly!
+        .span4
+          %h4 Events
+          %p Import sales from events not ticketed by Artful.ly
+        .span4
+          %h4 Donations
+          %p Import a list of past donations to your organization.
+      .row-fluid
+        .span4
+          = link_to "Import People", new_import_path(:type => :people), :class => "btn"
+        .span4
+          = link_to "Import Events", new_import_path(:type => :events), :class => "btn"
+        .span4
+          = link_to "Import Donations", new_import_path(:type => :donations), :class => "btn"
+    
+    .bottom-room    
+      -unless @imports.empty?
+        %h3 Import History
+        %table.table.table-condensed
+          - @imports.each do |import|
+            %tr
+              %td= link_to File.basename(import.s3_key), import_path(import)
+              %td= import.user.email
+              %td= l import.created_at_local_to_organization, :format => :short
+              %td= import.status.capitalize
+  .span1
+    &nbsp;
+  
+  .span3       
+    .well{:style => "text-align: center"}   
+      %h3 Exports
+      =render :partial => "export_links"
+      %div{:style => 'font-weight:bold; text-align:left; font-size:.9em;'}
+        = "Need something more specific?"
+        %br
+          ="Export from"
+          =link_to("Advanced Search", new_search_path)

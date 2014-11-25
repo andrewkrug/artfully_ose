@@ -1,0 +1,14 @@
+="Refund Failed"
+="-------------"
+
+Order number: #{@order.id}
+Refund total: -$#{format("%.2f", @amount)}
+
+- unless @items.empty?
+  There was a problem while attempting to issue a refund for these memberships:
+
+  - @items.each do |item|
+    ="  * #{item.product.membership_type.name}"
+
+Message:
+="  #{@message}"

@@ -1,0 +1,16 @@
+- if show.nil?
+  %p=message
+-else
+  .row-fluid
+    .span6
+      #day-date
+        #month.navbar.navbar-inner
+          =show.datetime_local_to_event.strftime('%b')
+        #day
+          =show.datetime_local_to_event.strftime('%e')
+    .span6
+      %strong=link_to show.datetime_local_to_event.strftime('%l:%M %P'), event_show_path(@event, show)
+      #available="#{show.glance.available_total} tickets available"
+      #show-links
+        %p=icon_link_to("Door List", new_event_show_sales_path(@event, show, :render => 'doorlist'), 'fa-list', 'btn', '')
+        %p=icon_link_to("Box Office", new_event_show_sales_path(@event, show, :render => 'boxoffice'), 'fa-shopping-cart', 'btn', '')

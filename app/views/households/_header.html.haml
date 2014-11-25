@@ -1,0 +1,25 @@
+.row
+  .span12
+    .household-header
+      .household-avatar
+        = image_tag "household-default-avatar.png"
+
+      .household-values-and-tags
+        %ul.household-values
+          %li
+            %h3= number_as_cents(@household.lifetime_ticket_value)
+            %h6= pluralize(@household.lifetime_ticket_count, 'tickets')
+          %li
+            %h3= number_as_cents(@household.lifetime_donations)
+            %h6= pluralize(@household.lifetime_donations_count, 'donation')
+          %li
+            %h3= number_as_cents(@household.lifetime_value)
+            %h6 lifetime
+
+        .household-tags
+          %ul.detailed-list.tags
+            - @household.individuals.map(&:tag_list).flatten.uniq.each do |tag_name|
+              %li.tag.rounder= tag_name
+
+      %h1
+        = @household.name

@@ -1,0 +1,111 @@
+.row-fluid
+  .span9
+    %h3 Payment Details
+  .span3
+    =link_to "Back To Order", "#", :class => "btn btn-primary flat-button", :id => "console-build-order"
+= form_tag console_sales_path, :method => :post, :class => 'portal-form', :id => "sales-console-payment-form" do |f|
+  =hidden_field_tag :person_id, @person.try(:id)
+  .row.row-fluid.row-blue-padded
+    .span4
+      .row-blue-padded-left
+        %h6 Payment
+    .span8
+      .btn-toolbar.payment-select
+        .btn-group
+          %a.btn{'href' => "#", 'data-payment-select' => 'cash'}
+            Cash
+          %a.btn{'href' => "#", 'data-payment-select' => 'credit'}
+            Credit
+          %a.btn{'href' => "#", 'data-payment-select' => 'check'}
+            Check
+          %a.btn{'href' => "#", 'data-payment-select' => 'comp'}
+            Comp
+          = hidden_field_tag 'payment_method'
+      #credit-fields.payment-fields{:style => 'display:none;'}
+        .control-group
+          =label_tag :credit_card_number do
+            Card Number
+            %span.muted.required (required)
+          .controls= text_field_tag("credit_card[number]", "", :placeholder => "XXXX-XXXX-XXXX-XXXX", :class => 'input-medium credit_card_number')
+        .control-group
+          %label
+            Card Expiration
+            %span.muted.required (required)
+          .date_field.controls
+            = select_tag("credit_card[month]", options_for_select(1..12, "01"), :class => 'input-small inline')
+            = select_tag("credit_card[year]", options_for_select(Time.now.year..Time.now.year + 10, "2014"), :class => 'input-small inline')
+      #check-fields.payment-fields{:style => 'display:none;'}
+        .control-group
+          = label_tag("check[number]", "Check Number")
+          .controls= text_field_tag("check[number]", params[:check].try([:number]), :class => 'input-medium')
+
+  .row.row-fluid
+    .span4
+      %h6.padded-left Buyer Info
+    .span8
+      #user-info
+        #existing-user-popover
+        = hidden_field_tag(:person_id, "", :name => "person[id]")
+        .control-group
+          =label_tag :person_first_name do
+            First Name
+            %span.muted.required.name-required{:style => 'display:none;'} (required)
+          .controls
+            = text_field_tag(:customer_first_name, @person.try(:first_name), :id => "person_first_name", :name => "customer[first_name]", :placeholder => "First name", :class => 'person_first_name')
+        .control-group
+          =label_tag :person_last_name do
+            Last Name
+            %span.muted.required.name-required{:style => 'display:none;'} (required)
+          .controls
+            = text_field_tag(:customer_last_name, @person.try(:last_name), :id => "person_last_name", :name => "customer[last_name]", :placeholder => "Last name", :class => 'person_last_name')
+        .control-group
+          =label_tag :person_email do
+            Email
+            %span.muted.required.contact-required{:style => 'display:none;'} (required or phone)
+          .controls= email_field_tag(:customer_email, @person.try(:email), :id => "person_email", :name => "customer[email]", :placeholder => "example@email.com", :class => 'person_email')
+        .control-group
+          =label_tag :person_phone do
+            Phone Number
+            %span.muted.required.contact-required{:style => 'display:none;'} (required or email)
+          .controls
+            = text_field_tag(:customer_phone, @person.try(:phones).try(:first).try(:number), :id => "person_phone", :name => "customer[phones_attributes][][number]", :placeholder => "(XXX) XXX-XXXX", :class => 'person_phone')
+
+        = fields_for "customer[address]" do |address|
+          .control-group
+            = address.label :address1, "Address 1", :class => 'control-label required'
+            .controls= address.text_field :address1, :value => @person.try(:address).try(:address1)
+            = address.label :address2, "Address 2", :class => 'control-label required'
+            .controls= address.text_field :address2, :value => @person.try(:address).try(:address2)
+          .control-group
+            = address.label :country, "Country", :class => 'control-label required'
+            .controls= address.select(:country, [@person.try(:address).try(:country)])
+          .control-group
+            = address.label :state, "State", :class => 'control-label required'
+            .controls= address.select(:state, [@person.try(:address).try(:state)], :value => @person.try(:address).try(:state))
+          .control-group
+            = address.label :city, "City", :class => 'control-label required'
+            .controls= address.text_field :city, :value => @person.try(:address).try(:city)
+          .control-group
+            = address.label :zip, "Zip", :class => 'control-label required'
+            .controls= address.text_field :zip, :class => 'span2', :value => @person.try(:address).try(:zip)
+
+
+        .control-group
+          =label_tag :order_notes do
+            Order Notes
+            %span.muted.required
+          .controls= text_area_tag(:order_notes, "", :id => "order_notes", :name => "order_notes")
+
+  .form-actions.cart-actions
+    -if current_sales_console_cart.empty?
+      .row-fluid
+        .span3
+          &nbsp
+        .span8
+          Please add items to this order before checking out.
+    -else
+      .row-fluid
+        .span8
+          %h2#cart-total=number_as_cents current_sales_console_cart.total
+        .span4
+          = submit_tag 'Buy', :id => 'complete-purchase', :class => 'btn btn-primary btn-large pull-right'

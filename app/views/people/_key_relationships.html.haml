@@ -1,0 +1,5 @@
+%ul.kv#key_relationships
+  -person.starred_relationships.each do |rel|
+    %li{:id => rel.id}
+      .key=rel.relationship(person)
+      .value=link_to_person rel.person(person)

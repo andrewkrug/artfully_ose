@@ -1,0 +1,23 @@
+%table.standalone.table
+  %thead
+    %tr
+      %th Ticket Type
+      %th.right{:style=>'width:100px'} Tickets
+      %th.right{:style=>'width:100px'} Gross
+      %th.right{:style=>'width:100px'} Processing
+      %th.right{:style=>'width:100px'} Net
+  %tbody
+    - statement.ticket_type_rows.each do |ticket_type, row|
+      %tr
+        %td
+          =ticket_type.capitalize
+          -if row.member_ticket
+            .badge.badge-success Member
+        %td.right=row.tickets
+        %td.right
+          %strong=number_as_cents row.gross
+        %td.right=number_as_cents row.processing
+        %td.right=number_as_cents row.net
+    %tr
+      %td.right{:colspan => 5}
+        = icon_link_to "Slices", statement_slices_path(@show.id, 'slice[]' => 'ticket_type_proc'), 'fa-chevron-right', 'btn', ''

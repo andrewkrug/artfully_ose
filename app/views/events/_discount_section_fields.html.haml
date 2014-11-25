@@ -1,0 +1,25 @@
+.fields.section-fields.discount-tickets
+  .control-group
+    =f.label :section_id, "Ticket Type", :class => 'control-label'
+    .controls
+      :ruby
+        # this should probably go in a helper
+        sections = @event.charts.collect(&:sections).flatten.uniq
+        sections_options = sections.map {|s| content_tag('option', s.name, {:value => s.id.to_s, 'data-price' => (s.price / 100.0)}) }
+
+      = f.select :section_id, sections_options.join('').html_safe, {}, :class => 'section-select'
+
+      - show_remove_links = true if show_remove_links.nil?
+      - if show_remove_links
+        %span.remove-fields-link
+          = f.hidden_field :_destroy
+          %i.fa.fa-minus-circle.icon-gray
+          = link_to_remove_fields "remove Ticket Type", f
+
+  .control-group.custom-discount-price{:style => 'display:none;'}
+    =f.label :price, "Discounted price", :class => 'control-label'
+    .controls
+      .input-prepend
+        %span.add-on $
+        =f.text_field :price, :placeholder => '0.00', :class => 'input-small section-price'#, :value => number_as_cents(f.object.price, :format => "%n")
+      (regularly <span class="regular-price">#{number_to_currency(sections.first.price)}</span>)

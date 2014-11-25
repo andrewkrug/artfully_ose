@@ -1,0 +1,32 @@
+- in_section :events
+- content_for :header do
+  =render :partial=>'events/header'
+
+.row
+  .span3
+    - in_sub_section :details
+    =render :partial=>'menu'
+  .span9
+    = render "shared/error_messages", :target => @event
+    %h3 Ticket Capacity
+
+    = form_for( @event.default_chart, :html => { :class => 'form-horizontal' } ) do |f|
+      = f.fields_for :sections do |builder|
+        = render 'section_fields', :f => builder
+          
+      .form-actions
+        = render :partial => "shared/save_save_and_next", :locals => {:form => f}
+
+-unless @event.shows.empty?        
+  #nag.modal
+    .modal-header
+      .close{'data-dismiss'=>'modal'} x
+      %h3 Editing Prices
+    .modal-body
+      %p
+        Changing prices on this screen 
+        %b
+          will not
+        change the prices on shows you have already created.  To edit pricing for existing shows, select a single show and edit pricing information for that specific show. 
+    .modal-footer
+      %button.btn.btn-success{'data-dismiss'=>'modal'} OK

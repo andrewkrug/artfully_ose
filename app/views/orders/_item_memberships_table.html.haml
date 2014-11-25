@@ -1,0 +1,16 @@
+#items
+  %table.zebra.table
+    %thead
+      %tr
+        %th.grouped-checkbox
+        %th Type
+        %th Price
+        %th
+    %tbody
+      - order.memberships.each do |item|
+        %tr{:id => "row_item_#{item.id}", :class => item.state}
+          %td.grouped-checkbox
+          %td.item-description
+            %span=item.product.membership_type.name
+          %td.price= amount_and_nongift item
+          %td

@@ -1,0 +1,34 @@
+- content_for :header do
+  %h1= "Pass Types"
+
+.row.bottom-room
+  .pull-right
+    =icon_link_to("New Pass Type", new_pass_type_path, 'fa-plus', 'btn','')
+    =link_to "Download CSV", pass_types_path(:format => "csv"), :class => "btn"
+
+%table.table#pass-types-table
+  %tr
+    %th Name
+    %th Starts
+    %th Ends
+    %th.right Passes Sold
+    %th.right # Tickets
+    %th.right Price
+    %th.right Visibility
+    %th.right
+  -@pass_types.each do |pass_type|
+    %tr
+      %td=link_to pass_type.name, edit_pass_type_path(pass_type)
+      %td=l pass_type.starts_at, :format => :slashed_date
+      %td=l pass_type.ends_at, :format => :slashed_date
+      %td.right=pass_type.sold.count
+      %td.right=pass_type.tickets_allowed
+      %td.right=number_as_cents pass_type.price
+      %td.right
+        %a{:href => "#", :class => "artfully-tooltip", :rel => "tooltip", "data-original-title" => "This pass is currently #{"not" unless pass_type.on_sale?} visible in your online Storefront.", "data-trigger" => "hover"}
+          %span.badge{:class => "#{'badge-success' if pass_type.on_sale?}"}="S"
+
+      %td.right
+        -if pass_type.destroyable? 
+          = link_to('Delete', pass_type_path(pass_type), :method => :delete, :class => "btn btn-mini btn-danger")
+        =icon_link_to("Store link", store_pass_path(current_user.current_organization.cached_slug, pass_type), 'fa-shopping-cart', 'btn btn-mini', '')

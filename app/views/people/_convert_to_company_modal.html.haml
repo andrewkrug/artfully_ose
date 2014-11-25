@@ -1,0 +1,42 @@
+#convert-to-company.modal
+  = form_for(@person, :html => {:class => 'form-horizontal'}) do |form|
+    = form.hidden_field :type, value: "Company"
+    .modal-header
+      = link_to '&times;'.html_safe, '#', :class => 'close', 'data-dismiss' => 'modal'
+      %h3 Convert #{@person} Into a Company
+    .modal-body
+      %p
+        This will convert an individual's record into a company record.
+        %strong You cannot reverse this change.
+
+      %fieldset
+        = form.hidden_field :subtype, value: "{{data.subtype}}"
+        = form.label :subtype, "Company Type"
+        .btn-group
+          %button{:type => "button", :class => "btn", "ng-class" => "{active: data.subtype == 'Business'}", "ng-click" => "data.subtype = 'Business'"} Business
+          %button{:type => "button", :class => "btn", "ng-class" => "{active: data.subtype == 'Foundation'}", "ng-click" => "data.subtype = 'Foundation'"} Foundation
+          %button{:type => "button", :class => "btn", "ng-class" => "{active: data.subtype == 'Government'}", "ng-click" => "data.subtype = 'Government'"} Government
+          %button{:type => "button", :class => "btn", "ng-class" => "{active: data.subtype == 'Nonprofit'}", "ng-click" => "data.subtype = 'Nonprofit'"} Nonprofit
+          %button{:type => "button", :class => "btn", "ng-class" => "{active: data.subtype == 'Other'}", "ng-click" => "data.subtype = 'Other'"} Other
+        = form.label :company_name, "Company Name"
+        = form.text_field :company_name, "ng-model" => "data.company_name", "ng-init" => "data.company_name = '#{@person.company_name}'"
+    .modal-footer
+      = form.submit 'Convert', :class => 'btn btn-primary save-person', "ng-disabled" => "!data.subtype || !data.company_name"
+      = link_to 'Cancel', '#', :class => 'btn', 'data-dismiss' => 'modal'
+
+
+- content_for :custom_js do
+  // change modal based on tab
+  :javascript
+    $(document).ready(function() {
+      $('.tab-merge a, .tab-delete a').click(function (e) {
+        e.preventDefault();
+        $(this).tab('show');
+        $('#edit-person .save-person').hide();
+      })
+      $('.tab a').click(function (e) {
+        e.preventDefault();
+        $(this).tab('show');
+        $('#edit-person .save-person').show();
+      })
+    });

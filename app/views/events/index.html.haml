@@ -1,0 +1,26 @@
+- in_section :events
+- content_for :header do
+  %h1= t('.heading', :default => "Events")
+
+.event-list-controls.well
+  .row-fluid
+    .span4
+      .btn-group
+        =link_to 'Upcoming', events_path(:query => params[:query]), :class => "btn #{'active' if @upcoming}"
+        =link_to 'All Events', events_path(:range => :all, :query => params[:query]), :class => "btn #{'active' if @all}"
+
+    .span4.center
+      =form_tag(events_path, :method => :get, :id => 'search-events', :class=>"form-search") do
+        = hidden_field_tag :range, params[:range]
+        .input-append
+          = text_field_tag :query, params[:query], :placeholder => 'Search Event Names', :class => 'search-query span10'
+          %button{:type => "submit", :class=>"btn"}
+            Search
+
+    .span4
+      .pull-right
+        = link_to "Create Event", new_event_path, :class => "btn btn-primary"
+
+.row
+  .span8.offset2
+    = render :partial => 'list', :locals => { :events => @events }

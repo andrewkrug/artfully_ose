@@ -1,0 +1,21 @@
+#faForm.modal
+  = form_for fa_user, :url => connect_organization_path(organization) do |form|
+    .modal-header
+      .close{'data-dismiss'=>'modal'} x
+      .row-fluid
+        .span2
+          =image_tag "falogo_50.jpg"
+        .span10
+          %h3 Connect to Fractured Atlas
+    .modal-body
+      - back ||= false
+      = hidden_field_tag :back, true if back
+      %ul
+        %li
+          = form.label :username, "Fractured Atlas Username", :class=>'control-label'
+          = form.text_field :username
+        %li
+          =form.label :password, "Password", :class=>'control-label'
+          =form.password_field :password, autocomplete: 'off'
+    .modal-footer
+      = form.submit "Connect", :class => 'btn'

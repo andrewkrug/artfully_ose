@@ -1,0 +1,21 @@
+%table.table#ticket-type-table
+  -section.ticket_types.each do |ticket_type|
+    %tr
+      %td{:style => 'width: 30px'}
+        %ul.nav.in-table
+          %li.dropdown{:id => "#menu#{ticket_type.id}"}
+            =icon_link_to(' ', "#menu#{ticket_type.id}", 'fa-asterisk', 'dropdown-toggle dropdown btn btn-mini', '')
+            %ul.dropdown-menu
+              %li
+                =link_to "Edit", edit_ticket_type_path(ticket_type.id, :format => :html), 'data-remote' => 'true', :class => 'add-new-ticket-type-link'
+      %td
+        - TicketType.channels_for(current_user.current_organization).each do |channel, icon|
+          %a{:href => "#", :class => "artfully-tooltip", :rel => "tooltip", "data-original-title" => "This ticket type is #{"not" unless ticket_type.send(channel)} shown in your #{channel_text channel}", "data-trigger" => "hover"}
+            %span.badge{:class => "#{'badge-success' if ticket_type.send(channel)}"}=icon
+       
+      %td
+        %strong=truncate(ticket_type.name, :length => 20, :separator => ' ', :omission => '...')
+      %td.right="#{number_as_cents ticket_type.price}"
+      %td="#{ticket_type.limit_to_s}"
+      %td="#{ticket_type.sold.length} sold"
+      %td="#{ticket_type.comped.length} comp"

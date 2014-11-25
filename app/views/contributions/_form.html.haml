@@ -1,0 +1,40 @@
+- if current_user.current_organization.has_active_fiscally_sponsored_project?
+  %p Use this form for recording donations received outside of Fractured Atlas.  Donations to Fractured Atlas Fiscally Sponsored Projects should be made through Fractured Atlas.  Please <a href='mailto:support@artful.ly'>contact support</a> with any questions.
+
+= form_for(contribution, :html=>{ :class=>'form-horizontal' }) do |form|
+  = form.hidden_field :person_id
+  = form.hidden_field :organization_id
+  = hidden_field_tag(:order_id, contribution.order.id) if contribution.order
+  .control-group
+    = form.label :subtype, "Type", :class => 'control-label'
+    .controls
+      = form.select :subtype, options_for_select(GiveAction.subtypes, contribution.subtype)
+      
+  .control-group
+    = form.label :payment_method, "Payment method", :class => 'control-label'
+    .controls
+      = form.select :payment_method, options_for_select([ "Cash", "Check", "Credit card", "Other" ], contribution.payment_method)
+    
+  .control-group
+    = form.label :amount, "Deductible Amount", :class => 'control-label'
+    .controls      
+      = form.text_field :amount, :class => :currency
+    
+  .control-group
+    = form.label :nongift_amount, "Non-Deductible Amount", :class => 'control-label'
+    .controls      
+      = form.text_field :nongift_amount, :class => :currency
+    
+  .control-group
+    = form.label :occurred_at, "Date and Time", :class => 'control-label'
+    .controls  
+      = form.text_field :occurred_at, :value => l(contribution.occurred_at_local_to_organization, :format => :datetime_for_input), :readonly => true, :class => :datetimepicker
+      
+  .control-group
+    = form.label :details, "Notes", :class => 'control-label'
+    .controls 
+      = form.text_area :details, :size => "20x3"
+  
+  .form-actions
+    = submit_tag "Save", :class => "btn"
+    = link_to "Cancel", cancel_path, :class => "btn"

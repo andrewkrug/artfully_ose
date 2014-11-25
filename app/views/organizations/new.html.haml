@@ -1,0 +1,16 @@
+- in_section :dashboard
+- content_for :header do
+  %h1 Organizations
+
+.row
+  .span4
+    %h3 About
+    %p All users of Artfully are members of the same organization
+    %p Pick a name and time zone for your organization.  This name will be shown within the app and, if you choose, on your Storefront page when selling tickets.
+    %p You can change these details at any time from the My Organization screen.
+  .span8
+    %h3 Create your own
+    = render "shared/error_messages", :target => @organization
+    = form_for @organization do |form|
+      %ul= render :partial => 'organizations/form', :locals => { :form => form }
+      = form.submit "Save", :class => "btn btn-primary single-shot disablable"

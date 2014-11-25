@@ -1,0 +1,50 @@
+[
+  {
+    "name": "Box Office",
+    "children": [
+      {
+        "name": "Cash",
+        "children": [
+          {
+            "name": "GENERAL ADMISSION", "colour": "#FFF9E6", "value": 950
+          },
+          {
+            "name": "STUDENT", "colour": "#EB8E4B", "value": 250
+          }
+        ]
+      },
+      {
+        "name": "Comp",
+        "children": [
+          {
+            "name": "VIP", "colour": "#EB4B4B", "value": 50
+          }
+        ]
+      },
+      {
+        "name": "Credit Card",
+        "children": [
+          {
+            "name": "GENERAL ADMISSION", "colour": "#FFF9E6", "value": 204
+          },
+          {
+            "name": "STUDENT", "colour": "#EB8E4B", "value": 101
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Web",
+    "children": [
+      {
+        "name": "Credit Card",
+        "children": [
+          {
+            "name": "GENERAL ADMISSION", "colour": "#FFF9E6", "value": 159
+          }
+        ]
+      }
+    ]
+  }
+]

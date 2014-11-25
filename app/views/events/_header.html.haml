@@ -1,0 +1,11 @@
+.row
+  .span8
+    %h1= @event.name
+    %h3.subtitle= @event.subtitle if @event.subtitle.present?
+  .span4#event-header-logo-container
+    -if @event.image?
+      =image_tag(@event.image.url(:thumb), :id => 'event-header-logo', :width => 75, :height => 75)
+    -else
+      .no-image.pull-right
+        #text
+          =link_to 'Add image', image_event_path(@event)

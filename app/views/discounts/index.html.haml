@@ -1,0 +1,33 @@
+- in_section :events
+- content_for :header do
+  = render :partial => 'events/header'
+
+.row
+  .span3
+    - in_sub_section :share
+    = render :partial => 'events/menu'
+  .span9
+    = render "shared/error_messages", :target => @event
+    .row-fluid
+      .span3
+        %h3 Discounts
+      .span9
+        =icon_link_to("Add", new_event_discount_path(@event), 'fa-plus-circle', 'btn', '')
+    %table.table
+      %thead
+        %th Code
+        %th Status
+        %th Discount
+        %th Redeemed
+        %th
+      %tbody
+        - @discounts.each do |discount|
+          %tr
+            %td= link_to discount.code, edit_event_discount_path(@event, discount)
+            %td= discount.active? ? "Active" : "Inactive"
+            %td= discount
+            %td= discount.redeemed
+            - if discount.destroyable?
+              %td= link_to "Delete", event_discount_path(@event, discount), method: :delete, confirm: "Are you sure you want to delete this discount?", class: "btn btn-mini btn-danger"
+            - else
+              %td= link_to "Delete", "#", class: "btn btn-mini btn-danger disabled"

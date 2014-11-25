@@ -1,0 +1,21 @@
+= form_for(address, :url => person_address_path(person), :html => {:id => "mailing-address-form"}) do |form|
+  .control-label= form.label(:address1, "Address")
+  .controls= form.text_field(:address1)
+    
+  .control-label= form.label(:address2, "Secondary")
+  .controls= form.text_field(:address2)
+
+  .control-label= form.label(:city, "City")
+  .controls= form.text_field(:city)
+
+  .control-label= form.label(:state, "State / Province")
+  .controls= form.select(:state, options_for_select(sorted_us_state_names, address.state))
+
+  .control-label= form.label(:zip, "Zip / Postal Code")
+  .controls= form.text_field(:zip)
+
+  .control-label= form.label(:country, "Country")
+  .controls= form.text_field(:country)
+  .cancel-submit
+    = form.submit :class => "btn"
+    = link_to "Cancel", "#", :id => "cancel", :class=>'btn'

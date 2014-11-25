@@ -1,0 +1,59 @@
+:erb
+  <style>
+  path {
+    stroke: #000;
+    stroke-width: 1.5;
+    cursor: default;
+  }
+
+  tspan {
+    cursor: pointer;
+  }
+  </style>
+
+
+- content_for :header do
+  %h3="#{@show.event.name} #{l @show.parsed_local_datetime, :format => :short}"
+
+.row
+  .span12
+    =select_tag "slice", options_for_select(@select_options, params.fetch(:slice,[])[0])
+    =select_tag "slice", options_for_select(@select_options)
+    =select_tag "slice", options_for_select(@select_options)
+
+.row
+  .span2
+    .well
+      .stat.bottom-room
+        .center.headline-stat=@total_tickets
+        .center.headline-caption
+          %h6 TICKETS
+      .stat.bottom-room
+        .center.headline-stat#tickets-stat="--"
+        .center.headline-caption
+          %h6 TICKETS IN SLICE
+      .stat.bottom-room
+        .center.headline-stat#tickets-pct="--"
+        .center.headline-caption
+          %h6 PCT OF SLICE
+    =icon_link_to("View statement", statement_path(@show), 'fa-share', 'btn', '')
+  .span10
+    #vis
+
+
+-content_for :custom_js do
+  :erb
+    <script>
+      var show_id = <%=@show.id%>
+    </script>
+  = javascript_include_tag 'slicer'
+
+#stats.modal
+  .modal-header
+    .close{'data-dismiss'=>'modal'} x
+    %h3 Slice Stats
+  .modal-body
+    %p
+      Hi 
+  .modal-footer
+    %button.btn.btn-success{'data-dismiss'=>'modal'} OK

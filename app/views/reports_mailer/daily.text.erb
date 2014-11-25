@@ -1,0 +1,16 @@
+Your Daily Order Report for <%= @tix.organization.name.html_safe %>.
+<%= l @tix.start_date, :format => :date %>
+
+<% if ! @tix.rows.empty? %>
+<%= raw @tix.to_table.to_table(first_row_is_head: true, last_row_is_foot: true) %>
+<% else %>
+There were no ticket orders placed.
+<% end %>
+
+<% if ! @donations.rows.empty? %>
+<%= raw @donations.to_table.to_table(first_row_is_head: true, last_row_is_foot: true) %>
+<% elsif @donations.organization.has_kit?("RegularDonationKit") %>
+There were no donations made.
+<% end %>
+
+View this email in an HTML-capable email reader for links to the aforementioned orders.

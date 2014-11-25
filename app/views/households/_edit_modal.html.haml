@@ -1,0 +1,143 @@
+#edit-household.modal
+  .modal-header
+    = link_to '&times;'.html_safe, '#', :class => 'close', 'data-dismiss' => 'modal'
+    %h3 Edit #{@household.name} Household Info
+  = form_for(@household, :html => {:class => 'form-horizontal'}) do |form|
+    .modal-body
+      .row
+        .span2
+          %ul.nav.nav-accordion
+            %li.active.tab= link_to 'Basics', '#basics', 'data-toggle' => 'tab'
+            %li.tab= link_to 'Address', '#address', 'data-toggle' => 'tab'
+            %li.tab-add-individual= link_to 'Add Individual', '#add-individual'
+            %li.tab-delete= link_to 'Delete', '#delete'
+        .span7
+          .tab-content
+            #basics.tab-pane.active
+              .controls
+                = form.label :name, :class => 'control-label'
+                .control= form.text_field :name
+
+            #address.tab-pane
+              - @household.address = Address.new if @household.address.nil?
+              = form.fields_for :address do |address_form|
+                .wide
+                  .controls
+                    = label_tag :address_id, "Populate From", :class => 'control-label'
+                    .control
+                      = select_tag :address_id, options_for_select(household_addresses_for_select(@household), (@household.address.id if @household.address))
+
+                .controls
+                  = form.label :overwrite_member_addresses, 'Overwrite member addresses', :class => 'control-label wide'
+                  .control
+                    = form.check_box :overwrite_member_addresses
+
+                %br
+
+                .controls
+                  = address_form.label :address, :class => 'control-label'
+                  .control
+                    = address_form.text_field :address1
+                .controls
+                  %label{:class => 'control-label'}
+                  .control
+                    = address_form.text_field :address2
+                .controls
+                  = address_form.label :country, :class => 'control-label'
+                  .control
+                    = address_form.select :country, [@household.address.country], :selected => @household.address.country
+                .controls
+                  = address_form.label :state, "State / Province", :class => 'control-label'
+                  .control
+                    = address_form.select :state, [@household.address.state], :selected => @household.address.state, :class => "region"
+                .controls
+                  = address_form.label :city, :class => 'control-label'
+                  .control
+                    = address_form.text_field :city
+                .controls
+                  = address_form.label :zip, "Zip / Postal Code", :class => 'control-label'
+                  .control
+                    = address_form.text_field :zip
+
+            #add-individual.tab-pane
+              .controls
+                #add-to-household-search
+                  = text_field_tag :search, "", :placeholder => "Email, name, or tag...", :class => "span6 query-string"
+                  = link_to "Search", "#", :class => 'btn', :onclick => "performSearch($('#add-to-household-search .query-string')); return false;"
+
+              %table.table.search-results
+                &nbsp;
+
+            #delete.tab-pane
+              %p
+                Delete
+                = @household.name
+                from Artful.ly.
+              = link_to "Delete", @household, :method => :delete, :class => "btn btn-danger delete-household", :confirm => "Are you sure you want to delete #{@household.name}?"
+
+    .modal-footer
+      = form.submit 'Save', :class => 'btn btn-primary save-household'
+      = link_to 'Cancel', '#', :class => 'btn', 'data-dismiss' => 'modal'
+
+
+- content_for :custom_js do
+  // change modal based on tab
+  :javascript
+    $(document).ready(function() {
+      $('.tab-merge a, .tab-delete a').click(function (e) {
+        e.preventDefault();
+        $(this).tab('show');
+        $('#edit-household .save-household').hide();
+      })
+      $('.tab-add-individual a, .tab-delete a').click(function (e) {
+        e.preventDefault();
+        $(this).tab('show');
+      })
+      $('.tab a').click(function (e) {
+        e.preventDefault();
+        $(this).tab('show');
+        $('#edit-household .save-household').show();
+      })
+    });
+
+    $(document).on('click', '[data-add-individual]', function(){
+      var id = $(this).attr('data-add-individual');
+
+      if($(this).hasClass('active')){
+        $('#add-to-household-search').append('<input type="hidden" name="individual_ids[]" value="'+ id + '"/>')
+      } else {
+        $('#add-to-household-search input[type=hidden][value=' + id + ']').remove();
+      }
+    });
+
+    function performSearch(element) {
+      $.getJSON("/people?utf8=%E2%9C%93&type=Individual&commit=Search", { search: $(element).val() }, function(people) {
+        responsePeople = new Array();
+
+        $.each(people, function (i, person) {
+          person = cleanJsonPerson(person)
+          responsePeople[i]  = "<tr>"
+          responsePeople[i] += "  <td class='controls'><input name='individual_ids[]' value='" + person.id + "' type='checkbox' id='add-individual-" + person.id + "' data-add-individual='" + person.id + "'/></td>"
+          responsePeople[i] += "  <td class='name'><label for='add-individual-" + person.id + "'>" + person.first_name + " " + person.last_name + "</label><br/>" + person.email + "</td>"
+          responsePeople[i] += "</tr>"
+        });
+        $("#add-individual .search-results").html(responsePeople);
+      });
+    }
+
+    $(document).on('keyup.autocomplete', '#add-to-household-search .query-string', function(){
+      performSearch(this);
+    });
+
+    var addresses = #{@household.addresses.map { |a| {a.id => a } }.reduce({}, :merge).to_json};
+
+    $("#edit-household #address_id").on("change", function(ev){
+      var id = $(this).val();
+      var address = addresses[id];
+      var keys = ['address1', 'address2', 'city', 'country', 'state', 'zip'];
+      for(var i = 0; i < keys.length; i++){
+        var key = keys[i];
+        $('#edit-household #address [name="household[address_attributes]['+key+']"]').val(addresses[id][key]);
+      }
+    });
+

@@ -1,0 +1,11 @@
+.modal-header
+  .close{'data-dismiss'=>'modal'} x
+  %h3 Edit Contribution
+
+.modal-body
+  =render :partial => "form", :locals => {:contribution => @contribution, :cancel_path => order_path(@contribution.order.id)}
+
+
+
+
+

@@ -1,0 +1,6 @@
+before_script:
+  - "cd spec/dummy"
+  - "bundle exec rake db:migrate"
+  - "bundle exec rake db:test:prepare"
+  - "cd ../.."
+script: "bundle exec rspec spec/*"

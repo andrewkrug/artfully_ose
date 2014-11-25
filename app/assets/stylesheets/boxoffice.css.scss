@@ -1,0 +1,258 @@
+/*
+ *= require pages/bootstrap-responsive
+ */
+
+ // flat color for navbar
+ // .navbar {
+ //   border-radius: 0;
+ //   margin: 0;
+ //   margin-bottom: 25px;
+ // }
+ // .navbar-inner {
+ //   border-radius: 0;
+ //   border: none;
+ //   background: rgb(32, 134, 166);
+ //   box-shadow: none;
+ // }
+ // .navbar .nav>.active>a, .navbar .nav>.active>a:hover, .navbar .nav>.active>a:focus {
+ //   background: #eee;
+ //   box-shadow: none;
+ //   -webkit-box-shadow: none;
+ //   text-shadow: none;
+ // }
+
+h3.event-name {
+  float:left;
+  margin:0;
+  margin-right:18px;
+}
+span.event-time a{
+  color:#999;
+}
+.nav-pills>.active>a, .nav-pills>.active>a:hover, .nav-pills>.active>a:focus {
+  background: #2086a6;
+}
+a {
+  color: #2086a6;
+}
+body {
+  padding-top: 30px;
+}
+#page-holder {
+  position: relative;
+  overflow: hidden;
+}
+#doorlist {
+  position: absolute;
+}
+#boxoffice {
+  position: absolute;
+}
+
+.buyer:hover {
+  background: #eee;
+  cursor: pointer;
+}
+.span4.relative {
+  position: relative;
+  height: auto;
+}
+.ticket {
+  clear: both;
+}
+.ticket-list {
+  margin-bottom: 25px;
+}
+a.ticket-quantity-button {
+  display: block;
+  padding: 5px;
+  padding-top: 2px;
+  padding-bottom: 10px;
+  text-align: center;
+  width: 15px;
+  height: 15px;
+  float: left;
+  margin-right: 10px;
+  background: #eee;
+  color: #333;
+  font-weight: bold;
+  font-size: 20px;
+  border: 1px solid rgb(204, 204, 204);
+  border-radius: 3px;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+a.ticket-quantity-button:hover {
+  color: #111;
+  background: #ccc;
+  text-decoration: none;
+  cursor: pointer;
+}
+input.ticket-quantity {
+    color: #999;
+    background: #fff;
+    float: left;
+    margin-right: 10px;
+    width: 20px;
+    text-align: center;
+}
+.ticket.unavailable {
+  input.ticket-quantity {
+    color: #999;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  }
+  a.ticket-quantity-button {
+    color: #999;
+    background: #fff;
+    &:hover {
+      cursor: not-allowed;
+      background: #fff;
+    }
+  }
+  span.ticket-type {
+    color: #999;
+  }
+}
+input.order-discount {
+  width:92px;
+  margin-right: 10px;
+}
+input.order-donation {
+  width:72px;
+  margin-right: 10px;
+}
+#order-total {
+  margin: 0;
+}
+.progress-doorlist {
+  line-height:30px;
+  height:30px;
+  background:transparent;
+  border:1px solid #6bafc4;
+  .bar-doorlist {
+    background: #6bafc4;
+    overflow:hidden;
+  }
+}
+.search-container {
+  display: block;
+  overflow: hidden;
+  padding-right: 20px;
+  input.search-doorlist {
+    width: 100%;
+    background:#fff;
+    height:23px;
+  }
+}
+.download-door-list {
+  float: right;
+  display: block;
+  .dropdown-toggle {
+    background: #6bafc4;
+    color: #fff;
+    height: 23px;
+    line-height: 23px;
+    font-weight: normal;
+    text-shadow: 0 -1px 0 rgba(0,0,0,.25);
+    box-shadow: none;
+    border: none;
+  }
+}
+
+.download-door-list.open.btn-group .btn.dropdown-toggle {
+  background-color: #2086a6;
+}
+
+.buyer {
+  &.validated td:first-child{
+    color: #666;
+  }
+  &:hover, &.active {
+    background: #eee;
+    cursor: pointer;
+  }
+  &.active {
+    background: #ccc;
+  }
+  h4 {
+    font-weight: normal;
+  }
+}
+table#door-list {
+  border: none;
+}
+.buyer td {
+  border-bottom: 1px solid #999;
+  &.buyer-ticket-count {
+    padding-top: 15px;
+  }
+  &.buyer-total {
+    text-align: right;
+    padding-top: 6px;
+  }
+}
+.buyer:first-child td{
+  border: none;
+}
+.span4 {
+  position: relative;
+  height: auto;
+}
+#buyer-details {
+  width: 300px;
+  position: fixed;
+  top: 200px;
+  .content {
+    overflow-y: scroll;
+  }
+}
+h6 {
+  font-size: 13px;
+  &.padded-left {
+    margin-left: 18px;
+  }
+}
+.row-blue-padded {
+  background: #ddedf2;
+  padding-top:13px;
+  margin-bottom:13px;
+  .row-blue-padded-left {
+    padding-left: 18px;
+  }
+  .row-blue-padded-right {
+    padding-right: 18px;
+  }
+}
+
+.control-group.error {
+  label {
+    font-weight: bold;
+    color: #b94a48;
+    &.error {
+      font-weight: normal;
+    }
+  }
+}
+
+#existing-user-popover .popover-content {
+  max-height: 300px;
+  overflow: scroll;
+  li:hover {
+    text-decoration: underline;
+    cursor:pointer;
+  }
+}
+
+#checkout-now-button:disabled {
+  color: #ccc;
+  text-shadow: none;
+}

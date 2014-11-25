@@ -1,0 +1,72 @@
+- content_for :header do
+  %h1 Search
+- content_for :title do
+  Search
+
+.row
+  .span4
+    = render partial: "form", locals: {search: @search}
+  .span8.super-search-results
+    .row-fluid
+      .span8
+        %h4.details-long= @search.description.html_safe
+      .span4
+        .pull-right
+          %ul.in-table
+            %li.dropdown#bulkactions
+              =icon_link_to('Work with...', "#menu#bulkactions", 'fa-asterisk', 'dropdown-toggle dropdown btn', '')
+              %ul.dropdown-menu
+                %li
+                  =link_to "Tag all", "#tag-modal", 'data-toggle' => 'modal', :rel => "tooltip", :data => {:toggle => "modal", "original-title" => "Give all of the people in these results the same tag.", :trigger => "hover", :placement => "left"}
+                %li
+                  =link_to "Log action", "#bulk-action-modal", :id => 'bulk-action-link', 'data-toggle' => 'modal'
+                %li
+                  =link_to "Create list segment", "#segment-modal", 'data-toggle' => 'modal'
+                %li
+                  = link_to 'Export to CSV', search_path(@search, :format => :csv)
+                - with_kit(:membership) do
+                  %li
+                    =link_to "Comp Memberships", new_search_membership_comp_path(@search), :id => 'comp-memberships-link'
+
+    %table.table.people-list
+      - if @people.blank?
+        %h3 No results.
+      - else
+        - if @search.output_households
+          - @people.individuals.in_household.map(&:household).uniq.each do |household|
+            = render partial: "household", locals: {:household => household}
+          - @people.individuals.not_in_household.each do |person|
+            = render partial: "person", locals: {:person => person}
+          - @people.companies.each do |person|
+            = render partial: "person", locals: {:person => person}
+        - else
+          - @people.each do |person|
+            = render partial: "person", locals: {:person => person}
+    - if @people.present?
+      = will_paginate @people, :inner_window => 2, :outer_window => 0
+
+#segment-modal.modal
+  = form_for(@segment) do |form|
+    .modal-header
+      .close{"data-dismiss" => "modal"} ×
+      %h3 Create List Segment
+    .modal-body
+      = form.hidden_field :search_id, :value => @search.id
+      = form.text_field :name, :placeholder => "Name your list segment...", :required => "required"
+    .modal-footer
+      = form.submit "Save", :class => "btn btn-primary"
+
+#tag-modal.modal
+  = form_tag tag_search_path(@search), :onsubmit => "return validateTag()" do
+    .modal-header
+      .close{"data-dismiss" => "modal"} ×
+      %h3 Tag people
+    .modal-body
+      =text_field_tag :name, "", :id=>"new-tag-field", :required => "required", :class => "typeahead", "data-provide"=>"typeahead", :autocomplete => 'off', "data-items"=>"5", "data-source"=>"[" + @tags_string.html_safe + "]"
+      .tag-error
+      %p This tag will be applied to people that appear in these search results.
+    .modal-footer
+      = submit_tag "Save", :class => "btn"
+
+#bulk-action-modal.action-form.modal
+  = render :partial => 'actions/modal', :locals => {:action => Action.for_organization(current_user.current_organization), :target => @search}

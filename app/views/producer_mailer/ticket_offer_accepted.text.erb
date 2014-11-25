@@ -1,0 +1,7 @@
+
+The ticket reseller <%= @reseller.name %> has accepted the following offer.
+
+Event:   <%= @event.name %>
+Show:    <%= @show.show_time %>
+Section: <%= @ticket_type.name %>
+Tickets: <%= pluralize @ticket_offer.count, "ticket" %>

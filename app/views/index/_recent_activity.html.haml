@@ -1,0 +1,11 @@
+.span7
+  %section.recent-actions
+    %h3 Recent Activity
+    - if @recent_actions.blank?
+      %p= t(".no-actions", :default => "When someone buys a ticket, makes a donation, or updates a record, it will be noted here. Get started by adding some new contacts to your People database.")
+      = link_to "Add a Contact", new_person_path, :class => 'btn'
+    - else
+      %ul#recent-list
+        - @recent_actions.each do |action|
+          =render :partial => 'action', :locals => {:action => action}
+      = will_paginate @recent_actions, :id => 'endless-scroll-pagination', :params => { :action => 'recent_activity' }

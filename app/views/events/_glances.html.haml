@@ -1,0 +1,12 @@
+%ul
+  - events.each do |event|
+    %li
+      %h4= event.name
+      %ul.report
+        %li
+          %span.stat Total Played
+          %span.current= number_as_cents(event.glance.sales_played)
+
+        %li
+          %span.stat Advance Sales
+          %span.current= number_as_cents(event.glance.sales_advance)

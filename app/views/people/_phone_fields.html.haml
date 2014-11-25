@@ -1,0 +1,10 @@
+.fields.phone-fields
+  .control-group
+    = f.label :number, 'Number', :class => 'control-label'
+    .controls
+      = f.select :kind, Phone.kinds, {}, :class => 'input-small'
+      = f.text_field :number, :placeholder => "555-123-1234", :class => 'input-medium'
+      %span.remove-fields-link
+        = f.hidden_field :_destroy
+        %i.fa.fa-minus-circle.icon-gray
+        = link_to_remove_fields "remove", f

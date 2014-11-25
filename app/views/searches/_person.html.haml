@@ -1,0 +1,10 @@
+%tr
+  %td.name
+    - if person.individual?
+      = link_to "<i class='fa fa-user'></i> ".html_safe + person, polymorphic_path(person)
+    - else
+      = link_to "<i class='fa fa-briefcase'></i> ".html_safe + person, polymorphic_path(person)
+    %br
+    = person.email
+  %td.tags
+    = render :partial => 'shared/tags_uneditable', :locals => { :tag_list => person.tag_list }

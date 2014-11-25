@@ -1,0 +1,50 @@
+
+.title.active
+  .date
+    .month= show.datetime_local_to_event.strftime("%b")
+    .day= show.datetime_local_to_event.strftime("%e")
+  .time
+    %h4.day_and_month
+      = "#{show.datetime_local_to_event.strftime("%A, %B")} #{show.datetime_local_to_event.strftime("%e").to_i.ordinalize}"
+
+    = show.datetime_local_to_event.strftime("%l:%M %p")
+
+.sections{:style => "#{'display:none' if collapsed}"}
+  - if show.chart.sections.storefront.empty?
+    No tickets are available for this show
+  - else
+    %table.table.available-ticket-type-table
+      - show.sections_for(current_member).each do |section|
+        -section.ticket_types_for(current_member).each do |ticket_type|
+          %tr
+            %td.ticket-type-name
+              = ticket_type.name
+            %td.right.span2.ticket-type-price
+              %span{:class => 'price'}= number_as_cents(ticket_type.price)
+            %td.right.span4.controls
+              = form_tag store_order_path(@store_organization.cached_slug), :class => 'add-tickets-to-cart', :id => "add-tickets-to-cart-#{ticket_type.id}" do
+                = hidden_field_tag :show_id, show.id
+                = hidden_field_tag :ticket_type_id, ticket_type.id
+                = hidden_field_tag :section_name, ticket_type.name
+                = hidden_field_tag :ticket_price, ticket_type.price
+
+                - available = ticket_type.available("storefront", current_member)
+                - if available == 0
+                  %select{:style => "width:140px", :class => 'ticket-type-quantity', :id => 'quantity', :name => 'quantity'}
+                    %option SOLD OUT
+                - else
+                  = select_tag :quantity, options_for_select((1..[10, available].min).to_a.map {|i| [pluralize(i, 'Ticket'), i]}), :style => "width:140px", :class => 'ticket-type-quantity'
+
+                = submit_tag 'Add to cart', :class => 'add-to-cart btn btn-primary'
+          %tr.no-border
+            %td.ticket-type-description{:colspan => "4"}
+              -unless ticket_type.description.nil?
+                -description = ticket_type.description
+                -if description.length > 150
+                  .toggle-truncated
+                    .truncated
+                      = simple_format "#{truncate(description, :length => 150)} (#{link_to 'more','#', :class => 'toggle'})"
+                    .not-truncated{:style => 'display:none;'}
+                      =simple_format "#{description} (#{link_to 'less','#', :class => 'toggle'})"
+                - else
+                  =simple_format description

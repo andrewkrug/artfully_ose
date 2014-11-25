@@ -1,0 +1,19 @@
+%ul#event-list.row-fluid
+  - if events.blank?
+    .well.no-events-found
+      %li
+        %h3 No Events Found
+
+  - else
+    - events.each do |event|
+      %li.span6.row-fluid.event-list-item{:style => "margin-left: 0px; margin-right:10px'"}
+        .span12
+          .row-fluid
+            .span4.event-icon-container
+              = render :partial => 'shared/event_image_icon', :locals => { :event => event }
+            .span8
+              %h4.event-link= link_to event.name, event_path(event), :title => 'event-name'
+              %ul.mini-stats
+                %li= "#{pluralize event.sold, 'ticket'} sold"
+                %li= "#{pluralize event.on_sale, 'ticket'} on sale"
+                %li= "#{number_as_cents(event.sales_total)} total sales"

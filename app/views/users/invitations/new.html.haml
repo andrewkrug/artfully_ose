@@ -1,0 +1,12 @@
+- content_for :header do
+  %h1 Send Invitation
+
+.row
+  .span12
+    = form_for resource, :as => resource_name, :url => invitation_path(resource_name), :html => { :id => :invitation_new } do |f|
+      = devise_error_messages!
+      %ul
+        %li
+          .label= f.label :email
+          .element= f.text_field :email
+      = f.submit "Send an invitation", :class => "btn"

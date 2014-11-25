@@ -1,0 +1,7 @@
+- unless address.nil?
+  %address
+    = address.address
+    %br
+    = "#{address.city} #{address.state} #{address.zip}"
+    %br
+    = address.country

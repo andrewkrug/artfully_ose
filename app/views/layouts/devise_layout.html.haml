@@ -1,0 +1,20 @@
+!!! 5
+%html{:lang => "en", "ng-app" => "artfully"}
+  %head
+    %title= "#{yield :title} : Artful.ly"
+    %link{ :rel => "shortcut icon", :href => "/favicon.ico", :type => "image/x-icon"}
+
+    = stylesheet_link_tag :bootstrap, :media => :screen
+    = stylesheet_link_tag :application, :media => :screen
+    = csrf_meta_tag
+    = render :partial => 'layouts/google_analytics'
+  %body
+    .container
+      = render :partial => 'layouts/devise_menu'
+      .row
+        #content.span6.offset3
+          = render :partial => 'layouts/flash', :locals => { :flash => flash }
+          - flash.discard
+          = yield
+    = javascript_include_tag :application
+    = javascript_include_tag :bootstrap

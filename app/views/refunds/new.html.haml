@@ -1,0 +1,60 @@
+- in_section :transactions
+
+.row
+  .span8.offset2#refund-contaner
+    %h1 Refund Order
+
+    %p
+    -if @order.credit?
+      ="#{@order.person} will receive a refund credited to the card that he/she used to as payment for this order."
+    -else
+      ="#{@order.person} paid with #{@order.payment_method.downcase}. Artful.ly will process the tickets and donations as refunded but you'll need to settle any money owed to #{@order.person} manually." 
+
+
+    = form_tag refunds_path do
+      = hidden_field_tag :order_id, @order.id
+      - @items.each do |item|
+        = hidden_field_tag "items[]", item.id
+
+      %h2=refund_header(@items)
+
+      %table.table#refund-ticket-table
+        %thead
+          %tr
+            %th
+              Details
+            %th.right
+              Sold
+        - @items.each do |item|
+          - if item.ticket?
+            %tr.refund-ticket-row
+              %td="#{item.product.show.event.name} #{l item.product.show.datetime_local_to_event, :format => :short}"
+              %td.right=number_as_cents item.price
+          - if item.donation?
+            %tr.refund-donation-row
+              %td="Donation"
+              %td.right=number_as_cents item.price
+          - if item.pass?
+            %tr.refund-pass-row
+              %td="Pass"
+              %td.right=number_as_cents item.price
+
+      %h2 Options
+      .well
+
+        - unless @order.skip_confirmation_email?
+          .control-group
+            .controls
+              %label.checkbox
+                = check_box_tag :send_email_confirmation, "1", ""
+                ="Send an email confirmation to #{@order.person.email}."
+
+        - if @items.select(&:ticket?).any?
+          .control-group
+            .controls
+              %label.checkbox
+                = check_box_tag :return_to_inventory, "1", ""
+                ="Put these tickets back on sale."
+
+      %p
+        = submit_tag "Issue Refund", :class => "btn", :id => "issue-refund-button", :disable_with => "Refunding..."

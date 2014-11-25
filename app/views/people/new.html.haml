@@ -1,0 +1,10 @@
+- in_section :people
+- content_for :title do
+  New Contact
+- content_for :header do
+  %h1 Create a New Contact
+
+.row{"ng-controller" => "NewPersonCtrl"}
+  .span6.offset3
+    = render :partial => "shared/error_messages", :locals => { :target => @person }
+    = render :partial => 'form', :locals => { :person => @person }

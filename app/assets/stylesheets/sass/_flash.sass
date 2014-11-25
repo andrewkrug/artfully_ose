@@ -1,0 +1,30 @@
+@import "grid"
+@import "colors"
+@import "stack-layout"
+@import "mixins"
+
+.flash
+  @include stack-content
+  @include rounded-corners(4px, 4px, 4px, 4px)
+  @include inset-text
+  padding: $gutter
+  margin: 0 $gutter $gutter
+  line-height: $line_height
+  .close
+    margin-left: $gutter
+    float: right
+    cursor: pointer
+  p
+    color: rgba(255,255,255,0.97) !important
+  ul li
+    @include stack-content
+
+.error, .warning
+  @include gradient($light-red, $red)
+
+.notice, .info, .success
+  @include gradient($light-blue, $blue)
+  a
+    color: white
+    font-weight: bold
+    text-decoration: underline

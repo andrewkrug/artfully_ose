@@ -1,0 +1,40 @@
+.row
+  .span3
+    %p="#{pluralize(@import.import_rows.length, 'person')} in this import file."
+    %p This import was created at: <br> #{l import.created_at}
+    %p To discard this import and start over, click "Delete"
+    %p To pause this import and come back later, click "Back"
+
+    .btn-group
+      = icon_link_to "Back", new_import_path(:type => import.kind), 'fa-share', 'btn', ''
+      = link_to "Delete", import_path(import), :data => {:confirm => "Are you sure you want to delete this import?"}, :method => :delete, :class => "btn btn-danger"
+
+  .span9
+    .well
+      .row-fluid
+        .span9
+          %h3 This import is pending your approval
+          Click "Approve" to import this data into Artful.ly
+        .span3
+          = link_to "Approve", approve_import_path(import), :data => {:confirm => "Are you sure you want to approve this import?"}, :class => "btn btn-success btn-large"
+
+    %table.table.table-bordered.table-striped
+      %tr
+        %th Email
+        %th First
+        %th Last
+        %th Company
+        %th Website
+        %th
+      - @imported_rows.each_with_index do |imported_row, index|
+        - row = ParsedRow.new(@import.headers, imported_row.content)
+        %tr
+          %td=row.email
+          %td=row.first
+          %td=row.last
+          %td=row.company
+          %td=row.website
+          %td
+            =icon_link_to("", "#row#{index}", ' fa-search-plus', '', '', {'data-toggle' => 'modal'})
+            =render :partial => "imports/shared/inspect_modal", :locals => {:row => row, :index => index, :keys => ParsedRow::PEOPLE_FIELDS.merge(ParsedRow::ADDRESS_FIELDS).keys}
+    = will_paginate @imported_rows

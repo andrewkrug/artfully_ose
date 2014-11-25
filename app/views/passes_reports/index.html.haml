@@ -1,0 +1,80 @@
+-content_for :header do
+  %h1 Pass Usage
+
+= form_tag passes_reports_path, :method => :get, :class => 'well form-inline' do
+  = label_tag :pass_type, "Pass", :class => "control-label"
+  = select_tag :pass_type, options_for_select(@options_for_select, @report.pass_type.try(:id))
+
+
+  = label_tag :start_date, "From", :class => "control-label"
+  = text_field_tag :start_date, @start_date, :readonly => true, :class => 'datepicker input-small'
+
+  = label_tag :end_date, "To", :class => "control-label"
+  = text_field_tag :end_date, @end_date, :readonly => true, :class => 'datepicker input-small'
+      
+  .pull-right
+    = submit_tag "Search", :class => "btn"
+
+- unless @report.nil?
+
+  .row-fluid.botton-room
+    .span9
+      %h3=@report.header
+    .span3
+      .pull-right
+        =link_to "Download CSV", passes_reports_path(code: @report.pass_type, start_date: @report.start_date, end_date: @report.end_date, format: "csv"), :class => "btn"
+
+  #statement-summary.bottom-room.well
+    .row-fluid
+      .span4
+        .center.headline-stat#passes-sold-stat
+          =@report.passes_sold
+        .center.headline-caption
+          %h6 PASSES SOLD
+      .span4
+        .center.headline-stat#tickets-sold-stat
+          =@report.tickets_sold
+        .center.headline-caption
+          %h6 TICKETS SOLD
+      .span4
+        .center.headline-stat#tickets-remaining-stat
+          =@report.tickets_remaining
+        .center.headline-caption
+          %h6 TICKETS REMAINING
+
+  .row
+    .span12
+      %table.table.zebra#order-table
+        %thead
+          %tr
+            %th{:style=>'width:200px'} Pass
+            %th Order/Date
+            %th{:style=>'width:200px'} Person
+            %th Event
+            %th.right Tickets
+            %th.right Orig. Price
+            %th.right Gross
+        %tbody
+          -if @rows.empty?
+            %tr
+              %td{:colspan => 7}
+                .no-image#no-pass-sales
+                  #text
+                    =icon_tag '299-ticket'
+                    %br
+                    This pass hasn't been used to buy any tickets.
+          -@rows.each do |row|
+            %tr
+              %td=row.pass_type
+              %td
+                =link_to row.order.id, order_path(row.order)
+                %br
+                =l row.order.created_at, :format => :slashed_date
+              %td
+                =link_to row.order.person, person_path(row.order.person)
+              %td=link_to row.show.event.name, event_path(row.show.event)
+              %td.right=row.ticket_count
+              %td.right=number_as_cents row.original_price
+              %td.right=number_as_cents row.gross
+
+    = will_paginate(@rows)

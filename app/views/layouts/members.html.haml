@@ -1,0 +1,14 @@
+!!!
+%html{:xmlns => "http://www.w3.org/1999/xhtml", "xml:lang" => "en", :lang => "en"}
+  %head
+    %title= "#{yield :title}"
+    = stylesheet_link_tag :storefront
+    = render :partial => 'layouts/google_analytics', :locals => { :segment => "storefront" }
+  %body
+    .container
+      = render :partial => 'layouts/flash.html', :locals => { :flash => flash }
+      - flash.discard
+      = yield
+
+    = javascript_include_tag "https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"
+    = javascript_include_tag :storefront

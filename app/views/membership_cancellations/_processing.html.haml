@@ -1,0 +1,12 @@
+.modal-header
+  .close{'data-dismiss'=>'modal'} x
+  %h3 Processing
+
+.modal-body
+  %h4 Canceling #{@membership_count} #{pluralize_word(@membership_count, 'membership')}
+  %p
+    The cancellation process can take a few minutes, especially if you are refunding money. The membership will remain active until the process is complete. Please check back.
+
+.modal-footer
+
+  =link_to 'OK', '#', :class => 'btn', 'data-dismiss' => 'modal'

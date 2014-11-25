@@ -1,0 +1,12 @@
+#statement-summary.bottom-room.well
+  .row-fluid
+    .span6
+      .center.headline-stat
+        =statement.tickets_sold
+      .center.headline-caption
+        %h6 TICKETS SOLD
+    .span6
+      .center.headline-stat
+        =number_as_cents statement.gross_revenue
+      .center.headline-caption
+        %h6 GROSS

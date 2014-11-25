@@ -1,0 +1,20 @@
+- if controller.controller_name == "shows" && controller.action_name == "show"
+  %h3 Show Details
+- else
+  %h3 At a Glance
+- if report.nil?
+  %p Report not yet available.
+- else
+  %table.table.table-condensed
+    %tbody
+      %tr
+        %td State
+        %td
+        %td.show-state{:width => 100, :style => 'text-transform:capitalize;'}= show.state
+      %tr
+        %td Sold
+        %td= number_as_cents(report.sales_total)
+        %td="#{report.sold_total} tickets"
+  
+  .pull-right
+    =icon_link_to("View Complete Statement", statement_path(show.id), 'fa-th-list', '', '')

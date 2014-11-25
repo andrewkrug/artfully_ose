@@ -1,0 +1,198 @@
+-if current_cart.items.empty?
+  .well
+    Your cart is empty.
+-else
+  .row
+    .span5
+      #shopping-cart-display
+        %h2 Your Order
+        .well
+          -unless current_cart.tickets.empty?
+            %h4 Tickets
+            %table.table#tickets-table
+              -current_cart.tickets.each do |ticket|
+                %tr.ticket-row
+                  %td
+                    =ticket.event.name
+                    %br
+                    =ticket.show
+                  %td.right=number_as_cents ticket.price
+
+          -unless current_cart.memberships.empty?
+            %h4 Memberships
+            %table.table#memberships-table
+              -current_cart.memberships.each do |membership|
+                %tr
+                  %td=membership.membership_type.membershipize
+                  %td.right=number_as_cents membership.price
+
+          -unless current_cart.passes.empty?
+            %h4 Passes
+            %table.table#passes-table
+              -current_cart.passes.each do |pass|
+                %tr
+                  %td=pass.pass_type.passerize
+                  %td.right=number_as_cents pass.price
+
+          -unless current_cart.donations.empty?
+            %h4 Donations
+            %table.table#donations-table
+              -current_cart.donations.each do |donation|
+                %tr
+                  %td="Donation to #{@store_organization.name}"
+                  %td.right=number_as_cents donation.price
+
+          = form_tag store_order_path(@store_organization.cached_slug) do
+            %table.table
+              %tr#discount-input{:style => 'display:none'}
+                %td
+                  = text_field_tag 'discount_or_pass_code', params[:discount_or_pass_code], :placeholder => @enter_code_string, :style => "margin-bottom:0px"
+                  -with_kit(:passes) do
+                    .tip=link_to "Forget your pass code?"
+                %td= button_tag "Apply", :class => 'btn btn-primary', :disable_with => "Applying..."
+              -if current_cart.has_discount_or_pass?
+                %tr#discount-display
+                  %td.details
+                    Code
+                    %span=current_cart.applied_code
+                    #discount-link= link_to "Change", "#", :class => 'btn btn-primary'
+                  %td.right.amount
+                    =number_as_cents current_cart.discount_amount
+              -else     
+                %tr#discount-link
+                  %td= link_to @enter_code_string, "#"     
+
+          %table.table#totals-table
+            -unless current_cart.fee_in_cents == 0
+              %tr
+                %td Service Charge
+                %td.right#service-charge=number_as_cents current_cart.fee_in_cents
+            %tr
+              %td
+                %b Total
+              %td.right#cart-total
+                %b=number_as_cents current_cart.total
+
+          = link_to "Clear My Cart", store_order_path, :method => :delete, :data => { :confirm => 'Are you sure you want to empty your cart?' }
+
+        - if @store_organization.has_kit?(:regular_donation) || @store_organization.has_kit?(:sponsored_donation)
+          = render 'store/shared/small_donate_form'
+
+    .span7
+      -unless current_cart.empty?
+
+        .row-fluid
+          .span8
+            %h2 Checkout
+          .span4{:style => "padding-top: 10px"}
+            .pull-right
+              -unless session[:last_event_id].blank?
+                =link_to "Return to Event", store_old_storefront_event_url(session[:last_event_id]), :class => "btn"
+
+        .navbar.clean
+          .navbar-inner
+            .brand.brand-lite About You
+
+        =form_tag store_checkout_path, :class => 'form-horizontal', :id => 'shopping-cart-form' do
+          #contact-info
+            = fields_for "payment[customer]" do |customer|
+              .control-group
+                = customer.label :first_name, "First Name", :class => 'control-label required'
+                .controls= customer.text_field :first_name, :class => 'required', :value => params[:first_name]
+              .control-group
+                = customer.label :last_name, "Last Name", :class => 'control-label required'
+                .controls= customer.text_field :last_name, :class => 'required', :value => params[:last_name]
+              .control-group
+                = customer.label :email, "Email", :class => 'control-label required'
+                .controls= customer.text_field :email, :class => 'required', :type => 'email', :value => params[:email]
+              .control-group
+                = customer.label :phone, "Phone", :class => 'control-label required'
+                .controls= customer.text_field :phone, :class => 'required', :value => params[:phone]
+
+          .navbar.clean
+            .navbar-inner
+              .brand.brand-lite Address
+
+          #billing-address
+            = fields_for "payment[customer][address]" do |address|
+              .control-group
+                = address.label :address1, "Billing Address", :class => 'control-label required'
+                .controls= address.text_field :address1, :class => 'required', :value => params.fetch(:address, {}).fetch(:address1, "")
+              .control-group
+                = address.label :country, "Country", :class => 'control-label required'
+                .controls= address.select(:country, [], :class => 'required')
+              .control-group
+                = address.label :state, "State", :class => 'control-label required'
+                .controls= address.select(:state, [params.fetch(:address, {}).fetch(:state, "")], :value => params.fetch(:address, {}).fetch(:state, ""), :class => 'required')
+              .control-group
+                = address.label :city, "City", :class => 'control-label required'
+                .controls= address.text_field :city, :class => 'required', :value => params.fetch(:address, {}).fetch(:city, "")
+              .control-group
+                = address.label :zip, "Postal Code", :class => 'control-label required'
+                .controls= address.text_field :zip, :class => 'required span2', :value => params.fetch(:address, {}).fetch(:zip, "")
+
+          -if current_cart.total > 0
+            #payment-details.nonzero-total
+              .navbar.clean
+                .navbar-inner
+                  .brand.brand-lite Payment
+              #payment-details-fields
+                = fields_for "payment[credit_card]" do |card|
+                  .control-group
+                    = card.label :name, "Cardholder Name", :class => 'control-label'
+                    .controls= card.text_field :name, :class => 'required'
+
+                  .control-group
+                    = card.label :number, "Card Number", :class => 'control-label'
+                    .controls= card.text_field :number, :class => 'required'
+
+                  .control-group
+                    = card.label :verification_value, "CVV", :class => 'control-label'
+                    .controls
+                      = card.text_field :verification_value, :class => 'required span1'
+                      = image_tag 'storefront/cvv.gif'
+
+                  .control-group
+                    = card.label :expiration, "Expiration", :class => 'control-label'
+                    .controls
+                      = card.select 'month', options_for_select((1..12).map{|m| "%02d" % m}), {}, :class => "span2"
+                      \/
+                      = card.select 'year', options_for_select(Date.today.year..Date.today.year+10), {}, :class => "span2"
+
+          -unless @special_instructions_hash.empty?
+            .navbar.clean
+              .navbar-inner
+                .brand.brand-lite Special Instructions
+
+            #special-instructions
+              - @special_instructions_hash.each do |event_id, caption|
+                = fields_for "special_instructions" do |special_instructions|
+                  .control-group
+                    = special_instructions.label event_id, caption, :class => 'control-label'
+                    .controls= special_instructions.text_area event_id
+
+          #purchase
+            .control-group
+              .controls
+                %label.checkbox
+                  I have read, understand and accept the terms and conditions of the
+                  =link_to "User Agreement", "#user-agreement-modal", 'data-toggle' => 'modal'
+                  = check_box_tag "payment[user_agreement]", 1, false, :class => 'required-checkbox', :id => 'agreement-checkbox'
+
+            = hidden_field_tag :confirmation, 1
+            .form-actions.cart-actions
+              %h4.cart-error-message Please correct the errors above
+              .row-fluid
+                .span8
+                  %h2#cart-total= number_as_cents current_cart.total
+                .span4
+                  = submit_tag 'Buy Now', :id => 'complete-purchase', :class => 'btn btn-primary btn-large pull-right'
+
+    #user-agreement-modal.modal.hide
+      .modal-header
+        .close{'data-dismiss'=>'modal'} x
+        %h3 Artful.ly User Agreement
+      .modal-body
+        = t("pages.user_agreement.content", :default => "")
+      .modal-footer
+        =link_to "Close", "#", :class => "btn", 'data-dismiss'=>'modal'

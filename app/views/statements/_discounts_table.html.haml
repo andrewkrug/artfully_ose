@@ -1,0 +1,26 @@
+%table.standalone.table
+  %thead
+    %tr
+      %th Discount Code
+      %th Type
+      %th.right{:style=>'width:100px'} Tickets
+      %th.right{:style=>'width:100px'} Discounted
+      %th.right{:style=>'width:100px'} 
+      %th.right{:style=>'width:100px'} 
+  %tbody
+    - if statement.discount_rows.empty?
+      %tr
+        %td{:colspan => 6} No discounts used for this show
+
+    - statement.discount_rows.each do |discount_code, row|
+      %tr
+        %td=discount_code
+        %td=row.type
+        %td.right=row.tickets
+        %td.right 
+          %strong=number_as_cents row.discount
+        %td.right
+        %td.right
+    %tr
+      %td.right{:colspan => 6}
+        = icon_link_to "Slices", statement_slices_path(@show.id, 'slice[]' => 'discount_code_proc'), 'fa-chevron-right', 'btn', ''

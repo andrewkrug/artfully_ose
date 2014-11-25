@@ -1,0 +1,51 @@
+- in_section :events
+- content_for :header do
+  =render :partial=>'header'
+
+.row
+  .span3
+    - in_sub_section :details
+    = render :partial=>'menu'
+  .span9
+    = render "shared/error_messages", :target => @event
+    = form_for( @event, :html => { :class => 'form-horizontal' } ) do |form|
+      .control-group
+        =form.label :name, "Event name", :class => 'control-label'
+        .controls
+          =form.text_field :name, :class => 'input-xlarge', :placeholder=>"Event name"
+
+      .control-group
+        =form.label :subtitle, :class => 'control-label'
+        .controls
+          = form.text_field :subtitle, :class => 'input-xlarge', :placeholder=>"Event subtitle"
+
+      .control-group
+        =form.label :producer, "Producer", :class => 'control-label'
+        .controls
+          =form.text_field :producer, :class => 'input-xlarge'
+          
+      .control-group
+        =form.label :description, "Description", :class => 'control-label'
+        .controls
+          =form.text_area :description, :class => 'input-xlarge', :rows => '6'
+          
+      .control-group
+        =form.label :contact_email, "Contact email<br />for patrons".html_safe, :class => 'control-label'
+        .controls
+          =form.email_field :contact_email, :class => 'input-xlarge email-popup', :placeholder=>"Email", "data-content" => "Your patrons will be able to respond to this email address when receiving ticket/donation receipts. You can change this at any time."
+          
+      .control-group
+        =form.label :contact_phone, "Contact phone<br />for patrons".html_safe, :class => 'control-label'
+        .controls
+          =form.text_field :contact_phone, :class => 'input-xlarge', :placeholder=>"Phone"
+          
+      .control-group
+        =form.label :members_only, "Members Only".html_safe, :class => 'control-label'
+        .controls
+          =form.check_box :members_only, :class => 'input-xlarge'
+          
+      .form-actions
+        = render :partial => "shared/save_save_and_next", :locals => {:form => form}
+
+    
+

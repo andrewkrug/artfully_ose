@@ -1,0 +1,5 @@
+%p
+  = action.quip
+  = action.full_details
+  - if action.editable?
+    = link_to "edit", edit_person_action_path(action.person, action, :format => :html), :class => "label edit-action-link"

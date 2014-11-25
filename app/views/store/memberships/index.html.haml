@@ -1,0 +1,40 @@
+- content_for :title do
+  Become a Member of #{@store_organization.name}
+  
+.container
+  %h1 Become a Member
+
+  .row#membership-storefront
+    .span8  
+      #salesy{:style => "margin-bottom: 20px"} 
+        =@membership_kit.marketing_copy_heading.html_safe
+
+      - @membership_types.each do |membership_type|
+        .row-fluid{:id => "membership-type-#{membership_type.id}"}
+          .span12
+            %ul#memberships.unstyled
+              %li
+                .title.active
+                  .price
+                    =number_as_cents membership_type.price_for(current_member)
+                  .membership_type_name
+                    =membership_type.name
+            =membership_type.description
+            %br
+            %br
+            .section
+              = form_for membership_type, :as => :membership_type, :url => store_order_path(@store_organization.cached_slug), :html => {:id => "edit_membership_type_#{membership_type.id}"}, :method => :post do |f| 
+                = f.hidden_field :id
+                
+                -if membership_type.allow_multiple_memberships?
+                  %span.quantity-select
+                    = select_tag :quantity, options_for_select((1..membership_type.limit_per_transaction).to_a.map {|i| [pluralize(i, "#{membership_type.name} Membership"), i]})
+                -else
+                  %span.quantity-hidden
+                    = hidden_field_tag :quantity, "1"
+
+                = f.submit 'Add to cart', :class => 'add-to-cart btn btn-primary', :style => 'margin-top: -10px'
+      
+    .span4
+      .side-section
+        =@membership_kit.marketing_copy_sidebar.html_safe

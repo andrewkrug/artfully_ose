@@ -1,0 +1,12 @@
+%h2="#{contribution.contributor}"
+#details
+  %ul
+    %li
+      %h6.key Email
+      .value= @contribution.contributor.email
+    %li
+      %h6.key Company
+      .value= @contribution.contributor.company_name || "&nbsp".html_safe
+    %li
+      %h6.key Website
+      .value= @contribution.contributor.website || "&nbsp".html_safe

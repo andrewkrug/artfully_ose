@@ -1,0 +1,134 @@
+.row
+  .span8.offset2{:style => "border-left: 1px solid #ededed; border-right: 1px solid #ededed;"}
+    .row-fluid
+      .span8.offset2
+        .thanks-message="#{thanks_message(@order.person)}"
+        .blow
+          .row-fluid
+            .span6
+              .pull-right
+                %h6 Order Number
+            .span6
+              %h6{:style => 'color: black'}=@order.id
+        - if @order.total_with_service_fee > 0
+          .blow
+            .row-fluid
+              .span6
+                .pull-right
+                  %h6 Payment Method
+              .span6
+                %h6{:style => 'color: black'}=@order.payment_method
+
+        %p
+          &nbsp;
+
+        %p
+          - if @order.total_with_service_fee > 0
+            %b You will see a charge on your credit card statement from "Artful.ly"
+            %br
+            %br
+          Check your email! We've sent a confirmation of this order to
+          %b=@order.person.email
+          - if @fafs_success == true
+            %p Thank you for your donation! You will receive a separate email confirmation for that donation.
+
+        -unless @order.passes.empty?
+          %p{:style => "text-align:center"}
+            =link_to "Use Your Pass Now!", store_organization_events_path(@store_organization.cached_slug), :target=>"_blank", :class => "btn btn-success btn-large"
+
+        #shopping-cart-display
+          .well
+            -unless @order.tickets.empty?
+              %h4 Tickets
+              %table.table
+                -@order.tickets.each do |item|
+                  %tr
+                    %td
+                      =item.product.event.name
+                      %br
+                      =item.product.show
+                    %td.right=number_as_cents item.total_price
+
+            -unless @order.memberships.empty?
+              %h4 Memberships
+              %table.table
+                -@order.memberships.each do |item|
+                  %tr
+                    %td=item.product.membership_type.membershipize
+                    %td.right=number_as_cents item.product.membership_type.price
+              =render :partial => "membership_info", :locals => {:email => @order.person.email, :membership_types => @order.membership_types}
+
+            -unless @order.donations.empty?
+              %h4 Donations
+              %table.table
+                -@order.donations.each do |item|
+                  %tr
+                    %td="Donation to #{@store_organization.name}"
+                    %td.right=number_as_cents item.total_price
+                  %tr
+                    %td{:colspan => 2, :style => 'text-align: center; border-top: 0 none;'}
+                      = image_tag('/assets/glyphish/gray/29-heart@2x.png')
+                      %br
+                      %strong
+                        Thanks for your support!
+                      %br
+                        %p{:style => 'text-align: left;'}= @store_organization.kit(:regular_donation).thanks_msg_text
+
+            -unless @order.passes.empty?
+              %h4 Passes
+              %table.table
+                -@order.passes.each do |item|
+                  %tr
+                    %td="#{item.product.pass_type.passerize}: #{item.product.pass_code}"
+                    %td.right=number_as_cents item.total_price
+
+            %table.table
+              -@order.discount_codes.each do |discount|
+                %tr#discount-display
+                  %td.details
+                    Discount code
+                    %span=discount.code
+
+                  %td.right.amount &nbsp;
+                  
+            %table.table
+              -unless @order.service_fee == 0
+                %tr
+                  %td Service Charge
+                  %td.right=number_as_cents @order.service_fee
+              %tr
+                %td
+                  %b Total
+                %td.right
+                  %b=number_as_cents @order.total_with_service_fee
+
+        %p
+          &nbsp
+
+        -@order.events.each do |event|
+          .store-event-display
+            %h6=event.name
+            %p
+              =truncate(event.description, :length => 400, :separator => ' ', :omission => '...')
+            -if !@order.organization.has_kit? :scannable_tickets
+              %p
+                %b Physical tickets will not be issued for this event. Please check in at the door with your order number.
+            %p
+              For questions about this event please contact:
+              %br
+              -unless event.contact_email.blank?
+                Contact email:
+                %b=event.contact_email
+              %br
+              -unless event.contact_phone.blank?
+                Contact phone:
+                %b=event.contact_phone
+
+            - unless event.venue.address_as_string.blank?
+              .map-mini-thanks
+                =link_to image_tag("http://maps.google.com/maps/api/staticmap?size=760x250&maptype=roadmap&markers=color:red|#{event.venue.address_as_url_query}&sensor=false&zoom=14"), "http://maps.google.com/maps?q=#{event.venue.address_as_url_query.html_safe}&z=15"
+                .address-background
+                .address-block
+                  %br
+                  =event.venue.name
+                  %div="#{event.venue.street_as_string}, #{event.venue.city_state_zip_as_string}"

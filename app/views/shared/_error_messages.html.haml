@@ -1,0 +1,4 @@
+- if !target.nil? && target.errors.any?
+  .flash{:class => [bootstrapped_type(:error), :error, 'alert']}
+    .close{ "data-dismiss" => "alert"} &times;
+    = clean_full_error_messages(target.errors)

@@ -1,0 +1,21 @@
+%tr.action
+  %td.starred.starable{"data-person-id" => @person.id, "data-type" => 'action', "data-action-id" => action.id, :class => (action.starred? ? "active" : "not-active") }
+    &#10029;
+  %td
+    = action.occurred_at.strftime("%D") unless action.occurred_at.nil?
+  %td.icon
+    = link_to action.action_type, '#', :class => "btn action-icon #{action.action_type.downcase}-icon", :onclick => "return false;"
+
+  %td.toggle-truncated
+    .view
+      .truncated
+        %p
+          = action.quip
+          %span.muted= truncate(action.full_details, :length => 80)
+      .not-truncated{:style => 'display:none;'}
+        =render :partial => show_action_template(action), :locals => { :action => action }
+
+  - if action.editable? 
+    %td.person-inline-form.action-form.edit-action-form{:style => 'display:none;', :colspan => 4}
+      %h4 Edit Action
+      = render :partial => 'actions/inline', :locals => {:action => action, :target => @person}

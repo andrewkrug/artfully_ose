@@ -1,0 +1,15 @@
+<% content_for :custom_js do %>
+<script type="text/javascript" charset="utf-8">
+ angular.module('artfully').factory('Memberships', function() {
+    var self = this;
+
+    this.personId = function() {
+      return <%= j(@person.id.to_s) %>;
+    };
+
+    return {
+      personId: this.personId
+    }
+  });
+</script>
+<% end %>

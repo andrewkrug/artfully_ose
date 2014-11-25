@@ -1,0 +1,6 @@
+=render :partial => "members/mailer/invitation_body", :locals => {:resource => @resource, 
+                                                                  :person => @resource.person,
+                                                                  :welcome_message => @resource.memberships.first.welcome_message,
+                                                                  :membership_types => @resource.current_membership_types.uniq,
+                                                                  :invitation_token => @resource.invitation_token,
+                                                                  :organization => @resource.organization}

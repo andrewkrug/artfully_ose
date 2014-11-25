@@ -1,0 +1,5 @@
+$('#recent-list').append("#{j render(:partial => 'action', :collection => @recent_actions)}");
+- if @recent_actions.next_page
+  $('#endless-scroll-pagination').replaceWith("#{j will_paginate(@recent_actions, :id => 'endless-scroll-pagination', :params => { :action => 'recent_activity' })}");
+- else
+  $('#endless-scroll-pagination').remove();

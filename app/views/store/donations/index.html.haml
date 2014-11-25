@@ -1,0 +1,19 @@
+- donation_kit = @donation_kit || @store_organization.kit(:regular_donation)
+.row
+  .span6.offset3#donate-now-container
+    #donate-now-header
+      .center
+        %h4="Donate to"
+        %h1="#{@store_organization.name}"
+
+    - if donation_kit.about_organization_text.present?
+      .organization-about
+        = donation_kit.about_organization_text.html_safe
+        %hr
+
+    - if donation_kit.donation_ask_text.present?
+      .donation-ask
+        = donation_kit.donation_ask_text.html_safe
+        %hr
+    #donate-now
+      = render 'store/shared/donate_form'

@@ -1,0 +1,24 @@
+- in_section :events
+- content_for :header do
+  =render :partial=>'events/header'
+
+.row
+  .span3
+    - in_sub_section :shows
+    =render :partial=>'events/menu'
+  .span9
+    = render "shared/error_messages", :target => @event
+    = form_for @show, :html => { :class => 'form-horizontal' }, :url => event_shows_path(@event, @show) do |show_form|
+      =render :partial => "shared/show_time_and_calendar", :locals => {:event_type => "events"}
+
+      .navbar.clean
+        .navbar-inner
+          .brand.brand-lite Capacity & Prices
+      = show_form.fields_for :chart, @show.chart do |f|
+        = f.fields_for :sections do |builder|
+          = render 'events/section_fields', :f => builder, :new_show => true
+                    
+      .form-actions
+        = show_form.submit "Save", :class => 'btn btn-primary'
+        = show_form.submit "Save & Publish", :class => 'btn btn-success'
+        %span.help{'data-title' => 'Publishing', 'data-content' => "Publishing a show means that your show is displayed on your storefront and all on sale tickets are available for purchase".html_safe} ?

@@ -1,0 +1,11 @@
+%h2 The ticket reseller #{@reseller.name} has rejected the following offer.
+
+%ul
+  %li Event:   #{@event.name}
+  %li Show:    #{@show.show_time}
+  %li Ticket Type: #{@ticket_type.name}
+  %li Tickets: #{pluralize @ticket_offer.count, "ticket"}
+
+- if @ticket_offer.rejection_reason.present?
+  %h2 The reseller included the following comment:
+  = simple_format @ticket_offer.rejection_reason

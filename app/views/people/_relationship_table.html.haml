@@ -1,0 +1,16 @@
+%table.zebra.sortedstar
+  %thead
+    %tr
+      %th.starred &#10029;
+      %th Relationship
+      %th Person
+  %tbody
+    -if person.relationships.empty?
+      %tr
+        %td
+        %td{:colspan=>3}
+          No relationships for this person
+    - person.starred_relationships.each do |rel|
+      =render :partial=>'relationship_table_row', :locals => { :person => person, :rel => rel }
+    - person.unstarred_relationships.each do |rel|
+      =render :partial=>'relationship_table_row', :locals => { :person => person, :rel => rel }

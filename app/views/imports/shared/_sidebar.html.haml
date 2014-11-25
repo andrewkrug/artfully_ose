@@ -1,0 +1,5 @@
+%p This import was created at: <br> #{l import.created_at_local_to_organization}
+
+.btn-group
+  = icon_link_to "Back", new_import_path(:type => import.kind), 'fa-share', 'btn', ''
+  = link_to "Delete", import_path(import), :data => {:confirm => "Are you sure you want to delete this import?"}, :method => :delete, :class => "btn btn-danger"

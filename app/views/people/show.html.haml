@@ -1,0 +1,159 @@
+- content_for :custom_js do
+  = javascript_include_tag "relationships"
+- in_section :people
+- content_for :title do
+  #{@person}
+
+=render "header"
+
+.row
+  .span4
+
+    -unless @person.dummy?
+      %p= render :partial => 'work_with_menu', :locals => {:person => @person}
+      = render @person.address unless @person.address.new_record?
+
+      %ul
+        - @person.phones.each do |phone|
+          %li
+            %span.muted= phone.kind
+            = phone.number
+
+      -with_kit(:relationships) do
+        %section
+          - if @person.household.present?
+            %h5
+              == Household (#{link_to "view", @person.household})
+            %ul
+              - @person.household.individuals.where('id != ?', @person.id).each do |individual|
+                %li
+                  %span.starable-spacer
+                    &#10029;
+                  %span.muted
+                  = link_to(individual, polymorphic_url(individual))
+
+          %h5 Relationships
+          - struct = relationships_struct(@person)
+          %ul
+            - struct[:starred].each do |relationship|
+              %li
+                %span.starred.starable{"data-person-id" => relationship.person.id, "data-type" => 'relationship', "data-action-id" => relationship.id, :class => (relationship.starred? ? "active" : "not-active") }
+                  &#10029;
+                %span.muted= relationship.relation.description.humanize
+                = link_to(relationship.other(@person), polymorphic_url(relationship.other(@person)))
+
+            - @person.relationships.unstarred.where(:relation_id => struct[:single]).each do |relationship|
+              %li
+                %span.starred.starable{"data-person-id" => relationship.person.id, "data-type" => 'relationship', "data-action-id" => relationship.id, :class => (relationship.starred? ? "active" : "not-active") }
+                  &#10029;
+                %span.muted= relationship.relation.description.humanize
+                = link_to(relationship.other(@person), polymorphic_url(relationship.other(@person)))
+            - struct[:grouped].each do |group|
+              %li
+                %span.starable-spacer
+                  &#10029;
+                %span.muted
+                  == #{Relation.find(group[:relation]).description.titleize.pluralize} (#{group[:count]}) #{link_to("View All", polymorphic_url([@person, :relationships], :relation_id => group[:relation]))} >
+
+      %h5 Preferences
+      %section#communication-preference
+        = form_for @person do |form|
+          .do-not-call
+            = form.label :do_not_call, :class => "checkbox" do
+              = form.check_box :do_not_call
+              %span Do Not Call
+          .do-not-email
+            = form.label :do_not_email, :class => "checkbox" do
+              = form.check_box :do_not_email
+              %span Do Not Email
+          = form.submit "Save", :class => 'btn btn-primary hidden'
+
+      - with_kit(:mailchimp) do
+        %h5 Email Lists
+        %section#subscription-listing
+          = form_for @person do |form|
+            .mailchimp-list
+              - mailchimp_kit = @person.organization.kits.mailchimp
+              = hidden_field_tag "person[subscribed_lists][]", nil, :id => "person_subscribed_lists_empty"
+              - mailchimp_kit.attached_lists.each do |list|
+                = label_tag "", :class => "checkbox" do
+                  = check_box_tag "person[subscribed_lists][]", list[:list_id], @person.subscribed_lists.include?(list[:list_id]), :class => "mail-chimp-list", :disabled => @person.do_not_email
+                  %span= list[:list_name]
+            = form.submit "Save", :class => 'btn btn-primary hidden'
+
+  .span8
+    #notes
+    .row-fluid
+      .span3
+        %h3 Notes
+      .span9
+        = icon_link_to("Add", new_person_note_path(@person, :format => :html), 'fa-plus-circle', 'btn new-note-link', '')
+    .person-inline-form.new-note-form{:style => 'display:none;'}
+      = form_for [@person, Note.new] do |form|
+        = form.text_area :text, :size => "125x5", :class => 'input-xxlarge', :placeholder => "This is a good place for little nuggets about #{@person} you don't want to forget..."
+        = form.submit "Save", :class => "btn btn-primary"
+        = link_to 'Cancel', '#', :onclick => "$('.new-note-form').hide()", :class => 'btn'
+
+    %table.table-condensed.table#notes-list
+      %tbody
+        - if @notes.empty?
+          %tr
+            %td
+              No notes for this
+              = @person.individual? ? "individual." : "record."
+        - else
+          = render @notes[0..2]
+        - if @notes[3]
+          %tr#more-notes-link
+            %td.triangle &#9656;
+            %td= link_to pluralize(@notes.length-3, 'more note'), "#"
+          %tbody#more-notes{:style => 'display:none'}
+            = render @notes[3..-1]
+
+    #actions
+      .row-fluid
+        .span3
+          %h3 Action Feed
+        .span9
+          = icon_link_to("Add", new_person_action_path(@person, :format => :html, :type => :hear), 'fa-plus-circle', 'btn new-action-link', '')
+
+      .person-inline-form.action-form.new-action-form{:style => 'display:none;'}
+        = render :partial => 'actions/inline', :locals => {:target => @person, :action => @new_action}
+
+      %table.table-condensed.sortedstar.table#action-list
+        %thead
+          %tr
+            %th
+            %th{:style => 'width:60px;'} Date
+            %th{:style => 'width:25px'}
+            %th #{@person}...
+        %tbody
+          - if @actions.empty?
+            %tr
+              %td
+              %td
+              %td
+              %td
+                No actions for this
+                = @person.individual? ? "individual." : "record."
+          - else
+            = render :partial => 'actions/action', :collection => @actions
+
+      = will_paginate @actions, :id => 'endless-scroll-pagination'
+
+%div{"ng-controller" => "EditPersonCtrl"}
+  = render 'edit_modal', :header => "Edit #{@person.possessive} Info"
+  = render 'convert_to_company_modal'
+  #edit-order-popup.modal
+
+-with_kit(:mailchimp) do
+  - if current_user.current_organization.kits.mailchimp
+    .modal#subscribe-modal(role="dialog")
+      .modal-header
+        %button(type="button" class="close" data-dismiss="modal" aria-hidden="true") ×
+        %h3 MailChimp List Subscription
+      .modal-body
+        %p #{@person} will receive an email from MailChimp confirming their addition to this list
+      .modal-footer
+        %button(class="btn" data-dismiss="modal" aria-hidden="true") Cancel
+        %button(class="btn btn-primary") OK

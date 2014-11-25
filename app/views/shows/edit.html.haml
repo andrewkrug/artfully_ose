@@ -1,0 +1,7 @@
+- in_section :events
+- content_for :header do
+  %h1 Edit Show
+
+.compact-spread
+  = render "shared/error_messages", :target => @show
+  = render :partial => 'form', :locals => { :show => @show }

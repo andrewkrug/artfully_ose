@@ -1,0 +1,101 @@
+- in_section :imports
+- content_for :header do
+  %h1 Import Events
+
+.row
+  .span3
+    %h2
+      %span.badge.badge-big.badge-info 1
+      Template
+    #{link_to 'Download an empty CSV file', template_imports_path(:type => "events")} with these headers already filled in.
+      
+  .span6
+    %h2
+      %span.badge.badge-big.badge-info 2
+      Format 
+    %h3 Required Fields
+    .bottom-room= render :partial => "imports/shared/knowledge_base"
+    %table.table.table-bordered.table-striped.docs
+      %tr 
+        %td.field-slim Event Name
+        %td 
+          The name of the event.  If you already have an event with the same name,
+          %i show and order data will be added to that event.
+          Otherwise, a new event will be created.
+      %tr 
+        %td.field-slim Venue Name
+        %td The name of the venue where the event was held
+      %tr 
+        %td.field-slim Payment Method
+        %td
+          %span.label.label-success
+            Important!  
+          &nbsp Valid options are:
+          %br
+          %br
+          %b Cash, Credit card, Check, Comp, Other, Unknown.
+      %tr 
+        %td.field-slim Show Date
+        %td
+          %span.label.label-success
+            Important!
+          &nbsp Show date must be in one of the following formats
+          =render :partial => "imports/shared/date_format"
+          If you do not include a time, we'll set it to 8pm.
+      %tr 
+        %td.field-slim Order Date
+        %td
+          %span.label.label-success
+            Important!
+          &nbsp Order date must be in one of the following formats
+          =render :partial => "imports/shared/date_format"
+          You may omit the time.
+    
+    %h3 Please include one of the following
+    %p If all of these fields are omitted, the sale will be credited to an anonymous record.
+    %table.table.table-bordered.table-striped.docs
+      %tr 
+        %td.field-slim First 
+        %td The first name of the person
+      %tr 
+        %td.field-slim Last
+        %td The last name of the person
+      %tr 
+        %td.field-slim Email
+        %td The email address of the person
+      %tr
+        %td.field-slim Company Name
+        %td
+          If this is a company record, the name of the company. Otherwise,
+          it's the name of the company that the person works for.
+      
+    %h3 Optional Fields
+    %table.table.table-bordered.table-striped.docs
+      %tr 
+        %td.field-slim Amount
+        %td
+          %span.label.label-success
+            Important!
+          &nbsp Include only dollars and cents.  Don't include a "$" or other currency symbols.
+    %p You can also use all of the field names in People imports.
+          
+  .span3
+    %h2
+      %span.badge.badge-big.badge-info 3
+      Upload
+    %p
+      Please only upload
+      %b Comma Separated Values (CSV)
+      files.  We cannot process 
+      %b XLS
+      or
+      %b XLSX
+      files.
+    %p
+      = render :partial => "shared/error_messages", :locals => { :target => @import }
+      = raw s3_http_upload_tag :key => "imports/#{UUID.new.generate}",
+          :content_type => "text/csv",
+          :redirect => new_import_url,
+          :acl => "public-read",
+          :max_filesize => 50.megabytes,
+          :submit_button => '<input type="hidden" name="type" value="events"/><div class="cancel-submit"><input id="import_submit" class="btn" name="commit" type="submit" value="Import"></div>'

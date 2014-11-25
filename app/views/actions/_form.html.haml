@@ -1,0 +1,47 @@
+= form_for [target, action], :as => :artfully_action do |form|
+  = hidden_field_tag "action_type", action.type
+  - if action.new_record?
+    .btn-group.action-type{"data-toggle" => "buttons-radio"}
+      -if target.is_a? Person
+        = action_type_button(action, 'hear', 'Heard', "Record a communication you sent to #{target}.")
+        = action_type_button(action, 'say', 'Said', "Record a communication #{target} initiated.")
+        = action_type_button(action, 'go', 'Went', "Record when #{target} attended an event.")
+        = action_type_button(action, 'do', 'Helped', "Record when #{target} volunteered")
+        = link_to 'Gave', new_contribution_path("contribution[person_id]" => target.id), :class => "btn edit-order-link weak", "data-remote" => "true"
+      -else
+        = action_type_button(action, 'hear', 'Heard', "Record a communication you sent to this group")
+        = action_type_button(action, 'say', 'Said', "Record a communication this group initiated")
+        = action_type_button(action, 'go', 'Went', "Record when this group attended an event")
+        = action_type_button(action, 'do', 'Helped', "Record when this group volunteered")
+
+  = form.text_field :occurred_at, :value => l(action.occurred_at_local_to_organization, :format => :datetime_for_input), :readonly => true, :class => [:datetimepicker, 'input-medium'], :id => "datetimepicker_#{action.id}"
+
+  - if action.new_record? || action.class.subtypes.any?
+    = form.select :subtype, options_for_select(action.class.subtypes, action.subtype), {}, :class => 'action-subtype input-medium', :style => (action.new_record? ? 'display:none;' : '')
+
+  - if action.new_record? || action.kind_of?(GiveAction)
+    .dollar-inputs.input-prepend{:style => (action.new_record? ? 'display:none;' : '')}
+      %span.add-on $
+      = form.text_field :dollar_amount, :placeholder => 'donation value', :class => 'input-small'
+
+  - details_text_area_options = {:size => "125x5", :class => 'input-xxlarge', :placeholder => "Select an action type above..."}
+  - details_text_area_options = details_text_area_options.merge(:disabled => 'disabled') if action.details.blank?
+  = form.text_area :details, details_text_area_options
+  - unless action.new_record?
+    = link_to "delete", "#delete-confirm-action-#{action.id}", :class => "delete-confirm-link delete-with-trash", "data-toggle" => "modal"
+  - if action.new_record?
+    = form.submit "Save", :class => "btn btn-primary artfully-tooltip new-action-save", :rel => "tooltip", :data => {"original-title" => "Pick an action type before saving.", :trigger => "hover", :placement => "left"}
+  - else
+    = form.submit "Save", :class => "btn btn-primary artfully-tooltip"
+
+  = link_to 'Cancel', '#', :class => 'btn action-form-cancel-link'
+
+- unless action.new_record?
+  .modal{:id => "delete-confirm-action-#{action.id}"}
+    .modal-header
+      = link_to '&times;'.html_safe, '#', :class => 'close', 'data-dismiss' => 'modal'
+      %h3 Delete Action
+    .modal-body
+      = simple_format "Are you sure you want to delete this action?  This cannot be undone."
+    .modal-footer
+      = link_to "Delete this action", person_action_path(target, action), :method => :delete, :class => "delete-confirm-link btn btn-danger"

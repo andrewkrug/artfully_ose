@@ -1,0 +1,11 @@
+
+- if not show.played?
+  = form_tag unpublished_event_show_path(@event, show), :remote => true, :'data-type' => :json, :class => "sprited published", :id => "show_#{show.id}" do
+    = submit_tag "Unpublish", :class => [ 'btn', 'btn-mini' ]
+    .confirmation.dialog
+      %p= "You are unpublishing the #{l show.parsed_local_datetime} show."
+
+  = form_tag published_event_show_path(@event, show), :remote => true, :'data-type' => :json, :class => "sprited built unpublished" do
+    = submit_tag "Publish", :class => [ 'btn', 'btn-mini' ]
+    .confirmation.dialog
+      %p= "You are publishing the #{l show.parsed_local_datetime} show."

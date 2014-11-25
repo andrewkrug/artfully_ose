@@ -1,0 +1,28 @@
+%h3 Event Overview
+
+%table.table.table-condensed
+  %tbody
+    %tr
+      %td On Sale
+      %td.right= report.available_total
+      %td.right
+    %tr
+      %td Comped
+      %td.right= report.comped_total
+      %td.right
+    %tr
+      %td Sold
+      %td.right= report.sold_total
+      %td.right= number_as_cents(report.sales_total)
+    %tr
+      %td Sold Today
+      %td.right= report.sold_today
+      %td.right= number_as_cents(report.sales_today)
+    %tr
+      %td Total Played
+      %td.right= report.sold_played
+      %td.right= number_as_cents(report.sales_played)
+    %tr
+      %td Storefront
+      %td.right
+      %td.right=link_to "Link", store_old_storefront_event_path(@event)

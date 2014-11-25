@@ -1,0 +1,8 @@
+%p
+  = action.quip
+  = action.full_details
+  -if action.editable? 
+    = link_to "edit", edit_contribution_path(action.subject), :class => 'label edit-order-link', "data-remote" => "true"
+
+-unless action.subject.nil?
+  %p= link_to "View order details <i class='fa fa-share'></i>".html_safe, order_path(action.subject)

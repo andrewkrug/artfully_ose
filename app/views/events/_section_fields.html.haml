@@ -1,0 +1,20 @@
+-no_editing = false if no_editing.nil?
+-new_show   = false if new_show.nil? 
+
+=f.hidden_field :name
+- unless no_editing
+  .control-group
+    =f.label :capacity, :class => 'control-label'
+    .controls
+      =f.text_field :capacity, :class => 'span3', :disabled => no_editing
+
+%fieldset
+  -unless new_show
+    %legend Ticket Types
+  = f.fields_for :ticket_types do |builder|
+    = render 'events/ticket_type_fields', :f => builder
+
+.control-group
+  .controls
+    %i.fa.fa-plus-cirlce.icon-gray
+    = link_to_add_fields 'Add another ticket type', f, :ticket_types, 'events'

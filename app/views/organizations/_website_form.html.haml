@@ -1,0 +1,7 @@
+= form_for organization do |form|
+  = hidden_field_tag :back, true
+  %ul
+    %li
+      .label= form.label :website, "Website"
+      .element= form.text_field :website
+  = form.submit "Update Website", :class => "btn"

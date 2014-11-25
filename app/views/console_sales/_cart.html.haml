@@ -1,0 +1,60 @@
+#shopping-cart-display
+  %h3 Order Summary
+
+  .well
+    - if current_sales_console_cart.empty?
+      %h4 This cart is empty.
+    -unless current_sales_console_cart.tickets.empty?
+      %h4 Tickets
+      %table.table#tickets-table
+        -current_sales_console_cart.tickets.each do |ticket|
+          %tr.ticket-row
+            %td
+              =ticket.event.name
+              %br
+              =ticket.show
+            %td.right=number_as_cents ticket.price
+
+    -unless current_sales_console_cart.memberships.empty?
+      %h4 Memberships
+      %table.table#memberships-table
+        -current_sales_console_cart.memberships.each do |membership|
+          %tr
+            %td=membership.membership_type.membershipize
+            %td.right=number_as_cents membership.price
+
+    -unless current_sales_console_cart.passes.empty?
+      %h4 Passes
+      %table.table#passes-table
+        -current_sales_console_cart.passes.each do |pass|
+          %tr
+            %td=pass.pass_type.passerize
+            %td.right=number_as_cents pass.price
+
+    -unless current_sales_console_cart.donations.empty?
+      %h4 Donations
+      %table.table#donations-table
+        -current_sales_console_cart.donations.each do |donation|
+          %tr
+            %td="Donation to #{current_user.current_organization.name}"
+            %td.right=number_as_cents donation.price  
+
+    -if current_sales_console_cart.has_discount_or_pass?
+      %table.table
+        %tr#discount-display
+          %td.details
+            Code
+            %span=current_sales_console_cart.applied_code
+          %td.right.amount
+            =number_as_cents current_sales_console_cart.discount_amount  
+
+    %table.table#totals-table
+      -unless current_sales_console_cart.fee_in_cents == 0
+        %tr
+          %td Service Charge
+          %td.right#service-charge=number_as_cents current_sales_console_cart.fee_in_cents
+      %tr
+        %td
+          %b Total
+        %td.right#cart-total
+          %b=number_as_cents current_sales_console_cart.total

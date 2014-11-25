@@ -1,0 +1,11 @@
+.modal{:id => "row#{index}"}
+  .modal-header
+    .close{'data-dismiss'=>'modal'} x
+    &nbsp;
+
+  .modal-body
+    %table.table.table-condensed
+      - keys.each do |field|
+        %tr
+          %td=field.to_s.humanize
+          %td=row.preview(field)

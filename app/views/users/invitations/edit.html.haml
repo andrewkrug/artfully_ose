@@ -1,0 +1,29 @@
+%h2 Setup Your Account
+
+.instructions.well
+  The administrator for
+  %strong=resource.user_memberships.first.organization.name
+  has invited you to join their organization.  Enter a password for your account and click 'Sign Up' to begin using Artfully!
+
+%fieldset
+  = form_for resource, as: resource_name, url: invitation_path(resource_name), html: {method: :put, class: "form-horizontal"} do |f|
+    = devise_error_messages!
+    = f.hidden_field :invitation_token
+
+    .control-group
+      = f.label :first_name, 'First Name', :class => 'control-label'
+      .controls= f.text_field :first_name, :required => true, tabindex: "1"
+    .control-group
+      = f.label :last_name, 'Last Name', :class => 'control-label'
+      .controls= f.text_field :last_name, :required => true, tabindex: "2"
+    .control-group
+      = f.label :email, :class => 'control-label'
+      .controls= f.text_field :email, :placeholder => 'example@fracturedatlas.org', :required => true, tabindex: "3"
+    .control-group
+      = f.label :password, :class => 'control-label'
+      .controls= f.password_field :password, :required => true, tabindex: "4"
+    .control-group
+      = f.label :password_confirmation, "Retype Password", :class => 'control-label'
+      .controls= f.password_field :password_confirmation, :required => true, tabindex: "5"
+    .form-actions
+      %p= f.submit "Sign Up", class: "btn btn-primary btn-large", tabindex: "7"

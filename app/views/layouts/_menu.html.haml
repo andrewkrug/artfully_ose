@@ -1,0 +1,48 @@
+.navbar.navbar-fixed-top
+  .navbar-inner
+    .container
+      .brand Artful.ly
+      %ul.nav
+        %li{ :class => "dropdown #{active?(:events)}" }
+          = nav_dropdown "Sell"
+          %ul.dropdown-menu
+            %li= link_to "New Event", new_event_path
+            %li= link_to "All Events", events_path
+            %li= link_to "Memberships", membership_types_path
+            %li= link_to "Passes", pass_types_path
+            %li= link_to "Sales Console", new_console_sale_path
+
+        %li{ :class => "dropdown #{active?(:people)}" }
+          = nav_dropdown "People"
+          %ul.dropdown-menu
+            %li= link_to "New Contact", new_person_path
+            %li= link_to "Search", people_path
+            %li= link_to "Advanced Search", new_search_path
+            %li= link_to "List Segments", segments_path
+            %li= link_to "Import", new_import_path(:type => :people)
+            %li= link_to "Export", imports_path
+
+        %li{ :class => "dropdown #{active?(:reports)}" }
+          = nav_dropdown "Reports"
+          %ul.dropdown-menu
+            %li= link_to "Statements", statements_path
+            %li= link_to "Discounts", discounts_reports_path
+            %li= link_to "Imports / Exports", imports_path
+
+        %li{ :class => "dropdown #{active?(:transactions)}"}
+          = nav_dropdown "Orders"
+          %ul.dropdown-menu
+            %li= link_to "Tickets", sales_orders_path
+            %li= link_to "Donations", contributions_path
+            %li= link_to "Memberships", membership_orders_path
+            %li= link_to "Search All", orders_path
+
+        %li.divider-vertical
+        %li.dropdown
+          = gravatar_image_tag(current_user.email, :alt => 'User icon', :class => 'nav-grav', :gravatar => { :size => 32 })
+        %li.dropdown
+          = nav_dropdown current_user.email
+          %ul.dropdown-menu
+            -if current_user.is_in_organization? 
+              %li= link_to "Account Administration", organization_path(current_user.current_organization)
+            %li= link_to "Sign Out", destroy_user_session_path

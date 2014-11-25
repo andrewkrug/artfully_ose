@@ -1,0 +1,12 @@
+.membership-message
+  .center{:style => 'text-align:center'}
+    =icon_tag "18-envelope@2x", {:align => "center"}
+  .center{:style => 'text-align:center'}
+    %h4 Thanks for becoming a member!
+  .message
+    We've sent an email to
+    %b=email
+    and that email includes instructions to setup your login and password so you can access our exclusive member site. Purchase member tickets, find exclusive member events, update your address, and more!
+    %br
+    -membership_types.each do |membership_type|
+      %p=membership_type.thanks_copy

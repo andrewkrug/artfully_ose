@@ -1,0 +1,27 @@
+- in_section :events
+- content_for :header do
+  =render :partial=>'events/header'
+
+.row
+  .span3
+    - in_sub_section :shows
+    =render :partial=>'events/menu'
+  .span9
+    = render "shared/error_messages", :target => @event
+    #show-headline.row-fluid
+      .span6
+        %h3=l @show.datetime_local_to_event, :format => :day_time
+        .row-fluid
+          .span5
+            =render :partial => "work_with", :locals => {:show => @show}
+          .span6
+            =icon_link_to("Box Office", new_event_show_sales_path(@event,@show,:render => 'boxoffice'), 'fa-shopping-cart', 'btn', '')
+      .span6
+        = render :partial => "glance", :locals => { :report => @show.glance, :show => @show }
+    #sections
+      .row-fluid
+        .span3
+          %h4 Ticket Capacity
+      = render :partial => 'sections_table', :locals => { :show => @show, :tickets => @show.tickets }
+
+#newTicketType.modal

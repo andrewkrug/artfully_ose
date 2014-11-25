@@ -1,0 +1,23 @@
+- in_section :events
+- content_for :header do
+  =render :partial=>'header'
+  
+.row
+  .span3
+    - in_sub_section :share
+    =render :partial=>'menu'
+  .span9
+    .row
+      .span10.offset1.storefront-links
+
+        %h1 Artful.ly Widget
+        .row
+          .span6
+            %p
+              &nbsp
+    
+            %p
+              %b New!
+              If you have a WordPress site, you may be interested in our
+              =link_to 'WordPress Plugin', wp_plugin_event_path(@event)
+            = render :partial => 'widgets/generator', :locals => {:selected_event_id => @event.id}
